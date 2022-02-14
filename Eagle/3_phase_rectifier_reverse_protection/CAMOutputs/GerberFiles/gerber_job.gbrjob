@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2020-08-27T13:05:38Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.6.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "3_phase_rectifier_reverse_protection"
+        },
+        "Owner": "Kishan S <krishns@pesu.pes.edu>",
+        "Size": {
+            "X": 49.2,
+            "Y": 31.2
+        }
+    }
+}

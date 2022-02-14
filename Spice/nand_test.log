@@ -1,0 +1,45 @@
+Circuit: * Z:\mnt\6E34E0213B8F22D4\Projects\Spice\nand_test.asc
+
+WARNING: Less than two connections to node NC_01.  This node is used by M6.
+Instance "m:u9:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u9:5": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u8:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u8:5": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u7:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u7:5": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u6:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u6:5": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u5:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u5:5": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u4:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u4:5": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u3:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u3:5": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u2:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u2:5": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u1:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u1:5": Length shorter than recommended for a level 2 MOSFET.
+Direct Newton iteration for .op point succeeded.
+Changing Tseed to 1e-008
+Changing Tseed to 1e-010
+Changing Tseed to 1e-007
+Changing Tseed to 1e-011
+
+Date: Fri Apr 30 10:47:50 2021
+Total elapsed time: 1.202 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 7668
+traniter = 7623
+tranpoints = 2381
+accept = 1951
+rejected = 426
+matrix size = 336
+fillins = 229
+solver = Normal
+Thread vector: 66.3/24.7[8] 19.1/8.8[8] 24.8/6.9[8] 1.4/2.2[1]  2592/500
+Matrix Compiler1: 25.81 KB object code size  13.0/6.0/[2.5]
+Matrix Compiler2: 32.77 KB object code size  7.5/9.8/[1.7]
+

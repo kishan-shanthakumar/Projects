@@ -1,0 +1,146 @@
+Circuit: * D:\Projects\Spice\undervoltage_lipo.asc
+
+Instance "m:u1:6": Length shorter than recommended for a level 2 MOSFET.
+Instance "m:u1:5": Length shorter than recommended for a level 2 MOSFET.
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+Gmin = 1.07374
+Gmin = 0.115292
+Gmin = 0.0123794
+Gmin = 0.00132923
+vernier = 0.5
+vernier = 0.25
+vernier = 0.125
+vernier = 0.0625
+Gmin = 0.00100083
+vernier = 0.03125
+vernier = 0.015625
+vernier = 0.0078125
+vernier = 0.00390625
+vernier = 0.00195313
+Gmin = 0.00100083
+vernier = 0.000976563
+vernier = 0.000488281
+Gmin = 0
+Gmin stepping failed
+
+Starting source stepping with srcstepmethod=0
+Source Step = 3.0303%
+Source Step = 33.3333%
+Source Step = 48.4967%
+vernier = 0.000976563
+Source Step = 48.5144%
+Source Step = 48.544%
+Source Step = 48.5736%
+Source Step = 48.6032%
+Source Step = 48.6328%
+vernier = 0.00146484
+Source Step = 48.6742%
+Source Step = 48.7186%
+Source Step = 48.763%
+Source Step = 48.8074%
+Source Step = 48.8518%
+vernier = 0.00219727
+Source Step = 48.9117%
+Source Step = 48.9783%
+Source Step = 49.0449%
+Source Step = 49.1115%
+Source Step = 49.1781%
+vernier = 0.0032959
+Source Step = 49.2646%
+Source Step = 49.3645%
+Source Step = 49.4644%
+Source Step = 49.5642%
+Source Step = 49.6641%
+vernier = 0.00494385
+Source Step = 49.789%
+Source Step = 49.9388%
+Source Step = 50.0886%
+Source Step = 50.2384%
+Source Step = 50.3882%
+vernier = 0.00741577
+Source Step = 50.568%
+Source Step = 50.7927%
+Source Step = 51.0174%
+Source Step = 51.2422%
+Source Step = 51.4669%
+vernier = 0.0111237
+Source Step = 51.7253%
+Source Step = 52.0624%
+Source Step = 52.3995%
+Source Step = 52.7365%
+Source Step = 53.0736%
+vernier = 0.0166855
+Source Step = 53.4444%
+Source Step = 53.95%
+Source Step = 54.4557%
+Source Step = 54.9613%
+Source Step = 55.4669%
+vernier = 0.0250282
+Source Step = 55.9978%
+Source Step = 56.7562%
+Source Step = 57.5147%
+Source Step = 58.2731%
+Source Step = 59.0315%
+Source Step = 59.79%
+vernier = 0.0375423
+Source Step = 60.9276%
+Source Step = 62.0653%
+Source Step = 63.2029%
+Source Step = 64.3405%
+Source Step = 65.4782%
+vernier = 0.0563135
+Source Step = 67.1278%
+Source Step = 68.0237%
+Source Step = 68.4503%
+Source Step = 68.8769%
+Source Step = 69.3035%
+Source Step = 69.7301%
+vernier = 0.0211176
+Source Step = 70.2421%
+Source Step = 70.882%
+Source Step = 71.5219%
+Source Step = 72.1619%
+Source Step = 72.8018%
+vernier = 0.0316764
+Source Step = 73.5377%
+Source Step = 74.4976%
+Source Step = 75.4575%
+Source Step = 76.4174%
+Source Step = 77.3773%
+vernier = 0.0475145
+Source Step = 78.4331%
+Source Step = 79.873%
+Source Step = 81.3128%
+Source Step = 82.7526%
+Source Step = 84.1925%
+vernier = 0.0712718
+Source Step = 85.7043%
+Source Step = 87.8641%
+Source Step = 90.0238%
+Source Step = 92.1836%
+Source Step = 94.3433%
+Source Step = 96.5031%
+vernier = 0.106908
+Source Step = 99.7427%
+Source stepping succeeded in finding the operating point.
+
+
+Date: Sun Mar 28 00:40:46 2021
+Total elapsed time: 0.594 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 24907
+traniter = 20041
+tranpoints = 10021
+accept = 10021
+rejected = 0
+matrix size = 44
+fillins = 26
+solver = Normal
+Matrix Compiler1: 3.16 KB object code size  0.7/0.4/[0.1]
+Matrix Compiler2: 4.10 KB object code size  0.6/0.6/[0.4]
+

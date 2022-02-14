@@ -1,0 +1,23 @@
+Circuit: * Z:\mnt\6E34E0213B8F22D4\Projects\Spice\Draft1.asc
+
+Limiting rise time of source v1 to 0.1
+Limiting fall time of source v1 to 0.1
+Direct Newton iteration for .op point succeeded.
+
+Date: Sat Mar 20 19:27:39 2021
+Total elapsed time: 5.280 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 200075
+traniter = 200060
+tranpoints = 100031
+accept = 100027
+rejected = 4
+matrix size = 10
+fillins = 0
+solver = Normal
+Matrix Compiler1: 364 bytes object code size  0.2/0.1/[0.1]
+Matrix Compiler2: off  [0.1]/0.2/0.2
+
