@@ -7,11 +7,10 @@ output reg rw;
 output reg en;
 input [31:0] din;
 input clk;
-output trap;
+output reg trap;
 
 reg [6:0] opcode;
 reg [4:0] r [31:0];
-reg [31:0] trap;
 reg [31:0] temp;
 
 always @(posedge clk )
@@ -85,15 +84,18 @@ begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
                         rw = 0;
                         en = 1;
-                        r[din[11:7]] = {24{ddatin[7:0]}};
+                        r[din[11:7]] = (mem_addr[1:0] == 2'b00)?{24{ddatin[7:0]}}:
+                        (mem_addr[1:0] == 2'b01)?{24{ddatin[15:8]}}:
+                        (mem_addr[1:0] == 2'b10)?{24{ddatin[23:16]}}:
+                        {24{ddatin[31:24]}};
                         en = 0;
                     end
             3'b001: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
-                        if (mem_addr[1:0] == 2'b00) begin
+                        if (mem_addr[0] == 1'b0) begin
                             rw = 0;
                             en = 1;
-                            r[din[11:7]] = {16{ddatin[15:0]}};
+                            r[din[11:7]] = (mem_addr[1] == 1'b0)?{16{ddatin[15:0]}}:{16{ddatin[31:16]}};
                             en = 0;
                         end
                         else
@@ -101,7 +103,7 @@ begin
                     end
             3'b010: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
-                        if (mem_addr[3:0] == 4'b0000) begin
+                        if (mem_addr[1:0] == 2'b00) begin
                             rw = 0;
                             en = 1;
                             r[din[11:7]] = ddatin;
@@ -113,16 +115,19 @@ begin
             3'b100: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
                         rw = 0;
-                        en = 1;
-                        r[din[11:7]] = {24'b0,ddatin[7:0]};
+                        en = 1;;
+                        r[din[11:7]] = (mem_addr[1:0] == 2'b00)?{24'b0,ddatin[7:0]}:
+                        (mem_addr[1:0] == 2'b01)?{24'b0,ddatin[15:8]}:
+                        (mem_addr[1:0] == 2'b10)?{24'b0,ddatin[23:16]}:
+                        {24'b0,ddatin[31:24]};
                         en = 0;
                     end
             3'b101: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
-                        if (mem_addr[1:0] == 2'b00) begin
+                        if (mem_addr[1:0] == 1'b0) begin
                             rw = 0;
                             en = 1;
-                            r[din[11:7]] = {16'b0,ddatin[15:0]};
+                            r[din[11:7]] = (mem_addr[1] == 1'b0)?{16'b0,ddatin[15:0]}:{16'b0,ddatin[31:16]};
                             en = 0;
                         end
                         else
@@ -141,19 +146,22 @@ begin
                     en = 0;
                     rw = 1;
                     en = 1;
-                    ddatout = {ddatin[31:8], r[din[24:20]][7:0]};
+                    ddatout = (mem_addr[1:0] == 2'b00)?{ddatin[31:8], r[din[24:20]][7:0]}:
+                    (mem_addr[1:0] == 2'b01)?{ddatin[31:16], r[din[24:20]][7:0], ddatin[7:0]}:
+                    (mem_addr[1:0] == 2'b10)?{ddatin[31:24], r[din[24:20]][7:0], ddatin[15:0]}:
+                    {r[din[24:20]][7:0], ddatin[23:0]};
                     en = 0;
                     end
             3'b001: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
-                        if (mem_addr[1:0] == 2'b00) begin
+                        if (mem_addr[0] == 1'b0) begin
                             rw = 0;
                             en = 1;
                             temp = ddatin;
                             en = 0;
                             rw = 1;
                             en = 1;
-                            ddatout = {ddatin[31:16], r[din[24:20]][15:0]};
+                            ddatout = (mem_addr[1] == 1'b0)?{ddatin[31:16], r[din[24:20]][15:0]}:{r[din[24:20]][15:0], ddatin[31:16]};
                             en = 0;
                         end
                         else
@@ -161,7 +169,7 @@ begin
                     end
             3'b010: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
-                        if (mem_addr[3:0] == 4'b0000) begin
+                        if (mem_addr[1:0] == 2'b00) begin
                             rw = 0;
                             en = 1;
                             temp = ddatin;
