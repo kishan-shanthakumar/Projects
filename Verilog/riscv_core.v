@@ -1,7 +1,10 @@
-module riscv_core(addr, mem_addr, dout, din, clk);
+module riscv_core(addr, mem_addr, ddatin, ddatout, rw, en, din, clk);
 output reg [31:0] addr;
 output reg [31:0] mem_addr;
-output [31:0] dout;
+input [31:0] ddatin;
+output reg [31:0] ddatout;
+output reg rw;
+output reg en;
 input [31:0] din;
 input clk;
 
@@ -79,14 +82,18 @@ begin
         case (din[14:12])
             3'b000: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
-                        //read(mem_addr,temp);
-                        r[din[11:7]] = {24{temp[7:0]}};
+                        rw = 0;
+                        en = 1;
+                        r[din[11:7]] = {24{ddatin[7:0]}};
+                        en = 0;
                     end
             3'b001: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
                         if (mem_addr[1:0] == 2'b00) begin
-                            //read(mem_addr,temp);
-                            r[din[11:7]] = {16{temp[15:0]}};
+                            rw = 0;
+                            en = 1;
+                            r[din[11:7]] = {16{ddatin[15:0]}};
+                            en = 0;
                         end
                         else
                             trap = 32'b1;
@@ -94,22 +101,28 @@ begin
             3'b010: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
                         if (mem_addr[3:0] == 4'b0000) begin
-                            //read(mem_addr,temp);
-                            r[din[11:7]] = temp;
+                            rw = 0;
+                            en = 1;
+                            r[din[11:7]] = ddatin;
+                            en = 0;
                         end
                         else
                             trap = 32'b1;
                     end
             3'b100: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
-                        //read(mem_addr,temp);
-                        r[din[11:7]] = {24'b0,temp[7:0]};
+                        rw = 0;
+                        en = 1;
+                        r[din[11:7]] = {24'b0,ddatin[7:0]};
+                        en = 0;
                     end
             3'b101: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
                         if (mem_addr[1:0] == 2'b00) begin
-                            //read(mem_addr,temp);
-                            r[din[11:7]] = {16'b0,temp[15:0]};
+                            rw = 0;
+                            en = 1;
+                            r[din[11:7]] = {16'b0,ddatin[15:0]};
+                            en = 0;
                         end
                         else
                             trap = 32'b1;
@@ -119,12 +132,28 @@ begin
     end
     else if (opcode == 7'b0100011) begin
         case (din[14:12])
-            3'b000: mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
-                    //write(mem_addr, r[din[24:20]][7:0]);
+            3'b000: begin
+                    mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
+                    rw = 0;
+                    en = 1;
+                    temp = ddatin;
+                    en = 0;
+                    rw = 1;
+                    en = 1;
+                    ddatout = {ddatin[31:8], r[din[24:20]][7:0]};
+                    en = 0;
+                    end
             3'b001: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
                         if (mem_addr[1:0] == 2'b00) begin
-                            //write(mem_addr, r[din[24:20]][15:0]);
+                            rw = 0;
+                            en = 1;
+                            temp = ddatin;
+                            en = 0;
+                            rw = 1;
+                            en = 1;
+                            ddatout = {ddatin[31:16], r[din[24:20]][15:0]};
+                            en = 0;
                         end
                         else
                             trap = 32'b1;
@@ -132,7 +161,14 @@ begin
             3'b010: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
                         if (mem_addr[3:0] == 4'b0000) begin
-                            //write(mem_addr, r[din[24:20]]);
+                            rw = 0;
+                            en = 1;
+                            temp = ddatin;
+                            en = 0;
+                            rw = 1;
+                            en = 1;
+                            ddatout = r[din[24:20]];
+                            en = 0;
                         end
                         else
                             trap = 32'b1;
