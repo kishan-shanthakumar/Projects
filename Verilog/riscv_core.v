@@ -1,4 +1,4 @@
-module riscv_core(addr, mem_addr, ddatin, ddatout, rw, en, din, clk);
+module riscv_core(addr, mem_addr, ddatin, ddatout, rw, en, din, clk, trap);
 output reg [31:0] addr;
 output reg [31:0] mem_addr;
 input [31:0] ddatin;
@@ -7,6 +7,7 @@ output reg rw;
 output reg en;
 input [31:0] din;
 input clk;
+output trap;
 
 reg [6:0] opcode;
 reg [4:0] r [31:0];
@@ -15,7 +16,7 @@ reg [31:0] temp;
 
 always @(posedge clk )
 begin
-    trap = 32'b0;
+    trap =0;
     opcode = din[6:0];
     if (opcode == 7'b0010011) begin
         addr = addr + 1'b1;
@@ -32,12 +33,12 @@ begin
             3'b111: r[din[11:7]] = r[din[19:15]] & {20'b0, din[31:20]};
             3'b001: case (din[31:25])
                 7'b0000000: r[din[11:7]] = r[din[19:15]] << din[31:20];
-                default: trap = 32'b1;
+                default: trap =1;
             endcase
             3'b101: case (din[31:25])
                 7'b0000000: r[din[11:7]] = r[din[19:15]] >> din[31:20];
                 7'b0100000: r[din[11:7]] = r[din[19:15]] >>> din[31:20];
-                default: trap = 32'b1;
+                default: trap =1;
             endcase
         endcase
     end
@@ -74,7 +75,7 @@ begin
             10'b1110000000: begin
                             r[din[11:7]] = r[din[19:15]] & r[din[24:20]];
                             end
-            default: trap = 32'b1;
+            default: trap =1;
         endcase
     end
     else if (opcode == 7'b0000011) begin
@@ -96,7 +97,7 @@ begin
                             en = 0;
                         end
                         else
-                            trap = 32'b1;
+                            trap =1;
                     end
             3'b010: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
@@ -107,7 +108,7 @@ begin
                             en = 0;
                         end
                         else
-                            trap = 32'b1;
+                            trap =1;
                     end
             3'b100: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
@@ -125,9 +126,9 @@ begin
                             en = 0;
                         end
                         else
-                            trap = 32'b1;
+                            trap =1;
                     end
-            default: trap = 32'b1;
+            default: trap =1;
         endcase
     end
     else if (opcode == 7'b0100011) begin
@@ -156,7 +157,7 @@ begin
                             en = 0;
                         end
                         else
-                            trap = 32'b1;
+                            trap =1;
                     end
             3'b010: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
@@ -171,9 +172,9 @@ begin
                             en = 0;
                         end
                         else
-                            trap = 32'b1;
+                            trap =1;
                     end
-            default: trap = 32'b1;
+            default: trap =1;
         endcase
         addr = addr + 1;
     end
@@ -218,7 +219,7 @@ begin
                             addr = addr + $signed({din[31], din[7], din[30:25], din[11:8], 4'b0});
                         end
                     end
-            default: trap = 32'b1;
+            default: trap =1;
         endcase
     end
     else if (opcode == 7'b1101111) begin
@@ -230,7 +231,7 @@ begin
         addr = r[din[19:15]] + $signed({din[31], din[19:12], din[20], din[30:21], 1'b0});
     end
     else
-        trap = 32'b1;
+        trap =1;
 end
 
 endmodule
