@@ -10,7 +10,7 @@ input clk;
 output reg trap;
 
 reg [6:0] opcode;
-reg [4:0] r [31:0];
+reg [31:0] r [4:0];
 reg [31:0] temp;
 
 always @(posedge clk )
