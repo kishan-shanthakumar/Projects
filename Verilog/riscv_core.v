@@ -84,10 +84,10 @@ begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
                         rw = 0;
                         en = 1;
-                        r[din[11:7]] = (mem_addr[1:0] == 2'b00)?{24{ddatin[7:0]}}:
-                        (mem_addr[1:0] == 2'b01)?{24{ddatin[15:8]}}:
-                        (mem_addr[1:0] == 2'b10)?{24{ddatin[23:16]}}:
-                        {24{ddatin[31:24]}};
+                        r[din[11:7]] = (mem_addr[1:0] == 2'b00)?{{24{ddatin[7]}},{ddatin[7:0]}}:
+                        (mem_addr[1:0] == 2'b01)?{{24{ddatin[15]}},{ddatin[15:8]}}:
+                        (mem_addr[1:0] == 2'b10)?{{24{ddatin[23]}},{ddatin[23:16]}}:
+                        {{24{ddatin[31]}},{ddatin[31:24]}};
                         en = 0;
                     end
             3'b001: begin
@@ -95,7 +95,7 @@ begin
                         if (mem_addr[0] == 1'b0) begin
                             rw = 0;
                             en = 1;
-                            r[din[11:7]] = (mem_addr[1] == 1'b0)?{16{ddatin[15:0]}}:{16{ddatin[31:16]}};
+                            r[din[11:7]] = (mem_addr[1] == 1'b0)?{{16{ddatin[15]}},{ddatin[15:0]}}:{{16{ddatin[31]}},{ddatin[31:16]}};
                             en = 0;
                         end
                         else
