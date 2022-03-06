@@ -14,6 +14,7 @@ reg [6:0] opcode;
 reg [31:0] r[0:31];
 reg [31:0] temp;
 reg [20:0] adcalc;
+reg [13:0] badcalc;
 
 always @(posedge clk )
 begin
@@ -211,36 +212,59 @@ begin
         addr = addr + 1;
     end
     else if (opcode == 7'b1100011) begin
+        badcalc = {din[31], din[7], din[30:25], din[11:8], 1'b0};
+        if (din[31]) begin
+            badcalc = badcalc - 1;
+            badcalc = ~badcalc;
+        end
         case (din[14:12])
             3'b000: begin
                         if ( $signed(r[din[19:15]]) == $signed(r[din[24:20]])) begin
-                            addr = addr + $signed({din[31], din[7], din[30:25], din[11:8], 4'b0});
+                            case(din[31])
+                            0'b0: addr = addr + (badcalc)/4;
+                            0'b1: addr = addr - (badcalc)/4;
+                            endcase
                         end
                     end
             3'b001: begin
                         if ( $signed(r[din[19:15]]) != $signed(r[din[24:20]])) begin
-                            addr = addr + $signed({din[31], din[7], din[30:25], din[11:8], 4'b0});
+                            case(din[31])
+                            0'b0: addr = addr + (badcalc)/4;
+                            0'b1: addr = addr - (badcalc)/4;
+                            endcase
                         end
                     end
             3'b100: begin
                         if ( $signed(r[din[19:15]]) < $signed(r[din[24:20]])) begin
-                            addr = addr + $signed({din[31], din[7], din[30:25], din[11:8], 4'b0});
+                            case(din[31])
+                            0'b0: addr = addr + (badcalc)/4;
+                            0'b1: addr = addr - (badcalc)/4;
+                            endcase
                         end
                     end
             3'b101: begin
                         if ( $signed(r[din[19:15]]) >= $signed(r[din[24:20]])) begin
-                            addr = addr + $signed({din[31], din[7], din[30:25], din[11:8], 4'b0});
+                            case(din[31])
+                            0'b0: addr = addr + (badcalc)/4;
+                            0'b1: addr = addr - (badcalc)/4;
+                            endcase
                         end
                     end
             3'b110: begin
                         if ( r[din[19:15]] < r[din[24:20]]) begin
-                            addr = addr + $signed({din[31], din[7], din[30:25], din[11:8], 4'b0});
+                            case(din[31])
+                            0'b0: addr = addr + (badcalc)/4;
+                            0'b1: addr = addr - (badcalc)/4;
+                            endcase
                         end
                     end
             3'b111: begin
                         if ( r[din[19:15]] >= r[din[24:20]])
                         begin
-                            addr = addr + $signed({din[31], din[7], din[30:25], din[11:8], 4'b0});
+                            case(din[31])
+                            0'b0: addr = addr + (badcalc)/4;
+                            0'b1: addr = addr - (badcalc)/4;
+                            endcase
                         end
                     end
             default: trap =1;
