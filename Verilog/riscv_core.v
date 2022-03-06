@@ -1,4 +1,4 @@
-module riscv_core(addr, mem_addr, ddatin, ddatout, rw, en, din, clk, trap);
+module riscv_core(addr, mem_addr, ddatin, ddatout, rw, en, din, clk, rst, trap);
 output reg [31:0] addr;
 output reg [31:0] mem_addr;
 input [31:0] ddatin;
@@ -7,45 +7,77 @@ output reg rw;
 output reg en;
 input [31:0] din;
 input clk;
+input rst;
 output reg trap;
 
 reg [6:0] opcode;
-reg [31:0] r [4:0];
+reg [31:0] r[0:31];
 reg [31:0] temp;
 
 always @(posedge clk )
 begin
+    if(!rst)
+    begin
+        addr = 32'b0;
+        mem_addr = 32'b0;
+        ddatout = 32'b0;
+        rw = 0;
+        en = 0;
+        trap = 0;
+        r[31] = 32'b0;r[30] = 32'b0;r[29] = 32'b0;r[28] = 32'b0;r[27] = 32'b0;r[26] = 32'b0;r[25] = 32'b0;r[24] = 32'b0;
+        r[23] = 32'b0;r[22] = 32'b0;r[21] = 32'b0;r[20] = 32'b0;r[19] = 32'b0;r[18] = 32'b0;r[17] = 32'b0;r[16] = 32'b0;
+        r[15] = 32'b0;r[14] = 32'b0;r[13] = 32'b0;r[12] = 32'b0;r[11] = 32'b0;r[10] = 32'b0;r[9] = 32'b0;r[8] = 32'b0;
+        r[7] = 32'b0;r[6] = 32'b0;r[5] = 32'b0;r[4] = 32'b0;r[3] = 32'b0;r[2] = 32'b0;r[1] = 32'b0;r[0] = 32'b0;
+    end
+    else
+    begin
     trap =0;
     opcode = din[6:0];
     if (opcode == 7'b0010011) begin
         addr = addr + 1'b1;
         case (din[14:12])
-            3'b000: if (din[31]) begin
+            3'b000: begin
+                    if (din[31]) begin
                 r[din[11:7]] = r[din[19:15]] - 32'h00001000 + {20'b0, din[31:20]};
             end
             else
                 r[din[11:7]] = r[din[19:15]] + {20'b0, din[31:20]};
-            3'b010: r[din[11:7]] = r[din[19:15]] < $signed({20'hFFFFF, din[31:20]}) ? 1:0;
-            3'b011: r[din[11:7]] = r[din[19:15]] < ({20'hFFFFF, din[31:20]}) ? 1:0;
-            3'b100: r[din[11:7]] = r[din[19:15]] ^ {20'b0, din[31:20]};
-            3'b110: r[din[11:7]] = r[din[19:15]] | {20'b0, din[31:20]};
-            3'b111: r[din[11:7]] = r[din[19:15]] & {20'b0, din[31:20]};
-            3'b001: case (din[31:25])
-                7'b0000000: r[din[11:7]] = r[din[19:15]] << din[31:20];
-                default: trap =1;
-            endcase
-            3'b101: case (din[31:25])
-                7'b0000000: r[din[11:7]] = r[din[19:15]] >> din[31:20];
-                7'b0100000: r[din[11:7]] = r[din[19:15]] >>> din[31:20];
-                default: trap =1;
-            endcase
+            end
+            3'b010: begin
+                    r[din[11:7]] = r[din[19:15]] < $signed({20'hFFFFF, din[31:20]}) ? 1:0;
+                    end
+            3'b011: begin
+                    r[din[11:7]] = r[din[19:15]] < ({20'hFFFFF, din[31:20]}) ? 1:0;
+                    end
+            3'b100: begin
+                    r[din[11:7]] = r[din[19:15]] ^ {20'b0, din[31:20]};
+                    end
+            3'b110: begin
+                    r[din[11:7]] = r[din[19:15]] | {20'b0, din[31:20]};
+                    end
+            3'b111: begin
+                    r[din[11:7]] = r[din[19:15]] & {20'b0, din[31:20]};
+                    end
+            3'b001: begin
+                    case (din[31:25])
+                    7'b0000000: r[din[11:7]] = r[din[19:15]] << din[31:20];
+                    default: trap =1;
+                endcase
+            end
+            3'b101: begin
+                    case (din[31:25])
+                    7'b0000000: r[din[11:7]] = r[din[19:15]] >> din[31:20];
+                    7'b0100000: r[din[11:7]] = r[din[19:15]] >>> din[31:20];
+                    default: trap =1;
+                endcase
+            end
         endcase
     end
     else if (opcode == 7'b0110011) begin
         addr = addr + 1;
         case ({din[14:12],din[31:25]})
             10'b0000000000: begin
-                            r[din[11:7]] = r[din[19:15]] + r[din[24:20]];
+                            r[din[11:7]] = r[din[19:15]] + r[{din[24:20]}];
                             end
             10'b0000100000: begin
                             r[din[11:7]] = r[din[19:15]] - r[din[24:20]];
@@ -240,6 +272,7 @@ begin
     end
     else
         trap =1;
+    end
 end
 
 endmodule
