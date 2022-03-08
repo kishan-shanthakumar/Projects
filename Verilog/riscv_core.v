@@ -221,40 +221,40 @@ begin
             3'b000: begin
                         if ( $signed(r[din[19:15]]) == $signed(r[din[24:20]])) begin
                             case(din[31])
-                            0'b0: addr = addr + (badcalc)/4;
-                            0'b1: addr = addr - (badcalc)/4;
+                            1'b0: addr = addr + (badcalc)/4;
+                            1'b1: addr = addr - (badcalc)/4;
                             endcase
                         end
                     end
             3'b001: begin
                         if ( $signed(r[din[19:15]]) != $signed(r[din[24:20]])) begin
                             case(din[31])
-                            0'b0: addr = addr + (badcalc)/4;
-                            0'b1: addr = addr - (badcalc)/4;
+                            1'b0: addr = addr + (badcalc)/4;
+                            1'b1: addr = addr - (badcalc)/4;
                             endcase
                         end
                     end
             3'b100: begin
                         if ( $signed(r[din[19:15]]) < $signed(r[din[24:20]])) begin
                             case(din[31])
-                            0'b0: addr = addr + (badcalc)/4;
-                            0'b1: addr = addr - (badcalc)/4;
+                            1'b0: addr = addr + (badcalc)/4;
+                            1'b1: addr = addr - (badcalc)/4;
                             endcase
                         end
                     end
             3'b101: begin
                         if ( $signed(r[din[19:15]]) >= $signed(r[din[24:20]])) begin
                             case(din[31])
-                            0'b0: addr = addr + (badcalc)/4;
-                            0'b1: addr = addr - (badcalc)/4;
+                            1'b0: addr = addr + (badcalc)/4;
+                            1'b1: addr = addr - (badcalc)/4;
                             endcase
                         end
                     end
             3'b110: begin
                         if ( r[din[19:15]] < r[din[24:20]]) begin
                             case(din[31])
-                            0'b0: addr = addr + (badcalc)/4;
-                            0'b1: addr = addr - (badcalc)/4;
+                            1'b0: addr = addr + (badcalc)/4;
+                            1'b1: addr = addr - (badcalc)/4;
                             endcase
                         end
                     end
@@ -262,8 +262,8 @@ begin
                         if ( r[din[19:15]] >= r[din[24:20]])
                         begin
                             case(din[31])
-                            0'b0: addr = addr + (badcalc)/4;
-                            0'b1: addr = addr - (badcalc)/4;
+                            1'b0: addr = addr + (badcalc)/4;
+                            1'b1: addr = addr - (badcalc)/4;
                             endcase
                         end
                     end
