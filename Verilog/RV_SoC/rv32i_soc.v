@@ -24,10 +24,6 @@ inout usb_d1;
 reg [31:0] i_cache [0:3] [0:255];
 reg [31:0] d_cache [0:3] [0:1023];
 
-reg [7:0] uart_buf;
-reg [7:0] i2c_buf;
-reg [7:0] spi_buf;
-
 always @(posedge clk)
 begin
 	
