@@ -1,6 +1,7 @@
-module VGA_Controller(clk,inp,outp,hsync,vsync);
+module VGA_Controller(clk,inp_addr,inp,outp,hsync,vsync);
 input clk;
 input [31:0] inp;
+output reg [12:0] inp_addr = 0;
 output reg [23:0] outp;
 output reg hsync = 1;
 output reg vsync = 1;
@@ -13,6 +14,7 @@ begin
 	if((i < 640) & (j < 480))
 	begin
 		outp = inp;
+		inp_addr = inp_addr + 1;
 	end
 	else
 	begin
