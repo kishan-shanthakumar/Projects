@@ -12,7 +12,6 @@ always @ (posedge clk)
 begin
 	if((i < 640) & (j < 480))
 	begin
-		inp_addr = inp_addr + 1'b1;
 		outp = inp;
 	end
 	else
