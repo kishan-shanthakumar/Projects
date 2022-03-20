@@ -1,8 +1,7 @@
-module VGA_Controller(clk,inp_addr,inp,outp,hsync,vsync);
+module VGA_Controller(clk,inp,outp,hsync,vsync);
 input clk;
-input [11:0] inp;
-output reg [18:0] inp_addr;
-output reg [11:0] outp;
+input [31:0] inp;
+output reg [23:0] outp;
 output reg hsync = 1;
 output reg vsync = 1;
 
