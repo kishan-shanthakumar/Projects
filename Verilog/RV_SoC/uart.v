@@ -1,3 +1,5 @@
+// Change counter * baud to be equal as input clock rate
+
 module uart(clk,en,rst,tx,rx,uart_buf,int);
 input clk,rst,rx,en;
 input[31:0] uart_buf;
