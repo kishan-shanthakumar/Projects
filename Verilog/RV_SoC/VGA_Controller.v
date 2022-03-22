@@ -1,6 +1,6 @@
 module VGA_Controller(clk,inp_addr,inp,outp,hsync,vsync);
 input clk;
-input [31:0] inp;
+input [23:0] inp;
 output reg [12:0] inp_addr = 0;
 output reg [23:0] outp;
 output reg hsync = 1;
@@ -36,7 +36,11 @@ begin
 	else
 		i = i + 1;
 	if(j==525)
+	begin
 		j = 0;
+		inp_addr = 12'b0;
+	end
+	
 end
 
 endmodule
