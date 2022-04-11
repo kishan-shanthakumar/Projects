@@ -36,11 +36,11 @@ begin
     end
     else
     begin
-    trap =0;
-    rw = 0;
-    en = 0;
     opcode = din[6:0];
     if(!waiting) begin
+        trap =0;
+        rw = 0;
+        en = 0;
         if (opcode == 7'b0010011) begin
             addr = addr + 1'b1;
             case (din[14:12])
@@ -118,7 +118,6 @@ begin
             endcase
         end
         else if (opcode == 7'b0000011) begin
-            addr = addr + 1;
             case (din[14:12])
                 3'b000: begin
                             mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
@@ -195,7 +194,6 @@ begin
                         end
                 default: trap =1;
             endcase
-            addr = addr + 1;
         end
         else if (opcode == 7'b0110111) begin
             r[din[11:7]][31:12] = din[31:12];
@@ -290,7 +288,6 @@ begin
         end
         else
             trap =1;
-        end
     end
     else
     begin
@@ -306,11 +303,9 @@ begin
                         end
                 3'b001: begin
                             r[din[11:7]] = (mem_addr[1] == 1'b0)?{{16{ddatin[15]}},{ddatin[15:0]}}:{{16{ddatin[31]}},{ddatin[31:16]}};
-                            end
                         end
                 3'b010: begin
                             r[din[11:7]] = ddatin;
-                            end
                         end
                 3'b100: begin
                             r[din[11:7]] = (mem_addr[1:0] == 2'b00)?{24'b0,ddatin[7:0]}:
@@ -342,6 +337,7 @@ begin
             endcase
             addr = addr + 1;
         end
+    end
     end
 end
 
