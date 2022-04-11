@@ -124,10 +124,6 @@ begin
                             mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
                             rw = 0;
                             en = 1;
-                            r[din[11:7]] = (mem_addr[1:0] == 2'b00)?{{24{ddatin[7]}},{ddatin[7:0]}}:
-                            (mem_addr[1:0] == 2'b01)?{{24{ddatin[15]}},{ddatin[15:8]}}:
-                            (mem_addr[1:0] == 2'b10)?{{24{ddatin[23]}},{ddatin[23:16]}}:
-                            {{24{ddatin[31]}},{ddatin[31:24]}};
                             waiting = 1'b1;
                         end
                 3'b001: begin
@@ -135,7 +131,6 @@ begin
                             if (mem_addr[0] == 1'b0) begin
                                 rw = 0;
                                 en = 1;
-                                r[din[11:7]] = (mem_addr[1] == 1'b0)?{{16{ddatin[15]}},{ddatin[15:0]}}:{{16{ddatin[31]}},{ddatin[31:16]}};
                                 waiting = 1'b1;
                             end
                             else
@@ -146,7 +141,6 @@ begin
                             if (mem_addr[1:0] == 2'b00) begin
                                 rw = 0;
                                 en = 1;
-                                r[din[11:7]] = ddatin;
                                 waiting = 1'b1;
                             end
                             else
@@ -155,11 +149,7 @@ begin
                 3'b100: begin
                             mem_addr = r[din[19:15]] + {20'b0, din[31:20]};
                             rw = 0;
-                            en = 1;;
-                            r[din[11:7]] = (mem_addr[1:0] == 2'b00)?{24'b0,ddatin[7:0]}:
-                            (mem_addr[1:0] == 2'b01)?{24'b0,ddatin[15:8]}:
-                            (mem_addr[1:0] == 2'b10)?{24'b0,ddatin[23:16]}:
-                            {24'b0,ddatin[31:24]};
+                            en = 1;
                             waiting = 1'b1;
                         end
                 3'b101: begin
@@ -167,7 +157,6 @@ begin
                             if (mem_addr[1:0] == 1'b0) begin
                                 rw = 0;
                                 en = 1;
-                                r[din[11:7]] = (mem_addr[1] == 1'b0)?{16'b0,ddatin[15:0]}:{16'b0,ddatin[31:16]};
                                 waiting = 1'b1;
                             end
                             else
@@ -182,10 +171,6 @@ begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
                         rw = 1;
                         en = 1;
-                        ddatout = (mem_addr[1:0] == 2'b00)?{ddatin[31:8], r[din[24:20]][7:0]}:
-                        (mem_addr[1:0] == 2'b01)?{ddatin[31:16], r[din[24:20]][7:0], ddatin[7:0]}:
-                        (mem_addr[1:0] == 2'b10)?{ddatin[31:24], r[din[24:20]][7:0], ddatin[15:0]}:
-                        {r[din[24:20]][7:0], ddatin[23:0]};
                         waiting = 1'b1;
                         end
                 3'b001: begin
@@ -193,7 +178,6 @@ begin
                             if (mem_addr[0] == 1'b0) begin
                                 rw = 1;
                                 en = 1;
-                                ddatout = (mem_addr[1] == 1'b0)?{ddatin[31:16], r[din[24:20]][15:0]}:{r[din[24:20]][15:0], ddatin[31:16]};
                                 waiting = 1'b1;
                             end
                             else
@@ -204,7 +188,6 @@ begin
                             if (mem_addr[1:0] == 2'b00) begin
                                 rw = 1;
                                 en = 1;
-                                ddatout = r[din[24:20]];
                                 waiting = 1'b1;
                             end
                             else
@@ -310,7 +293,56 @@ begin
         end
     end
     else
+    begin
         waiting = 1'b0;
+        if (opcode == 7'b0000011) begin
+            addr = addr + 1;
+            case (din[14:12])
+                3'b000: begin
+                            r[din[11:7]] = (mem_addr[1:0] == 2'b00)?{{24{ddatin[7]}},{ddatin[7:0]}}:
+                            (mem_addr[1:0] == 2'b01)?{{24{ddatin[15]}},{ddatin[15:8]}}:
+                            (mem_addr[1:0] == 2'b10)?{{24{ddatin[23]}},{ddatin[23:16]}}:
+                            {{24{ddatin[31]}},{ddatin[31:24]}};
+                        end
+                3'b001: begin
+                            r[din[11:7]] = (mem_addr[1] == 1'b0)?{{16{ddatin[15]}},{ddatin[15:0]}}:{{16{ddatin[31]}},{ddatin[31:16]}};
+                            end
+                        end
+                3'b010: begin
+                            r[din[11:7]] = ddatin;
+                            end
+                        end
+                3'b100: begin
+                            r[din[11:7]] = (mem_addr[1:0] == 2'b00)?{24'b0,ddatin[7:0]}:
+                            (mem_addr[1:0] == 2'b01)?{24'b0,ddatin[15:8]}:
+                            (mem_addr[1:0] == 2'b10)?{24'b0,ddatin[23:16]}:
+                            {24'b0,ddatin[31:24]};
+                        end
+                3'b101: begin
+                            r[din[11:7]] = (mem_addr[1] == 1'b0)?{16'b0,ddatin[15:0]}:{16'b0,ddatin[31:16]};
+                        end
+                default: trap =1;
+            endcase
+        end
+        else if (opcode == 7'b0100011) begin
+            case (din[14:12])
+                3'b000: begin
+                        ddatout = (mem_addr[1:0] == 2'b00)?{ddatin[31:8], r[din[24:20]][7:0]}:
+                        (mem_addr[1:0] == 2'b01)?{ddatin[31:16], r[din[24:20]][7:0], ddatin[7:0]}:
+                        (mem_addr[1:0] == 2'b10)?{ddatin[31:24], r[din[24:20]][7:0], ddatin[15:0]}:
+                        {r[din[24:20]][7:0], ddatin[23:0]};
+                        end
+                3'b001: begin
+                            ddatout = (mem_addr[1] == 1'b0)?{ddatin[31:16], r[din[24:20]][15:0]}:{r[din[24:20]][15:0], ddatin[31:16]};
+                        end
+                3'b010: begin
+                            ddatout = r[din[24:20]];
+                        end
+                default: trap =1;
+            endcase
+            addr = addr + 1;
+        end
+    end
 end
 
 endmodule
