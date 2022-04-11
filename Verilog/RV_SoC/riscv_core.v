@@ -16,7 +16,7 @@ reg [31:0] temp;
 reg [20:0] adcalc;
 reg [13:0] badcalc;
 
-reg waiting;
+reg [1:0] waiting;
 
 always @(posedge clk )
 begin
@@ -33,11 +33,12 @@ begin
         r[15] = 32'b0;r[14] = 32'b0;r[13] = 32'b0;r[12] = 32'b0;r[11] = 32'b0;r[10] = 32'b0;r[9] = 32'b0;r[8] = 32'b0;
         r[7] = 32'b0;r[6] = 32'b0;r[5] = 32'b0;r[4] = 32'b0;r[3] = 32'b0;r[2] = 32'b0;r[1] = 32'b0;r[0] = 32'b0;
         temp = 32'b0;
+        waiting = 2'b0;
     end
     else
     begin
     opcode = din[6:0];
-    if(!waiting) begin
+    if(waiting == 2'b0) begin
         trap =0;
         rw = 0;
         en = 0;
@@ -168,16 +169,16 @@ begin
             case (din[14:12])
                 3'b000: begin
                         mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
-                        rw = 1;
+                        rw = 0;
                         en = 1;
-                        waiting = 1'b1;
+                        waiting = 2'b10;
                         end
                 3'b001: begin
                             mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
                             if (mem_addr[0] == 1'b0) begin
-                                rw = 1;
+                                rw = 0;
                                 en = 1;
-                                waiting = 1'b1;
+                                waiting = 2'b10;
                             end
                             else
                                 trap =1;
@@ -185,9 +186,9 @@ begin
                 3'b010: begin
                             mem_addr = r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
                             if (mem_addr[1:0] == 2'b00) begin
-                                rw = 1;
+                                rw = 0;
                                 en = 1;
-                                waiting = 1'b1;
+                                waiting = 2'b10;
                             end
                             else
                                 trap =1;
@@ -289,7 +290,7 @@ begin
         else
             trap =1;
     end
-    else
+    else if(waiting == 1'b1)
     begin
         waiting = 1'b0;
         if (opcode == 7'b0000011) begin
@@ -319,7 +320,16 @@ begin
                 default: trap =1;
             endcase
         end
-        else if (opcode == 7'b0100011) begin
+    end
+    else if(waiting == 2'd2)
+    begin
+        waiting = 2'd3;
+        rw = 1;
+    end
+    else if(waiting == 2'd3)
+    begin
+        waiting = 2'b0;
+        if (opcode == 7'b0100011) begin
             case (din[14:12])
                 3'b000: begin
                         ddatout = (mem_addr[1:0] == 2'b00)?{ddatin[31:8], r[din[24:20]][7:0]}:
