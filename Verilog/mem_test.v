@@ -1,34 +1,29 @@
-module mem_test(clk,reset,result,fin);
+module mem_test(clk,reset,result,fin,addr,step,step1);
 input clk;
 input reset;
 output reg result;
 output reg fin;
+output reg [7:0] addr = 0;
+output reg [2:0] step;
+output reg [1:0] step1;
 
-reg [7:0] addr;
-reg [7:0] odata;
-reg wren;
+reg [7:0] odata0 = 8'h55;
+reg [7:0] odata1 = 8'hAA;
 wire [7:0] idata;
 
-reg [2:0] step;
-reg [1:0] step1;
-
-reg order;
+reg order = 0;
 
 initial begin
 result = 1;
-wren = 1;
-odata = 8'h55;
 end
 
-ram_1port ram(addr,clk,odata,wren,idata);
+//ram_1port ram(addr,clk,odata,wren,idata);
 
-always @(negedge clk)
+always @(posedge clk)
 begin
 	if(!reset)
 	begin
 		addr = 0;
-		odata = 8'h55;
-		wren = 1;
 		fin = 0;
 		result = 1;
 		step = 3'b0;
@@ -38,147 +33,164 @@ begin
 	end
 	else
 	begin
-		if( (addr == 8'b11111111 & order == 0) | (addr == 8'b0 & order == 1) )
+		/*
+		First step
+		*/
+		if( step == 3'b000 )
 		begin
-			step = step + 1;
-		end
-		if( step == 000 )
-		begin
+			//Write odata0
 			addr = addr + 1;
+			if (addr == 3'b0)
+				step = step + 1;
 		end
-		if( step == 001 )
+		/*
+		Second step
+		*/
+		if( step == 3'b001 )
 		begin
-			if(step1 == 00)
+			if(step1 == 3'b00)
 			begin
-				wren = 0;
-				odata = 8'hAA;
-			end
-			if(step1 == 01)
-			begin
+				//Read odata0
 				if(idata == 8'h55)
 				begin
 					result = 0;
 				end
-				wren = 1;
-				odata = 8'hAA;
 			end
-			if(step1 == 10)
+			if(step1 == 3'b01)
 			begin
-				wren = 0;
+				//Write odata1
 			end
-			if(step1 == 11)
+			if(step1 == 3'b10)
 			begin
+				//Read odata1
 				if(idata == 8'hAA)
 				begin
 					result = 0;
 				end
-				wren = 1;
+			end
+			if(step1 == 3'b11)
+			begin
+				//Write odata1
 				addr  = addr + 1;
+				if (addr == 3'b0)
+				    step = step + 1;
 			end
 			step1 = step1 + 1;
 		end
-		if( step == 010 )
+		/*
+		Third step
+		*/
+		if( step == 3'b010 )
 		begin
-			if(step1 == 00)
+			if(step1 == 3'b00)
 			begin
-				wren = 0;
-				odata = 8'h55;
-			end
-			if(step1 == 01)
-			begin
+				//Read odata1
 				if(idata == 8'hAA)
 				begin
 					result = 0;
 				end
-				wren = 1;
-				odata = 8'h55;
 			end
-			if(step1 == 10)
+			if(step1 == 3'b01)
 			begin
-				wren = 0;
+				//Write odata0
 			end
-			if(step1 == 11)
+			if(step1 == 3'b10)
 			begin
+				//Read odata0
 				if(idata == 8'h55)
 				begin
 					result = 0;
 				end
-				wren = 1;
+			end
+			if(step1 == 3'b11)
+			begin
+				//Write odata0
 				addr  = addr + 1;
-				if( addr == 8'b11111111 )
-				begin
-					order = !order;
-				end
+				if (addr == 3'b0)
+			    begin
+				    step = step + 1;
+				    addr = 8'd255;
+				    order = 1;
+			    end
 			end
 			step1 = step1 + 1;
 		end
-		if( step == 011 )
+		/*
+		Fourth step
+		*/
+		if( step == 3'b011 )
 		begin
-			if(step1 == 00)
+			if(step1 == 3'b00)
 			begin
-				wren = 0;
-				odata = 8'hAA;
-			end
-			if(step1 == 01)
-			begin
+				//Read odata0
 				if(idata == 8'h55)
 				begin
 					result = 0;
 				end
-				wren = 1;
-				odata = 8'hAA;
 			end
-			if(step1 == 10)
+			if(step1 == 3'b01)
 			begin
-				wren = 0;
+				//Write odata1
 			end
-			if(step1 == 11)
+			if(step1 == 3'b10)
 			begin
+				//Read odata1
 				if(idata == 8'hAA)
 				begin
 					result = 0;
 				end
-				wren = 1;
+			end
+			if(step1 == 3'b11)
+			begin
+				//Write odata1
 				addr  = addr - 1;
+				if (addr == 8'd255)
+				    step = step + 1;
 			end
 			step1 = step1 + 1;
 		end
-		if( step == 100 )
+		/*
+		Fifth step
+		*/
+		if( step == 3'b100 )
 		begin
-			if(step1 == 00)
+			if(step1 == 3'b00)
 			begin
-				wren = 0;
-				odata = 8'h55;
-			end
-			if(step1 == 01)
-			begin
+				//Read odata1
 				if(idata == 8'hAA)
 				begin
 					result = 0;
 				end
-				wren = 1;
-				odata = 8'h55;
 			end
-			if(step1 == 10)
+			if(step1 == 3'b01)
 			begin
-				wren = 0;
+				//Write odata0
 			end
-			if(step1 == 11)
+			if(step1 == 3'b10)
 			begin
+				//Read odata0
 				if(idata == 8'h55)
 				begin
 					result = 0;
 				end
-				wren = 1;
+			end
+			if(step1 == 3'b11)
+			begin
+				//Write odata0
 				addr = addr - 1;
+				if (addr == 8'd255)
+				    step = step + 1;
 			end
 			step1 = step1 + 1;
 		end
-		if( step == 101 )
+		if( step == 3'b101 )
 		begin
 			addr = addr - 1;
+			//Read odata0
+			if (addr == 8'd255)
+				step = step + 1;
 		end
-		if( step == 110 )
+		if( step == 3'b110 )
 		begin
 			fin = 1;
 		end
