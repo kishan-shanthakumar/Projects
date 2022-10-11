@@ -4,11 +4,11 @@ logic [2:0] i;
 logic [7:0] o;
 
 initial begin
-s = 0;
+i = 0;
 end
 
 always #1 i = i + 1;
 
-//dec3_8(i,o);
+dec3_8 uut(i,o);
 
 endmodule
