@@ -1,5 +1,7 @@
-module full_adder(input a,b,c0,
-				  output sum,carry);
+//Full adder with two always_comb block
+
+module full_adder(input logic a,b,c0,
+				  output logic sum,carry);
 always_comb
 begin
 	sum = a ^ b ^ c0;

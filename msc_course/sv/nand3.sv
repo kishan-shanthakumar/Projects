@@ -1,5 +1,5 @@
-module nand3(input [2:0] a,
-			output b);
+module nand3(input logic [2:0] a,
+			output logic b);
 logic [2:0] in;
 not u1(in[0], a[0]);
 not u2(in[1], a[1]);
