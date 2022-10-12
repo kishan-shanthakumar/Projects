@@ -9,7 +9,7 @@ endfunction
 
 function Bit#(TAdd#(w,1)) addN(Bit#(w) a, Bit#(w) b, Bit#(1) c0);
     Bit#(w) s;
-    Bit#(TAdd#(w,1))c = {?,c0};
+    Bit#(TAdd#(w,1))c = zeroExtend(c0);
     for(Integer i=0;i<valueOf(w); i=i+1)
     begin
         let cs = fa(a[i],b[i],c[i]);
@@ -18,14 +18,14 @@ function Bit#(TAdd#(w,1)) addN(Bit#(w) a, Bit#(w) b, Bit#(1) c0);
     return {c[valueOf(w)],s};
 endfunction
 
-function Bit#(TAdd#(`w,`w)) mulN(Bit#(`w) a, Bit#(`w) b);
-    Bit#(TAdd#(`w,`w)) temp;
-    Bit#(TAdd#(`w,`w)) product;
+function Bit#(TAdd#(w,w)) mulN(Bit#(w) a, Bit#(w) b);
+    Bit#(TAdd#(w,w)) temp;
+    Bit#(TAdd#(w,w)) product;
     product = 0;
-    function Bit#(TAdd#(TAdd#(`w,1),`w)) add(Bit#(TAdd#(`w,`w)) x, Bit#(TAdd#(`w,`w)) y, Bit#(1) c0) = addN(x,y,c0);
-    for(Integer i=0;i<valueOf(`w); i=i+1)
+    function Bit#(TAdd#(TAdd#(w,1),w)) add(Bit#(TAdd#(w,w)) x, Bit#(TAdd#(w,w)) y, Bit#(1) c0) = addN(x,y,c0);
+    for(Integer i=0;i<valueOf(w); i=i+1)
     begin
-        if (b[i] == 1'b0)
+        if (b[i] == 1'b1)
         begin
             temp = zeroExtend(a << i);
             product = truncate(add(product,temp, 1'b0));
@@ -34,9 +34,9 @@ function Bit#(TAdd#(`w,`w)) mulN(Bit#(`w) a, Bit#(`w) b);
     return product;
 endfunction
 
-function Bit#(TAdd#(`w,`w)) macN(Bit#(`w) a, Bit#(`w) b, Bit#(`w) c);
-    function Bit#(TAdd#(`w,`w)) mul(Bit#(`w) x, Bit#(`w) y) = mulN(x,y);
-    function Bit#(TAdd#(TAdd#(`w,1),`w)) add(Bit#(TAdd#(`w,`w)) x, Bit#(TAdd#(`w,`w)) y, Bit#(1) c0) = addN(x,y,c0);
+function Bit#(TAdd#(w,w)) macN(Bit#(w) a, Bit#(w) b, Bit#(w) c);
+    function Bit#(TAdd#(w,w)) mul(Bit#(w) x, Bit#(w) y) = mulN(x,y);
+    function Bit#(TAdd#(TAdd#(w,1),w)) add(Bit#(TAdd#(w,w)) x, Bit#(TAdd#(w,w)) y, Bit#(1) c0) = addN(x,y,c0);
     let temp = mul(a,b);
     let mac_ans  = truncate(add(temp, zeroExtend(c), 1'b0));
     return mac_ans;
