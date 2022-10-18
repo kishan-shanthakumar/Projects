@@ -30,19 +30,21 @@ reg [N-1:0] ff31, ff32;
 reg [N-1:0] ff41, ff42;
 logic [N-1:0] shft_amtab;
 logic [N-1:0] shft_amtba;
+logic [N-1:0] a1;
+logic [N-1:0] b1;
 
 always_ff
 begin
-    if (a == 0 | b == 0 | a == b)
+    // Stage 1
+    for(int i = 0;i < N; i++)
     begin
-        ff11 = a;
-        ff12 = b;
+        a1[i] = !a[i];
+        b1[i] = !b[i];
     end
-    else
-    begin
-        shft_amtab = 
-        ff11 = {a[N-1], a[exp:man+1]<<, };
-    end
+    cseladd #(exp-man) u1(a[exp:man+1],b1[exp:man+1],1,shft_amtab);
+    cseladd #(exp-man) u2(b[exp:man+1],a1[exp:man+1],1,shft_amtba);
+    ff11 = {a[N-1], b[exp:man+1], a[man:0]>>shft_amtba};
+    ff12 = {b[N-1], a[exp:man+1], b[man:0]>>shft_amtab};
 end
 
 endmodule
