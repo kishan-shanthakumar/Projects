@@ -119,10 +119,16 @@ begin
             end
             else
             begin
-                if (flag)
-                    ff3 <= {ff21[N-1:man+1]-1, outab};
+                if (flag1)
+                    if (ff21[man:0]>ff22[man:0])
+                        ff3 <= {ff21[N-1:man+1]-1, outab};
+                    else
+                        ff3 <= {ff22[N-1:man+1]-1, outba};
                 else
-                    ff3 <= {ff22[N-1:man+1]-1, outba};
+                    if (flag)
+                        ff3 <= {ff21[N-1:man+1]-1, outab};
+                    else
+                        ff3 <= {ff22[N-1:man+1]-1, outba};
             end
         end
     end
