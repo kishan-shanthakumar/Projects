@@ -109,7 +109,7 @@ begin
             ff22 <= ffb;
             flag1 = 1;
         end
-        else if ($signed(ffa[exp:man+1]-127) > $signed(ffb[exp:man+1]-127))
+        else if ($signed(ffa[exp:man+1]-(2**(exp_len-1)-1)) > $signed(ffb[exp:man+1]-(2**(exp_len-1)-1)))
         begin
             ff21 <= ffa;
             ff22 <= ff12;
