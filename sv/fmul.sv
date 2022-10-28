@@ -30,13 +30,32 @@ module fmul #(parameter N = 32)
 
 logic [N-1:0] exp_calc;
 logic [N-1:0] exp_calc1;
+logic [(man+2)*2-1:0] man_mul;
 cseladd #(exp_len) u1(a[exp:man+1], b[exp:man+1], 0, exp_calc);
-cseladd #(exp_len) u1(exp_calc, ~(2**(exp_len-1)-1), 1, exp_calc1);
+cseladd #(exp_len) u2(exp_calc, {1,{(exp_len-2){1'b0}},1}, 0, exp_calc1);
+nmul #(man+1) u3({1,a[man:0]},{1,b[man:0]},man_mul);
 
-always_comb @(posedge clk, negedge rst)
+always_comb
 begin
     out[N-1] = a[N-1] ^ b[N-1];
-    
+    if( man_mul[(man+2)*2-1:(man+2)*2-2] >= 2'b10 )
+    begin
+        out[man:0] = man_mul[((man+2)*2-2)-:23];
+        if( a[exp:man+1]-(2**(exp_len-1)-1) == b[exp:man+1]-(2**(exp_len-1)-1) & a[exp:man+1]-(2**(exp_len-1)-1) == 0)
+            out[exp:man+1] = 2**(exp_len-1);
+        else
+            out[exp:man+1] = a[exp:man+1] + b[exp:man+1] - 2**(exp_len-1) + 1;
+    end
+    else
+    begin
+        out[man:0] = man_mul[((man+2)*2-3)-:23];
+        if( a[exp:man+1]-(2**(exp_len-1)-1) == b[exp:man+1]-(2**(exp_len-1)-1) & a[exp:man+1]-(2**(exp_len-1)-1) == 0)
+            out[exp:man+1] = 2**(exp_len-1) - 1;
+        else if( a[exp:man+1]-(2**(exp_len-1)-1) == 0 | b[exp:man+1]-(2**(exp_len-1)-1) == 0 )
+            out[exp:man+1] = a[exp:man+1] + b[exp:man+1] - 2**(exp_len-1) + 1;
+        else
+            out[exp:man+1] = a[exp:man+1] + b[exp:man+1] - 2**(exp_len-1);
+    end
 end
 
 endmodule
