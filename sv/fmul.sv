@@ -13,8 +13,7 @@ Steps in multiplication:
 
 module fmul #(parameter N = 32)
             (input logic [N-1:0] a, b,
-            output logic [N-1:0] out,exp_calc,exp_calc1,
-            output logic [(man+2)*2-1:0] man_mul);
+            output logic [N-1:0] out);
 
 `ifdef N == 64
     parameter exp = 62;
@@ -32,7 +31,7 @@ logic [N-1:0] exp_calc;
 logic [N-1:0] exp_calc1;
 logic [(man+2)*2-1:0] man_mul;
 logic flag;
-cseladd #(exp_len) u1(a[exp:man+1], {1,{(exp_len-2){0}},1}, 0, exp_calc);
+cseladd #(exp_len) u1(a[exp:man+1], ~(2**(exp_len-1)-1), 1, exp_calc);
 cseladd #(exp_len) u2(exp_calc, b[exp:man+1], flag, exp_calc1);
 nmul #(man+2) u3({1,a[man:0]},{1,b[man:0]},man_mul);
 
