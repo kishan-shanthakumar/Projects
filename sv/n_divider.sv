@@ -1,4 +1,4 @@
-module ndiv #(parameter N = 32)
+module n_divider #(parameter N = 32)
             (input logic [N-1:0] a,b,
             output logic [N*2-1:0] div);
 
