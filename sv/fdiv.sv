@@ -11,7 +11,7 @@ Steps in multiplication:
 3. Check the sign of the number
 */
 
-module fmul #(parameter N = 32)
+module fdiv #(parameter N = 32)
             (input logic [N-1:0] a, b,
             output logic [N-1:0] out);
 
@@ -51,7 +51,7 @@ begin
         if( a[exp:man+1]-(2**(exp_len-1)-1) == b[exp:man+1]-(2**(exp_len-1)-1) & a[exp:man+1]-(2**(exp_len-1)-1) == 0)
             out[exp:man+1] = 2**(exp_len-1) - 1;
         else if( a[exp:man+1]-(2**(exp_len-1)-1) == 0 | b[exp:man+1]-(2**(exp_len-1)-1) == 0 )
-            out[exp:man+1] = |(a[exp:man+1]-(2**(exp_len-1)-1)) ? a[exp:man+1] : b[exp:man+1];
+            out[exp:man+1] = |(b[exp:man+1]-(2**(exp_len-1)-1)) == 0 ? a[exp:man+1] : exp_calc1;
         else
             out[exp:man+1] = exp_calc1;
     end
