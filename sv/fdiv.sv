@@ -11,6 +11,25 @@ Steps in multiplication:
 3. Check the sign of the number
 */
 
+module enc_n #(parameter N = 5)
+			    (output logic [N-1:0] out,
+				output logic valid,
+				input logic [2**N-1:0] inp);
+
+always_comb
+begin
+	valid = 0;
+	for (int i = 2**N-1; i >= 0; i--)
+		if (inp[i] == 1)
+		begin
+			out = i;
+			valid = 1;
+			break;
+		end
+end
+
+endmodule
+
 module fdiv #(parameter N = 32)
             (input logic [N-1:0] a, b,
             output logic [N-1:0] out);
@@ -31,9 +50,13 @@ logic [N-1:0] exp_calc;
 logic [N-1:0] exp_calc1;
 logic [(man+2)*2-1:0] man_mul;
 logic flag;
+logic temp;
+logic [N-1:0] shft;
+
 cseladd #(exp_len) u1(a[exp:man+1], (2**(exp_len-1)-1), 0, exp_calc);
 cseladd #(exp_len) u2(exp_calc, ~b[exp:man+1], 1, exp_calc1);
 n_divider #(man+2) u3({1,a[man:0]},{1,b[man:0]},man_mul);
+enc_n #(5) u4(temp,shft,out[man:0]);
 
 always_comb
 begin
@@ -42,9 +65,7 @@ begin
     begin
         out[man:1] = man_mul[((man+2)*2-3)-:22];
         out[0] = {man_mul[(man+2)*2-25], man_mul[(man+2)*2-26], man_mul[(man+2)*2-27]} >= 2'b011 ? 1 : 0;
-        while (!out[man])
-            out[man:0] = out[man:0]<<1;
-        out[man:0] = out[man:0]<<1;
+        out[man:0] = out[man:0]<<(2**enc_len-shft-9);
         out[exp:man+1] = exp_calc1;
     end
     else
