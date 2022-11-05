@@ -52,7 +52,7 @@ logic [(man+2)*2-1:0] man_mul;
 logic flag;
 logic temp;
 logic [man:0] temp_man;
-logic [N-1:0] shft = 0;
+logic [enc_len:0] shft;
 
 cseladd #(exp_len) u1(a[exp:man+1], (2**(exp_len-1)-1), 0, exp_calc);
 cseladd #(exp_len) u2(exp_calc, ~b[exp:man+1], 1, exp_calc1);
