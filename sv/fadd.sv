@@ -39,7 +39,6 @@ endmodule
 
 module fadd #(parameter N = 32)
             (input logic [N-1:0] a, b,
-            input logic clk, rst,
             output logic [N-1:0] out);
 
 `ifdef N == 64
@@ -54,10 +53,10 @@ module fadd #(parameter N = 32)
     parameter enc_len = 5;
 `endif
 
-reg [N-1:0] ff11, ff12;
-reg [N-1:0] ffa, ffb;
-reg [N-1:0] ff21, ff22;
-reg [N-1:0] ff3;
+logic [N-1:0] ff11, ff12;
+logic [N-1:0] ffa, ffb;
+logic [N-1:0] ff21, ff22;
+logic [N-1:0] ff3;
 logic [exp_len-1:0] shft_amtab;
 logic [exp_len-1:0] shft_amtba;
 logic [man+1:0] wi;
@@ -76,82 +75,68 @@ enc_n #(enc_len) u6(outcalcab,temp,outab[man:0]);
 enc_n #(enc_len) u7(outcalcba,temp,outba[man:0]);
 cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
 
-always_ff @(posedge clk, negedge rst)
+always_comb
 begin
     out = ff3;
-    if (!rst)
+    // Stage 1
+    //cseladd #(exp_len) u1(a[exp:man+1],b1[exp:man+1],1,shft_amtab);
+    //cseladd #(exp_len) u2(b[exp:man+1],a1[exp:man+1],1,shft_amtba);
+    ff11[man:0] = {1,a[man:0]}>>shft_amtba;
+    ff12[man:0] = {1,b[man:0]}>>shft_amtab;
+    ff11[N-1:man+1] = {a[N-1], b[exp:man+1]};
+    ff12[N-1:man+1] = {b[N-1], a[exp:man+1]};
+    ffa = a;
+    ffb = b;
+    
+    //Stage 2
+    if (ffa[exp:man+1] == ffb[exp:man+1])
     begin
-        ff11 <= 0;
-        ff12 <= 0;
-        ff21 <= 0;
-        ff22 <= 0;
-        ff3 <= 0;
-        ffa <= 0;
-        ffb <= 0;
-        flag = 0;
+        ff21 = ffa;
+        ff22 = ffb;
+        flag1 = 1;
+    end
+    else if ($signed(ffa[exp:man+1]-(2**(exp_len-1)-1)) > $signed(ffb[exp:man+1]-(2**(exp_len-1)-1)))
+    begin
+        ff21 = ffa;
+        ff22 = ff12;
+        flag = 1;
+        flag1 = 0;
     end
     else
     begin
-        // Stage 1
-        //cseladd #(exp_len) u1(a[exp:man+1],b1[exp:man+1],1,shft_amtab);
-        //cseladd #(exp_len) u2(b[exp:man+1],a1[exp:man+1],1,shft_amtba);
-        ff11[man:0] <= {1,a[man:0]}>>shft_amtba;
-        ff12[man:0] <= {1,b[man:0]}>>shft_amtab;
-        ff11[N-1:man+1] <= {a[N-1], b[exp:man+1]};
-        ff12[N-1:man+1] <= {b[N-1], a[exp:man+1]};
-        ffa <= a;
-        ffb <= b;
-        
-        //Stage 2
-        if (ffa[exp:man+1] == ffb[exp:man+1])
+        ff21 = ff11;
+        ff22 = ffb;
+        flag = 0;
+        flag1 = 0;
+    end
+    
+    //Stage 3
+    if ( ff21[N-2:0] == ff22[N-2:0] )
+    begin
+        if (ff21[N-1] == ff22[N-1])
+            ff3 = {ff21[N-1],(ff21[exp:man+1] + 1),ff21[man:0]};
+        else
+            ff3 = '0;
+    end
+    else
+    begin
+        if (ff21[N-1] == ff22[N-1])
         begin
-            ff21 <= ffa;
-            ff22 <= ffb;
-            flag1 = 1;
-        end
-        else if ($signed(ffa[exp:man+1]-(2**(exp_len-1)-1)) > $signed(ffb[exp:man+1]-(2**(exp_len-1)-1)))
-        begin
-            ff21 <= ffa;
-            ff22 <= ff12;
-            flag = 1;
-            flag1 = 0;
+            ff3 = {ff21[N-1],ff21[exp:man+1] + flag1|wi[man+1], wi[man:0]>>1};
+            //cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,out[man:0]);
         end
         else
         begin
-            ff21 <= ff11;
-            ff22 <= ffb;
-            flag = 0;
-            flag1 = 0;
-        end
-        
-        //Stage 3
-        if ( ff21[N-2:0] == ff22[N-2:0] )
-        begin
-            if (ff21[N-1] == ff22[N-1])
-                ff3 <= {ff21[N-1],(ff21[exp:man+1] + 1),ff21[man:0]};
-            else
-                ff3 <= '0;
-        end
-        else
-        begin
-            if (ff21[N-1] == ff22[N-1])
-            begin
-                ff3 <= {ff21[N-1],ff21[exp:man+1] + flag1|wi[man+1], wi[man:0]>>1};
-                //cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,out[man:0]);
-            end
-            else
-            begin
-                if (flag1)
-                    if (ff21[man:0]>ff22[man:0])
-                        ff3 <= {ff21[N-1],ff21[N-2:man+1] - (2**enc_len-outcalcab-9), outab[man:0]<<(2**enc_len-outcalcab-9)};
-                    else
-                        ff3 <= {ff22[N-1],ff21[N-2:man+1] - (2**enc_len-outcalcba-9), outba[man:0]<<(2**enc_len-outcalcba-9)};
+            if (flag1)
+                if (ff21[man:0]>ff22[man:0])
+                    ff3 = {ff21[N-1],ff21[N-2:man+1] - (2**enc_len-outcalcab-9), outab[man:0]<<(2**enc_len-outcalcab-9)};
                 else
-                    if (flag)
-                        ff3 <= {ff21[N-1],ff21[N-2:man+1]-1, outab[man:0]};
-                    else
-                        ff3 <= {ff22[N-1],ff21[N-2:man+1]-1, outba[man:0]};
-            end
+                    ff3 = {ff22[N-1],ff21[N-2:man+1] - (2**enc_len-outcalcba-9), outba[man:0]<<(2**enc_len-outcalcba-9)};
+            else
+                if (flag)
+                    ff3 = {ff21[N-1],ff21[N-2:man+1]-1, outab[man:0]};
+                else
+                    ff3 = {ff22[N-1],ff21[N-2:man+1]-1, outba[man:0]};
         end
     end
 end
