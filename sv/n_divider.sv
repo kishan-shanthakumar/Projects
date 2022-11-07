@@ -11,7 +11,7 @@ begin
     begin
         x = x*(2-b*x);
     end
-    div = x * a;
+    div = (x * a)>>1;
 end
 
 endmodule
