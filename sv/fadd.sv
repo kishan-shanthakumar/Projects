@@ -50,8 +50,8 @@ logic temp;
 
 cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1,shft_amtab);
 cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1,shft_amtba);
-cseladd #(man+1) u4({1,ff21[man:0]},{flag1,~ff22[man:0]},1,outab);
-cseladd #(man+1) u5({1,ff22[man:0]},{flag1,~ff21[man:0]},1,outba);
+cseladd #(man+1) u4({1,ff21[man:0]},{~flag1,~ff22[man:0]},1,outab);
+cseladd #(man+1) u5({1,ff22[man:0]},{~flag1,~ff21[man:0]},1,outba);
 enc_n #(enc_len) u6(outcalcab,temp,outab[man:0]);
 enc_n #(enc_len) u7(outcalcba,temp,outba[man:0]);
 cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
@@ -103,7 +103,7 @@ begin
     begin
         if (ff21[N-1] == ff22[N-1])
         begin
-            ff3 = {ff21[N-1],ff21[exp:man+1] + flag1|wi[man+1], wi[man:0]>>1};
+            ff3 = {ff21[N-1],ff21[exp:man+1] + flag1|wi[man+1], wi[man:0]};
             //cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,out[man:0]);
         end
         else
@@ -115,9 +115,9 @@ begin
                     ff3 = {ff22[N-1],ff21[N-2:man+1] - (2**enc_len-outcalcba-9), outba[man:0]<<(2**enc_len-outcalcba-9)};
             else
                 if (flag)
-                    ff3 = {ff21[N-1],ff21[N-2:man+1]-1, outab[man:0]};
+                    ff3 = {ff21[N-1],ff21[N-2:man+1]-1, outab[man:0]<< 1};
                 else
-                    ff3 = {ff22[N-1],ff21[N-2:man+1]-1, outba[man:0]};
+                    ff3 = {ff22[N-1],ff22[N-2:man+1]-1, outba[man:0]<< 1};
         end
     end
 end
