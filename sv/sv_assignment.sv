@@ -81,7 +81,7 @@ begin
         ff12 <= 0;
         ffa <= 0;
         ffb <= 0;
-        ready_st <= 0;
+        ready_st[2] <= '1;
     end
     else if (ready)
     begin

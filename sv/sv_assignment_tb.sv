@@ -20,9 +20,9 @@ begin
 //Test 1 -- reset
 @(posedge ready); // wait for ready
 //Test 2 -- 1.0 + 1.0
-reala = 1.0;
+reala = 1.1;
 ra = $shortrealtobits(reala);
-realb = 1.0;
+realb = 1.5;
 rb = $shortrealtobits(realb);
 a = ra[31:16];
 b = rb[31:16];
