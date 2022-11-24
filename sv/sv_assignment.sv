@@ -61,6 +61,10 @@ logic [man+1:0] outba;
 logic [enc_len-1:0] outcalcab;
 logic [enc_len-1:0] outcalcba;
 logic flag, flag1;
+logic pass;
+logic passnan;
+logic passinf;
+logic pass0;
 
 cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1,shft_amtab);
 cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1,shft_amtba);
@@ -84,19 +88,62 @@ begin
     end
     else if (ready)
     begin
-        // Stage 1
-        ff11[N-1:man+1] <= {a[N-1], b[exp:man+1]};
-        ff11[man:0] <= {1'b1,a[man:0]}>>shft_amtba;
-        ff12[N-1:man+1] <= {b[N-1], a[exp:man+1]};
-        ff12[man:0] <= {1'b1,b[man:0]}>>shft_amtab;
-        ffa <= a;
-        ffb <= b;
-        ready_st[0] <= 1;
+		// Stage 1
+		if (pass == 1)
+        begin
+			ready_st[2] <= 1;
+			if (passnan)
+				ff3 <= '1;
+			else if (passinf)
+			begin
+				if (a[exp:man+1] == '1 & b[exp:man+1] == '1)
+					ff3 <= '1;
+				else
+					ff3 <= (a[exp:man+1] == '1)? a : b;
+			end
+			else if (pass0)
+			begin
+				if (a[exp:man+1] == 0 & b[exp:man+1] == 0)
+					ff3 <= (a[N-1] == 0)? '0 : ( (a[N-1] == b[N-1]) ? {1'b1, {(N-1){1'b0}}}: '0 );
+				else
+					ff3 <= (a[exp:man+1] == 0)? b : a;
+			end
+		end
+		else
+		begin
+			ff11[N-1:man+1] <= {a[N-1], b[exp:man+1]};
+			ff11[man:0] <= {1'b1,a[man:0]}>>shft_amtba;
+			ff12[N-1:man+1] <= {b[N-1], a[exp:man+1]};
+			ff12[man:0] <= {1'b1,b[man:0]}>>shft_amtab;
+			ffa <= a;
+			ffb <= b;
+			ready_st[0] <= 1;
+		end
     end
 end
 
 always_comb
 begin
+	  pass = 0;
+	  passnan = 0;
+	  passinf = 0;
+	  pass0 = 0;
+	  if (a[N-2:0] == 0 | b[N-2:0] == 0)
+	  begin
+			pass = 1;
+			pass0 = 1;
+	  end
+	  else if (a[exp:man+1] == '1 | b[exp:man+1] == '1)
+	  begin
+			pass = 1;
+			if( a[man:0] == '0 & b[man:0] == '0)
+			begin
+				passinf = 1;
+			end
+				passnan = 1;
+	  end
+	  else
+	  begin
 	  flag = 0;
 	  flag1 = 0;
 	  if (ffa[exp:man+1] == ffb[exp:man+1])
@@ -115,6 +162,7 @@ begin
 	  end
 	  if (ready_st[2])
 		assign sum = ff3;
+	  end
 end
 
 always_ff @(posedge clock, negedge nreset)
@@ -127,7 +175,7 @@ begin
         ready_st[2] <= '1;
 		ready_st[1] <= '0;
     end
-    else
+    else if ( pass == 0)
     begin
         //Stage 2
         ready_st[1] <= ready_st[0];
