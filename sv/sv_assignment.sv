@@ -70,11 +70,11 @@ enc_n #(enc_len) u6(outcalcab,outab[man:0]);
 enc_n #(enc_len) u7(outcalcba,outba[man:0]);
 cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
 
-assign sum = ff3;
 assign ready = ready_st[2];
 
 always_ff @(posedge clock, negedge nreset)
 begin
+	ready_st[0] <= 0;
     if (!nreset)
     begin
         ff11 <= 0;
@@ -93,8 +93,6 @@ begin
         ffb <= b;
         ready_st[0] <= 1;
     end
-    else
-        ready_st[0] <= 0;
 end
 
 always_comb
@@ -115,6 +113,8 @@ begin
 			flag = 0;
 			flag1 = 0;
 	  end
+	  if (ready_st[2])
+		assign sum = ff3;
 end
 
 always_ff @(posedge clock, negedge nreset)
@@ -125,6 +125,7 @@ begin
         ff22 <= 0;
         ff3 <= 0;
         ready_st[2] <= '1;
+		ready_st[1] <= '0;
     end
     else
     begin
@@ -151,12 +152,12 @@ begin
         if ( ff21[N-2:0] == ff22[N-2:0] )
         begin
             if (ff21[N-1] == ff22[N-1])
-				begin
+			begin
                 ff3[N-1] <= ff21[N-1];
-					 ff3[exp:man+1] <= ff21[exp:man+1] + 1;
-					 ff3[man:0] <= ff21[man:0];
+				ff3[exp:man+1] <= ff21[exp:man+1] + 1;
+				ff3[man:0] <= ff21[man:0];
             end
-				else
+			else
                 ff3 <= '0;
         end
         else
@@ -170,30 +171,30 @@ begin
             begin
                 if (flag1)
                     if (ff21[man:0]>ff22[man:0])
-						  begin
+					begin
                         ff3[N-1] <= ff21[N-1];
-								ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcab-1);
-								ff3[man:0] <= outab[man:0]<<(2**enc_len-outcalcab-1);
+						ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcab-1);
+						ff3[man:0] <= outab[man:0]<<(2**enc_len-outcalcab-1);
                     end
-						  else
-						  begin
+					else
+					begin
                         ff3[N-1] <= ff22[N-1];
-								ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcba-1);
-								ff3[man:0] <= outba[man:0]<<(2**enc_len-outcalcba-1);
-					     end
-					 else
-                    if (flag)
-						  begin
-                        ff3[N-1] <= ff21[N-1];
-								ff3[N-2:man+1] <= ff21[N-2:man+1]-1;
-								ff3[man:0] <= outab[man:0];
-                    end
-						  else
-						  begin
-                        ff3[N-1] <= ff22[N-1];
-								ff3[N-2:man+1] <= ff21[N-2:man+1]-1;
-								ff3[man:0] <= outba[man:0];
-						  end
+						ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcba-1);
+						ff3[man:0] <= outba[man:0]<<(2**enc_len-outcalcba-1);
+					end
+				else
+					if (flag)
+					begin
+						ff3[N-1] <= ff21[N-1];
+						ff3[N-2:man+1] <= ff21[N-2:man+1]-1;
+						ff3[man:0] <= outab[man:0];
+					end
+					else
+					begin
+						ff3[N-1] <= ff22[N-1];
+						ff3[N-2:man+1] <= ff21[N-2:man+1]-1;
+						ff3[man:0] <= outba[man:0];
+					end
             end
         end
     end
