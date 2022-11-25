@@ -35,17 +35,105 @@ end
 
 endmodule
 
-module fadd #(parameter N = 16)
+module cseladd #(parameter N = 32)
+		(input logic [N-1:0] a,b,
+		input logic cin,
+		output logic [N:0] out);
+
+logic [N-1:0] carry1;
+logic [N-1:0] sum1;
+logic [N-1:0] carry0;
+logic [N-1:0] sum0;
+logic [N:0] carry;
+
+always_comb
+begin
+    carry[0] = cin;
+    
+    for(int i = 0; i < N ; i++)
+    begin
+        sum0[i] = a[i] ^ b[i];
+        carry0[i] = a[i] & b[i];
+        sum1[i] = a[i] ^ b[i] ^ 1;
+        carry1[i] = (a[i] & b[i]) + (a[i] ^ b[i]);
+    end
+
+    for(int i = 0; i < N ; i++)
+    begin
+        out[i] = carry[i] ? sum1[i] : sum0[i];
+        carry[i+1] = carry[i] ? carry1[i] : carry0[i];
+    end
+    out[N] = carry[N];
+end
+
+endmodule
+
+module bfloat16_adder(input logic [15:0] a, b,
+                    input logic clock, nreset,
+                    output logic [15:0] sum,
+                    output logic ready);
+
+enum {input1, input2, running} state, next_state;
+
+logic [31:0] inp1, inp2, sum32;
+logic start;
+
+always_ff @(posedge clock, negedge nreset)
+begin
+    if (!nreset)
+    begin
+        state <= running;
+        inp1 <= 0;
+        inp2 <= 0;
+    end
+    else
+    begin
+        state <= next_state;
+        if (state == running & ready)
+            inp1 <= {a,16'b0};
+        else if(state == input1)
+            inp2 <= {b,16'b0};
+    end
+end
+
+always_comb
+begin
+    start = 0;
+    next_state = state;
+    case (state)
+        input1: begin
+            next_state = input2;
+        end
+        input2: begin
+            start = 1;
+            next_state = running;
+        end
+        running: begin
+            if (ready)
+            begin
+                next_state = input1;
+                start = 0;
+            end
+        end
+    endcase
+end
+
+assign sum = sum32[31:16];
+
+fadd u1(inp1, inp2, clock , nreset, start, sum32, ready);
+
+endmodule
+
+module fadd #(parameter N = 32)
             (input logic [N-1:0] a, b,
-            input logic clock, nreset,
+            input logic clock, nreset, start,
             output logic [N-1:0] sum,
             output logic ready);
 
-
-parameter exp = 14;
-parameter man = 6;
+parameter exp = 30;
+parameter man = 22;
 parameter exp_len = 8;
-parameter enc_len = 3;
+parameter enc_len = 5;
 
 logic [2:0] ready_st;
 
@@ -87,7 +175,7 @@ begin
         ffb <= 0;
         ready_st[0] <= 0;
     end
-    else if (ready)
+    else if (start)
     begin
 		ready_st[0] <= 1;
 		// Stage 1
@@ -111,8 +199,6 @@ begin
  	  passnan = 0;
   	  passinf = 0;
 	  pass0 = 0;
-	  flag1 = 0;
-	  flag = 0;
 	  if (a[N-2:0] == 0 | b[N-2:0] == 0)
 	  begin
 			pass = 1;
@@ -126,40 +212,28 @@ begin
          else
 				passnan = 1;
 	  end
-	  else
-	  begin
-		  if (ffa[exp:man+1] == ffb[exp:man+1])
-		  begin
-				flag1 = 1;
-				flag = 0;
-		  end
-		  else if ($signed(ffa[exp:man+1]-(2**(exp_len-1)-1)) > $signed(ffb[exp:man+1]-(2**(exp_len-1)-1)))
-		  begin
-				flag = 1;
-				flag1 = 0;
-		  end
-		  else
-		  begin
-				flag = 0;
-				flag1 = 0;
-		  end
-	  end
+      else if ($signed(shft_amtab) > 7 | $signed(shft_amtba) > 7)
+      begin
+            pass = 1;
+      end
 end
 
 always_ff @(posedge clock, negedge nreset)
 begin
-    ready_st[1] <= ready_st[0];
-    ready_st[2] <= ready_st[1];
     if (!nreset)
     begin
         ff21 <= 0;
         ff22 <= 0;
         ff3 <= 0;
+        flag1 <= 0;
+	    flag <= 0;
         ready_st[2] <= '0;
 		ready_st[1] <= '1;
     end
     else if (pass == 1)
     begin
+        ready_st[1] <= ready_st[0];
+        ready_st[2] <= ready_st[1];
         if (passnan)
             ff3 <= '1;
         else if (passinf)
@@ -176,73 +250,88 @@ begin
             else
                 ff3 <= (a[exp:man+1] == 0)? b : a;
         end
+        else
+        begin
+            if ($signed(shft_amtab) > 7)
+                ff3 <= a;
+            else
+                ff3 <= b;
+        end
     end
     else
     begin
+        ready_st[1] <= ready_st[0];
+        ready_st[2] <= ready_st[1];
         //Stage 2
         if (ffa[exp:man+1] == ffb[exp:man+1])
         begin
             ff21 <= ffa;
             ff22 <= ffb;
+            flag1 <= 1;
+			flag <= 0;
         end
         else if ($signed(ffa[exp:man+1]-(2**(exp_len-1)-1)) > $signed(ffb[exp:man+1]-(2**(exp_len-1)-1)))
         begin
             ff21 <= ffa;
             ff22 <= ff12;
+            flag <= 1;
+			flag1 <= 0;
         end
         else
         begin
             ff21 <= ff11;
             ff22 <= ffb;
+            flag <= 0;
+			flag1 <= 0;
         end
         
         //Stage 3
         if ( ff21[N-2:0] == ff22[N-2:0] )
         begin
             if (ff21[N-1] == ff22[N-1])
-			begin
+            begin
                 ff3[N-1] <= ff21[N-1];
-				ff3[exp:man+1] <= ff21[exp:man+1] + 1;
-				ff3[man:0] <= ff21[man:0];
+                ff3[exp:man+1] <= ff21[exp:man+1] + 1;
+                ff3[man:0] <= ff21[man:0];
             end
-			else
+            else
                 ff3 <= '0;
         end
         else
         begin
             if (ff21[N-1] == ff22[N-1])
             begin
-                ff3 <= {ff21[N-1],ff21[exp:man+1] + flag1|wi[man+1], wi[man:0]>>1};
+                ff3 <= {ff21[N-1],ff21[exp:man+1] + flag1|wi[man+1], wi[man:0]>>(wi[man+1]|flag1)};
                 //cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,out[man:0]);
             end
             else
             begin
                 if (flag1)
                     if (ff21[man:0]>ff22[man:0])
-					begin
+                    begin
                         ff3[N-1] <= ff21[N-1];
-						ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcab-1);
-						ff3[man:0] <= outab[man:0]<<(2**enc_len-outcalcab-1);
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcab-9);
+                        ff3[man:0] <= outab[man:0]<<(2**enc_len-outcalcab-9);
                     end
-					else
-					begin
+                    else
+                    begin
                         ff3[N-1] <= ff22[N-1];
-						ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcba-1);
-						ff3[man:0] <= outba[man:0]<<(2**enc_len-outcalcba-1);
-					end
-				else
-					if (flag)
-					begin
-						ff3[N-1] <= ff21[N-1];
-						ff3[N-2:man+1] <= ff21[N-2:man+1]-1;
-						ff3[man:0] <= outab[man:0];
-					end
-					else
-					begin
-						ff3[N-1] <= ff22[N-1];
-						ff3[N-2:man+1] <= ff21[N-2:man+1]-1;
-						ff3[man:0] <= outba[man:0];
-					end
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcba-9);
+                        ff3[man:0] <= outba[man:0]<<(2**enc_len-outcalcba-9);
+                    end
+                else
+                    if (flag)
+                    begin
+                        ff3[N-1] <= ff21[N-1];
+                        ff3[N-2:man+1] <= ff21[N-2:man+1]-outab[man+1];
+                        ff3[man:0] <= outab[man:0];
+                    end
+                    else
+                    begin
+                        ff3[N-1] <= ff22[N-1];
+                        ff3[N-2:man+1] <= ff21[N-2:man+1]-outab[man+1];
+                        ff3[man:0] <= outba[man:0];
+                    end
             end
         end
     end
