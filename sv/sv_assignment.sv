@@ -5,7 +5,7 @@
 
 /*
 Steps in addition:
-=== Check for zeros and equality ===
+=== Check for special cases and equality ===
 1. Check for the number with larger exponent
 2. Match the exponent, shift the smaller number
 3. Check the sign of the number
@@ -79,13 +79,13 @@ assign sum = ff3;
 
 always_ff @(posedge clock, negedge nreset)
 begin
-	ready_st[0] <= 0;
     if (!nreset)
     begin
         ff11 <= 0;
         ff12 <= 0;
         ffa <= 0;
         ffb <= 0;
+        ready_st[0] <= 0;
     end
     else if (ready)
     begin
@@ -101,14 +101,18 @@ begin
 			ffb <= b;
 		end
     end
+    else
+        ready_st[0] <= 0;
 end
 
 always_comb
 begin
 	  pass = 0;
-	  passnan = 0;
-	  passinf = 0;
+ 	  passnan = 0;
+  	  passinf = 0;
 	  pass0 = 0;
+	  flag1 = 0;
+	  flag = 0;
 	  if (a[N-2:0] == 0 | b[N-2:0] == 0)
 	  begin
 			pass = 1;
@@ -119,27 +123,26 @@ begin
 			pass = 1;
 			if( (a[exp:man+1] == '1 & a[man:0] == '0) | (b[exp:man+1] == '1 & b[man:0] == '0) )
 				passinf = 1;
-            else
+         else
 				passnan = 1;
 	  end
 	  else
 	  begin
-	  flag = 0;
-	  flag1 = 0;
-	  if (ffa[exp:man+1] == ffb[exp:man+1])
-	  begin
-			flag1 = 1;
-	  end
-	  else if ($signed(ffa[exp:man+1]-(2**(exp_len-1)-1)) > $signed(ffb[exp:man+1]-(2**(exp_len-1)-1)))
-	  begin
-			flag = 1;
-			flag1 = 0;
-	  end
-	  else
-	  begin
-			flag = 0;
-			flag1 = 0;
-	  end
+		  if (ffa[exp:man+1] == ffb[exp:man+1])
+		  begin
+				flag1 = 1;
+				flag = 0;
+		  end
+		  else if ($signed(ffa[exp:man+1]-(2**(exp_len-1)-1)) > $signed(ffb[exp:man+1]-(2**(exp_len-1)-1)))
+		  begin
+				flag = 1;
+				flag1 = 0;
+		  end
+		  else
+		  begin
+				flag = 0;
+				flag1 = 0;
+		  end
 	  end
 end
 
