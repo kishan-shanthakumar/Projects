@@ -75,6 +75,7 @@ enc_n #(enc_len) u7(outcalcba,outba[man:0]);
 cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
 
 assign ready = ready_st[2];
+assign sum = ff3;
 
 always_ff @(posedge clock, negedge nreset)
 begin
@@ -88,28 +89,9 @@ begin
     end
     else if (ready)
     begin
+		ready_st[0] <= 1;
 		// Stage 1
-		if (pass == 1)
-        begin
-			ready_st[2] <= 1;
-			if (passnan)
-				ff3 <= '1;
-			else if (passinf)
-			begin
-				if (a[exp:man+1] == '1 & b[exp:man+1] == '1)
-					ff3 <= '1;
-				else
-					ff3 <= (a[exp:man+1] == '1)? a : b;
-			end
-			else if (pass0)
-			begin
-				if (a[exp:man+1] == 0 & b[exp:man+1] == 0)
-					ff3 <= (a[N-1] == 0)? '0 : ( (a[N-1] == b[N-1]) ? {1'b1, {(N-1){1'b0}}}: '0 );
-				else
-					ff3 <= (a[exp:man+1] == 0)? b : a;
-			end
-		end
-		else
+		if (pass == 0)
 		begin
 			ff11[N-1:man+1] <= {a[N-1], b[exp:man+1]};
 			ff11[man:0] <= {1'b1,a[man:0]}>>shft_amtba;
@@ -117,7 +99,6 @@ begin
 			ff12[man:0] <= {1'b1,b[man:0]}>>shft_amtab;
 			ffa <= a;
 			ffb <= b;
-			ready_st[0] <= 1;
 		end
     end
 end
@@ -136,10 +117,9 @@ begin
 	  else if (a[exp:man+1] == '1 | b[exp:man+1] == '1)
 	  begin
 			pass = 1;
-			if( a[man:0] == '0 & b[man:0] == '0)
-			begin
+			if( (a[exp:man+1] == '1 & a[man:0] == '0) | (b[exp:man+1] == '1 & b[man:0] == '0) )
 				passinf = 1;
-			end
+            else
 				passnan = 1;
 	  end
 	  else
@@ -160,25 +140,43 @@ begin
 			flag = 0;
 			flag1 = 0;
 	  end
-	  if (ready_st[2])
-		assign sum = ff3;
 	  end
 end
 
 always_ff @(posedge clock, negedge nreset)
 begin
+    ready_st[1] <= ready_st[0];
+    ready_st[2] <= ready_st[1];
     if (!nreset)
     begin
         ff21 <= 0;
         ff22 <= 0;
         ff3 <= 0;
-        ready_st[2] <= '1;
-		ready_st[1] <= '0;
+        ready_st[2] <= '0;
+		ready_st[1] <= '1;
     end
-    else if ( pass == 0)
+    else if (pass == 1)
+    begin
+        if (passnan)
+            ff3 <= '1;
+        else if (passinf)
+        begin
+            if (a[exp:man+1] == '1 & b[exp:man+1] == '1 & a[N-1] != b[N-1])
+                ff3 <= '1;
+            else
+                ff3 <= (a[exp:man+1] == '1)? a : b;
+        end
+        else if (pass0)
+        begin
+            if (a[exp:man+1] == 0 & b[exp:man+1] == 0)
+                ff3 <= (a[N-1] == 0)? '0 : ( (a[N-1] == b[N-1]) ? {1'b1, {(N-1){1'b0}}}: '0 );
+            else
+                ff3 <= (a[exp:man+1] == 0)? b : a;
+        end
+    end
+    else
     begin
         //Stage 2
-        ready_st[1] <= ready_st[0];
         if (ffa[exp:man+1] == ffb[exp:man+1])
         begin
             ff21 <= ffa;
@@ -196,7 +194,6 @@ begin
         end
         
         //Stage 3
-        ready_st[2] <= ready_st[1];
         if ( ff21[N-2:0] == ff22[N-2:0] )
         begin
             if (ff21[N-1] == ff22[N-1])
