@@ -5,7 +5,7 @@ logic [15:0] a, b;
 logic clock, nreset;
 shortreal reala, realb, realsum;
 logic [31:0] ra, rb;
-fadd a1 (.*);
+bfloat16_adder a1 (.*);
 initial
 begin
 nreset = '1;
@@ -134,6 +134,96 @@ reala = 0.0;
 ra = 32'h80000000;
 realb = -0.0;
 rb = 32'h80000000;
+a = ra[31:16];
+b = rb[31:16];
+@(posedge ready);
+realsum = $bitstoshortreal({sum, {16{1'b0}}});
+$display("Test 2 %f\n", realsum);
+
+reala = 0.0;
+ra = $shortrealtobits(reala);
+realb = 0.0;
+rb = $shortrealtobits(realb);
+a = ra[31:16];
+b = rb[31:16];
+@(posedge ready);
+realsum = $bitstoshortreal({sum, {16{1'b0}}});
+$display("Test 2 %f\n", realsum);
+
+reala = 1.0;
+ra = $shortrealtobits(reala);
+realb = 1.0;
+rb = $shortrealtobits(realb);
+a = ra[31:16];
+b = rb[31:16];
+@(posedge ready);
+realsum = $bitstoshortreal({sum, {16{1'b0}}});
+$display("Test 2 %f\n", realsum);
+
+reala = -1.0;
+ra = $shortrealtobits(reala);
+realb = 1.0;
+rb = $shortrealtobits(realb);
+a = ra[31:16];
+b = rb[31:16];
+@(posedge ready);
+realsum = $bitstoshortreal({sum, {16{1'b0}}});
+$display("Test 2 %f\n", realsum);
+
+reala = -0.4550781;
+ra = $shortrealtobits(reala);
+realb = 3.921875;
+rb = $shortrealtobits(realb);
+a = ra[31:16];
+b = rb[31:16];
+@(posedge ready);
+realsum = $bitstoshortreal({sum, {16{1'b0}}});
+$display("Test 2 %f\n", realsum);
+
+reala = -0.001876831;
+ra = $shortrealtobits(reala);
+realb = -1.25;
+rb = $shortrealtobits(realb);
+a = ra[31:16];
+b = rb[31:16];
+@(posedge ready);
+realsum = $bitstoshortreal({sum, {16{1'b0}}});
+$display("Test 2 %f\n", realsum);
+
+reala = 1.790181e+17;
+ra = $shortrealtobits(reala);
+realb = -2.56e+05;
+rb = $shortrealtobits(realb);
+a = ra[31:16];
+b = rb[31:16];
+@(posedge ready);
+realsum = $bitstoshortreal({sum, {16{1'b0}}});
+$display("Test 2 %f\n", realsum);
+
+reala = 1.0;
+ra = $shortrealtobits(reala);
+realb = 0.0;
+rb = $shortrealtobits(realb);
+a = ra[31:16];
+b = rb[31:16];
+@(posedge ready);
+realsum = $bitstoshortreal({sum, {16{1'b0}}});
+$display("Test 2 %f\n", realsum);
+
+reala = 1;
+ra = $shortrealtobits(reala);
+realb = 0.0;
+rb = $shortrealtobits(realb);
+a = ra[31:16];
+b = rb[31:16];
+@(posedge ready);
+realsum = $bitstoshortreal({sum, {16{1'b0}}});
+$display("Test 2 %f\n", realsum);
+
+reala = 1.0;
+ra = $shortrealtobits(reala);
+realb = -0.0;
+rb = $shortrealtobits(realb);
 a = ra[31:16];
 b = rb[31:16];
 @(posedge ready);
