@@ -161,13 +161,13 @@ logic passnan;
 logic passinf;
 logic pass0;
 
-cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1,shft_amtab);
-cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1,shft_amtba);
-cseladd #(man+2) u4({1'b1,ff21[man:0]},{flag1,~ff22[man:0]},1,outab);
-cseladd #(man+2) u5({1'b1,ff22[man:0]},{flag1,~ff21[man:0]},1,outba);
+cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1'b1,shft_amtab);
+cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1'b1,shft_amtba);
+cseladd #(man+2) u4({1'b1,ff21[man:0]},{flag1,~ff22[man:0]},1'b1,outab);
+cseladd #(man+2) u5({1'b1,ff22[man:0]},{flag1,~ff21[man:0]},1'b1,outba);
 enc_n u6(outcalcab,outab[man:0]);
 enc_n u7(outcalcba,outba[man:0]);
-cseladd #(man+2) u3(ff21[man:0],ff22[man:0],0,wi);
+cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
 
 assign ready = ready_st[2];
 assign sum = ff3;
