@@ -51,11 +51,10 @@ logic [N-1:0] carry1;
 logic [N-1:0] sum1;
 logic [N-1:0] carry0;
 logic [N-1:0] sum0;
-logic [N:0] carry;
+logic [N:1] carry;
 
 always_comb
 begin
-    carry[0] = cin;
     
     for(int i = 0; i < N ; i++)
     begin
@@ -67,8 +66,16 @@ begin
 
     for(int i = 0; i < N ; i++)
     begin
-        out[i] = carry[i] ? sum1[i] : sum0[i];
-        carry[i+1] = carry[i] ? carry1[i] : carry0[i];
+        if ( i == 0)
+        begin
+            out[i] = cin ? sum1[i] : sum0[i];
+            carry[i+1] = cin ? carry1[i] : carry0[i];
+        end
+        else
+        begin
+            out[i] = carry[i] ? sum1[i] : sum0[i];
+            carry[i+1] = carry[i] ? carry1[i] : carry0[i];
+        end
     end
     out[N] = carry[N];
 end
@@ -160,11 +167,12 @@ logic pass;
 logic passnan;
 logic passinf;
 logic pass0;
+wire temp;
 
-cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1'b1,shft_amtab);
-cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1'b1,shft_amtba);
-cseladd #(man+2) u4({1'b1,ff21[man:0]},{flag1,~ff22[man:0]},1'b1,outab);
-cseladd #(man+2) u5({1'b1,ff22[man:0]},{flag1,~ff21[man:0]},1'b1,outba);
+cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1'b1,{temp,shft_amtab});
+cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1'b1,{temp,shft_amtba});
+cseladd #(man+2) u4({1'b1,ff21[man:0]},{flag1,~ff22[man:0]},1'b1,{temp,outab});
+cseladd #(man+2) u5({1'b1,ff22[man:0]},{flag1,~ff21[man:0]},1'b1,{temp,outba});
 enc_n u6(outcalcab,outab[man:0]);
 enc_n u7(outcalcba,outba[man:0]);
 cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
@@ -309,7 +317,7 @@ begin
             if (ff21[N-1] == ff22[N-1])
             begin
                 ff3[N-1] <= ff21[N-1];
-                ff3[exp:man+1] <= ff21[exp:man+1] + flag1|wi[man+1];
+                ff3[exp:man+1] <= ff21[exp:man+1] + {7'b0,flag1} | {7'b0,wi[man+1]};
                 ff3[man:0] <= wi[man:0]>>(wi[man+1]|flag1);
                 //cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,out[man:0]);
             end
@@ -319,26 +327,26 @@ begin
                     if (ff21[man:0]>ff22[man:0])
                     begin
                         ff3[N-1] <= ff21[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1] - outcalcab;
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - {3'b0,outcalcab};
                         ff3[man:0] <= outab[man:0]<<outcalcab;
                     end
                     else
                     begin
                         ff3[N-1] <= ff22[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1] - outcalcba;
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - {3'b0,outcalcba};
                         ff3[man:0] <= outba[man:0]<<outcalcba;
                     end
                 else
                     if (flag)
                     begin
                         ff3[N-1] <= ff21[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1]-outab[man+1];
+                        ff3[N-2:man+1] <= ff21[N-2:man+1]-{7'b0,outab[man+1]};
                         ff3[man:0] <= outab[man:0];
                     end
                     else
                     begin
                         ff3[N-1] <= ff22[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1]-outba[man+1];
+                        ff3[N-2:man+1] <= ff21[N-2:man+1]-{7'b0,outba[man+1]};
                         ff3[man:0] <= outba[man:0];
                     end
             end
