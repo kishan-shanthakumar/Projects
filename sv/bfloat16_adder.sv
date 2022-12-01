@@ -18,17 +18,24 @@ Stage 2: Using shifted valued if necessary
 Stage 3: Calulating final value
 */
 
-module enc_n #(parameter N = 5)
-					(output logic [N-1:0] out,
-					input logic [2**N-1:0] inp);
+function [22:0] trunc_24_to_23(input [23:0] val32);
+  trunc_24_to_23 = val32[22:0];
+endfunction
+
+function [4:0] trunc_32_to_5(input [31:0] val32);
+  trunc_32_to_5 = val32[4:0];
+endfunction
+
+module enc_n (output logic [4:0] out,
+                input logic [22:0] inp);
 
 always_comb
 begin
-	out = 0;
-	for (int i = 2**N-1; i >= 0; i--)
+	out = 5'b0;
+	for (int i = 22; i >= 0; i--)
 		if (inp[i] == 1)
 		begin
-			out = i;
+			out = trunc_32_to_5(i);
 			break;
 		end
 end
@@ -37,31 +44,38 @@ endmodule
 
 module cseladd #(parameter N = 32)
 		(input logic [N-1:0] a,b,
-		input logic cin,
+        input cin,
 		output logic [N:0] out);
 
 logic [N-1:0] carry1;
 logic [N-1:0] sum1;
 logic [N-1:0] carry0;
 logic [N-1:0] sum0;
-logic [N:0] carry;
+logic [N:1] carry;
 
 always_comb
 begin
-    carry[0] = cin;
     
     for(int i = 0; i < N ; i++)
     begin
         sum0[i] = a[i] ^ b[i];
         carry0[i] = a[i] & b[i];
-        sum1[i] = a[i] ^ b[i] ^ 1;
+        sum1[i] = a[i] ^ b[i] ^ 1'b1;
         carry1[i] = (a[i] & b[i]) + (a[i] ^ b[i]);
     end
 
     for(int i = 0; i < N ; i++)
     begin
-        out[i] = carry[i] ? sum1[i] : sum0[i];
-        carry[i+1] = carry[i] ? carry1[i] : carry0[i];
+        if ( i == 0)
+        begin
+            out[i] = cin ? sum1[i] : sum0[i];
+            carry[i+1] = cin ? carry1[i] : carry0[i];
+        end
+        else
+        begin
+            out[i] = carry[i] ? sum1[i] : sum0[i];
+            carry[i+1] = carry[i] ? carry1[i] : carry0[i];
+        end
     end
     out[N] = carry[N];
 end
@@ -153,13 +167,14 @@ logic pass;
 logic passnan;
 logic passinf;
 logic pass0;
+wire temp;
 
-cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1,shft_amtab);
-cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1,shft_amtba);
-cseladd #(man+1) u4({1'b1,ff21[man:0]},{flag1,~ff22[man:0]},1,outab);
-cseladd #(man+1) u5({1'b1,ff22[man:0]},{flag1,~ff21[man:0]},1,outba);
-enc_n #(enc_len) u6(outcalcab,outab[man:0]);
-enc_n #(enc_len) u7(outcalcba,outba[man:0]);
+cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1'b1,{temp,shft_amtab});
+cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1'b1,{temp,shft_amtba});
+cseladd #(man+2) u4({1'b1,ff21[man:0]},{flag1,~ff22[man:0]},1'b1,{temp,outab});
+cseladd #(man+2) u5({1'b1,ff22[man:0]},{flag1,~ff21[man:0]},1'b1,{temp,outba});
+enc_n u6(outcalcab,outab[man:0]);
+enc_n u7(outcalcba,outba[man:0]);
 cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
 
 assign ready = ready_st[2];
@@ -182,9 +197,9 @@ begin
 		if (pass == 0)
 		begin
 			ff11[N-1:man+1] <= {a[N-1], b[exp:man+1]};
-			ff11[man:0] <= {1'b1,a[man:0]}>>shft_amtba;
+			ff11[man:0] <= trunc_24_to_23({1'b1,a[man:0]}>>shft_amtba);
 			ff12[N-1:man+1] <= {b[N-1], a[exp:man+1]};
-			ff12[man:0] <= {1'b1,b[man:0]}>>shft_amtab;
+			ff12[man:0] <= trunc_24_to_23({1'b1,b[man:0]}>>shft_amtab);
 			ffa <= a;
 			ffb <= b;
 		end
@@ -291,7 +306,7 @@ begin
             if (ff21[N-1] == ff22[N-1])
             begin
                 ff3[N-1] <= ff21[N-1];
-                ff3[exp:man+1] <= ff21[exp:man+1] + 1;
+                ff3[exp:man+1] <= ff21[exp:man+1] + 1'b1;
                 ff3[man:0] <= ff21[man:0];
             end
             else
@@ -302,7 +317,7 @@ begin
             if (ff21[N-1] == ff22[N-1])
             begin
                 ff3[N-1] <= ff21[N-1];
-                ff3[exp:man+1] <= ff21[exp:man+1] + flag1|wi[man+1];
+                ff3[exp:man+1] <= ff21[exp:man+1] + {7'b0,flag1} | {7'b0,wi[man+1]};
                 ff3[man:0] <= wi[man:0]>>(wi[man+1]|flag1);
                 //cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,out[man:0]);
             end
@@ -312,26 +327,26 @@ begin
                     if (ff21[man:0]>ff22[man:0])
                     begin
                         ff3[N-1] <= ff21[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcab-9);
-                        ff3[man:0] <= outab[man:0]<<(2**enc_len-outcalcab-9);
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - {3'b0,outcalcab};
+                        ff3[man:0] <= outab[man:0]<<outcalcab;
                     end
                     else
                     begin
                         ff3[N-1] <= ff22[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (2**enc_len-outcalcba-9);
-                        ff3[man:0] <= outba[man:0]<<(2**enc_len-outcalcba-9);
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - {3'b0,outcalcba};
+                        ff3[man:0] <= outba[man:0]<<outcalcba;
                     end
                 else
                     if (flag)
                     begin
                         ff3[N-1] <= ff21[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1]-outab[man+1];
+                        ff3[N-2:man+1] <= ff21[N-2:man+1]-{7'b0,outab[man+1]};
                         ff3[man:0] <= outab[man:0];
                     end
                     else
                     begin
                         ff3[N-1] <= ff22[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1]-outba[man+1];
+                        ff3[N-2:man+1] <= ff21[N-2:man+1]-{7'b0,outba[man+1]};
                         ff3[man:0] <= outba[man:0];
                     end
             end
