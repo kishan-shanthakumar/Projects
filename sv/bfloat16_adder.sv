@@ -99,34 +99,37 @@ begin
         state <= running;
         inp1 <= 0;
         inp2 <= 0;
+        start <= 0;
     end
     else
     begin
         state <= next_state;
-        if (state == running & ready)
+        if (state == input1)
             inp1 <= {a,16'b0};
-        else if(state == input1)
+        else if(state == input2)
+        begin
             inp2 <= {b,16'b0};
+            start <= 1;
+        end
+        else if (state == running)
+            start <= 0;
     end
 end
 
 always_comb
 begin
-    start = 0;
     next_state = state;
     case (state)
         input1: begin
             next_state = input2;
         end
         input2: begin
-            start = 1;
             next_state = running;
         end
         running: begin
             if (ready)
             begin
                 next_state = input1;
-                start = 0;
             end
         end
     endcase
@@ -175,7 +178,7 @@ cseladd #(man+2) u4({1'b1,ff21[man:0]},{flag1,~ff22[man:0]},1'b1,{temp,outab});
 cseladd #(man+2) u5({1'b1,ff22[man:0]},{flag1,~ff21[man:0]},1'b1,{temp,outba});
 enc_n u6(outcalcab,outab[man:0]);
 enc_n u7(outcalcba,outba[man:0]);
-cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
+cseladd #(man+1) u3(ff21[man:0],ff22[man:0],1'b0,wi);
 
 assign ready = ready_st[2];
 assign sum = ff3;
@@ -267,7 +270,7 @@ begin
         end
         else
         begin
-            if ($signed(shft_amtab) > 7)
+            if ($signed(a[exp:man+1]-(2**(exp_len-1)-1)) > $signed(b[exp:man+1]-(2**(exp_len-1)-1)))
                 ff3 <= a;
             else
                 ff3 <= b;
