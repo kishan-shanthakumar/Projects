@@ -40,6 +40,7 @@ begin
         check = pkt1.randomize();
         ra = {pkt1.sign_rand, pkt1.exp_rand, pkt1.man_rand};
         reala = $bitstoshortreal(ra);
+        $display("a is %f", reala);
         a = ra[31:16];
         
         #2 @(posedge clock)
@@ -47,6 +48,7 @@ begin
         check = pkt1.randomize();
         rb = {pkt1.sign_rand, pkt1.exp_rand, pkt1.man_rand};
         realb = $bitstoshortreal(rb);
+        $display("b is %f", realb);
         b = rb[31:16];
     end
 end
