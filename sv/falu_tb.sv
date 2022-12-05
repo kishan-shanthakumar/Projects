@@ -39,7 +39,7 @@ begin
 
         #5
         realout = $bitstoshortreal({out, {16{1'b0}}});
-        realans = (s == 2'b00) ? reala+realb : ( (s == 2'b01) ? reala-realb : ( (s == 2'b10) ? reala*realb : reala/realb) )
+        realans = (s == 2'b00) ? reala+realb : ( (s == 2'b01) ? reala-realb : ( (s == 2'b10) ? reala*realb : reala/realb) );
         $display("Error %f", (((realout-realans)/realans)*100));
     end
 end
