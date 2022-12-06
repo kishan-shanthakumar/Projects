@@ -54,10 +54,10 @@ logic temp;
 
 cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1,shft_amtab);
 cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1,shft_amtba);
-cseladd #(man+1) u4({1,ff21[man:0]},{~flag1,~ff22[man:0]},1,outab);
-cseladd #(man+1) u5({1,ff22[man:0]},{~flag1,~ff21[man:0]},1,outba);
-enc_n #(enc_len) u6(outcalcab,temp,outab[man:0]);
-enc_n #(enc_len) u7(outcalcba,temp,outba[man:0]);
+cseladd #(man+2) u4({1,ff21[man:0]},{~flag1,~ff22[man:0]},1,outab);
+cseladd #(man+2) u5({1,ff22[man:0]},{~flag1,~ff21[man:0]},1,outba);
+enc_n #(enc_len) u6(outcalcab,temp,outab[man+1:0]);
+enc_n #(enc_len) u7(outcalcba,temp,outba[man+1:0]);
 cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
 
 always_comb
@@ -88,12 +88,14 @@ end
 always_comb
 begin
     out = ff3;
-    ff11[N-1:man+1] <= {a[N-1], b[exp:man+1]};
-    ff11[man:0] <= {1'b1,a[man:0]}>>shft_amtba;
-    ff12[N-1:man+1] <= {b[N-1], a[exp:man+1]};
-    ff12[man:0] <= {1'b1,b[man:0]}>>shft_amtab;
-    ffa <= a;
-    ffb <= b;
+    ff11[N-1:man+1] = {a[N-1], b[exp:man+1]};
+    ff11[man:0] = {1'b1,a[man:0]}>>shft_amtba;
+    ff12[N-1:man+1] = {b[N-1], a[exp:man+1]};
+    ff12[man:0] = {1'b1,b[man:0]}>>shft_amtab;
+    ffa = a;
+    ffb = b;
+    flag = 0;
+    flag1 = 0;
     
     //Stage 2
     if (ffa[exp:man+1] == ffb[exp:man+1])
@@ -160,37 +162,46 @@ begin
         begin
             if (ff21[N-1] == ff22[N-1])
             begin
-                ff3[N-1] = ff21[N-1];
-                ff3[exp:man+1] = ff21[exp:man+1] + (flag1 | wi[man+1]);
-                ff3[man:0] = wi[man:0]>>(wi[man+1]|flag1);
+                if (flag1)
+                begin
+                    ff3[N-1] = ff21[N-1];
+                    ff3[exp:man+1] = ff21[exp:man+1] + 1;
+                    ff3[man:0] = wi[man+1:0]>>1;
+                end
+                else
+                begin
+                    ff3[N-1] = ff21[N-1];
+                    ff3[exp:man+1] = ff21[exp:man+1] + wi[man+1];
+                    ff3[man:0] = {!wi[man+1],wi[man:0]}>>wi[man+1];
+                end
             end
             else
             begin
                 if (flag1)
                     if (ff21[man:0]>ff22[man:0])
                     begin
-                        ff3[N-1] <= ff21[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (N-outcalcab-(N-man-1));
-                        ff3[man:0] <= outab[man:0]<<(N-outcalcab-(N-man-1));
+                        ff3[N-1] = ff21[N-1];
+                        ff3[N-2:man+1] = ff21[N-2:man+1] - (N-outcalcab-(N-man-1));
+                        ff3[man:0] = outab[man:0]<<(N-outcalcab-(N-man-1));
                     end
                     else
                     begin
-                        ff3[N-1] <= ff22[N-1];
-                        ff3[N-2:man+1] <= ff22[N-2:man+1] - (N-outcalcba-(N-man-1));
-                        ff3[man:0] <= outba[man:0]<<(N-outcalcba-(N-man-1));
+                        ff3[N-1] = ff22[N-1];
+                        ff3[N-2:man+1] = ff22[N-2:man+1] - (N-outcalcba-(N-man-1));
+                        ff3[man:0] = outba[man:0]<<(N-outcalcba-(N-man-1));
                     end
                 else
                     if (flag)
                     begin
-                        ff3[N-1] <= ff21[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (N-outcalcab-(N-man-1));
-                        ff3[man:0] <= outab[man:0]<<(N-outcalcab-(N-man-1));
+                        ff3[N-1] = ff21[N-1];
+                        ff3[N-2:man+1] = ff21[N-2:man+1] - (N-outcalcab-(N-man-1));
+                        ff3[man:0] = outab[man:0]<<(N-outcalcab-(N-man-1));
                     end
                     else
                     begin
-                        ff3[N-1] <= ff22[N-1];
-                        ff3[N-2:man+1] <= ff22[N-2:man+1] - (N-outcalcba-(N-man-1));
-                        ff3[man:0] <= outba[man:0]<<(N-outcalcba-(N-man-1));
+                        ff3[N-1] = ff22[N-1];
+                        ff3[N-2:man+1] = ff22[N-2:man+1] - (N-outcalcba-(N-man-1));
+                        ff3[man:0] = outba[man:0]<<(N-outcalcba-(N-man-1));
                     end
             end
         end
