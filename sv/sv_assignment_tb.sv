@@ -31,7 +31,7 @@ initial
 begin
     packet pkt1;
     $display("start");
-    for(int i = 0; i < 256; i += 1)
+    for(int i = 0; i < 2048; i += 1)
     begin
         @(posedge ready); // wait for ready
         realsum = $bitstoshortreal({sum, {16{1'b0}}});
@@ -41,9 +41,12 @@ begin
         if ((((realsum-sum1)/sum1)*100) <-1.0 | (((realsum-sum1)/sum1)*100)>1.0)
         begin
             $display("a is %f", reala);
+            $display("%h", a);
             $display("b is %f", realb);
+            $display("%h", b);
             $display("Recieved sum is %f", realsum);
             $display("Expected sum is %f", sum1);
+            $display("%h", sum);
             $display("Error %f", (((realsum-sum1)/sum1)*100));
         end
         
