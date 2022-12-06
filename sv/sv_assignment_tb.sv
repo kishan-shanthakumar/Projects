@@ -13,7 +13,8 @@ logic [15:0] a, b;
 logic clock, nreset;
 shortreal reala, realb;
 real realsum;
-logic [31:0] ra, rb;
+real sum1;
+logic [31:0] ra, rb, sum0;
 int check;
 bfloat16_adder a1 (.*);
 initial
@@ -33,14 +34,23 @@ begin
     begin
         @(posedge ready); // wait for ready
         realsum = $bitstoshortreal({sum, {16{1'b0}}});
-        $display("Error %f", (((realsum-(reala+realb))/(reala+realb))*100));
+        sum0 = $shortrealtobits((reala+realb));
+        sum0 = {sum0[31:16],16'b0};
+        sum1 =$bitstoshortreal(sum0);
+        if ((((realsum-sum1)/sum1)*100) <-1.0 | (((realsum-sum1)/sum1)*100)>1.0)
+        begin
+            $display("a is %f", reala);
+            $display("b is %f", realb);
+            $display("Recieved sum is %f", realsum);
+            $display("Expected sum is %f", sum1);
+            $display("Error %f", (((realsum-sum1)/sum1)*100));
+        end
         
         #2 @(posedge clock)
         pkt1 = new();
         check = pkt1.randomize();
         ra = {pkt1.sign_rand, pkt1.exp_rand, pkt1.man_rand};
         reala = $bitstoshortreal(ra);
-        $display("a is %f", reala);
         a = ra[31:16];
         
         #2 @(posedge clock)
@@ -48,7 +58,6 @@ begin
         check = pkt1.randomize();
         rb = {pkt1.sign_rand, pkt1.exp_rand, pkt1.man_rand};
         realb = $bitstoshortreal(rb);
-        $display("b is %f", realb);
         b = rb[31:16];
     end
 end
