@@ -330,27 +330,27 @@ begin
                     if (ff21[man:0]>ff22[man:0])
                     begin
                         ff3[N-1] <= ff21[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1] - {3'b0,outcalcab};
-                        ff3[man:0] <= outab[man:0]<<outcalcab;
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (N-outcalcab-9);
+                        ff3[man:0] <= outab[man:0]<<(N-outcalcab-10);
                     end
                     else
                     begin
                         ff3[N-1] <= ff22[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1] - {3'b0,outcalcba};
-                        ff3[man:0] <= outba[man:0]<<outcalcba;
+                        ff3[N-2:man+1] <= ff22[N-2:man+1] - (N-outcalcba-9);
+                        ff3[man:0] <= outba[man:0]<<(N-outcalcba-10);
                     end
                 else
                     if (flag)
                     begin
                         ff3[N-1] <= ff21[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1]-{7'b0,outab[man+1]};
-                        ff3[man:0] <= outab[man:0];
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (N-outcalcab-9);
+                        ff3[man:0] <= outab[man:0]<<(N-outcalcab-10);
                     end
                     else
                     begin
                         ff3[N-1] <= ff22[N-1];
-                        ff3[N-2:man+1] <= ff21[N-2:man+1]-{7'b0,outba[man+1]};
-                        ff3[man:0] <= outba[man:0];
+                        ff3[N-2:man+1] <= ff22[N-2:man+1] - (N-outcalcba-9);
+                        ff3[man:0] <= outba[man:0]<<(N-outcalcba-10);
                     end
             end
         end
