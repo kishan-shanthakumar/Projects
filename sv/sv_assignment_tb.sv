@@ -30,6 +30,7 @@ end
 initial
 begin
     packet pkt1;
+    $display("start");
     for(int i = 0; i < 256; i += 1)
     begin
         @(posedge ready); // wait for ready
@@ -60,6 +61,7 @@ begin
         realb = $bitstoshortreal(rb);
         b = rb[31:16];
     end
+    $display("end");
 end
 endmodule
 
