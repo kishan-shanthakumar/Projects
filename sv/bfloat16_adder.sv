@@ -319,10 +319,18 @@ begin
         begin
             if (ff21[N-1] == ff22[N-1])
             begin
-                ff3[N-1] <= ff21[N-1];
-                ff3[exp:man+1] <= ff21[exp:man+1] + {7'b0,flag1} | {7'b0,wi[man+1]};
-                ff3[man:0] <= wi[man:0]>>(wi[man+1]|flag1);
-                //cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,out[man:0]);
+                if (flag1)
+                begin
+                    ff3[N-1] <= ff21[N-1];
+                    ff3[exp:man+1] <= ff21[exp:man+1] + 1;
+                    ff3[man:0] <= wi[man+1:0]>>1;
+                end
+                else
+                begin
+                    ff3[N-1] <= ff21[N-1];
+                    ff3[exp:man+1] <= ff21[exp:man+1] + wi[man+1];
+                    ff3[man:0] <= {!wi[man+1],wi[man:0]}>>wi[man+1];
+                end
             end
             else
             begin
