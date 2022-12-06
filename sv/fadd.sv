@@ -169,28 +169,28 @@ begin
                 if (flag1)
                     if (ff21[man:0]>ff22[man:0])
                     begin
-                        ff3[N-1] = ff21[N-1];
-                        ff3[N-2:man+1] = ff21[N-2:man+1] - outcalcab;
-                        ff3[man:0] = outab[man:0]<<outcalcab;
+                        ff3[N-1] <= ff21[N-1];
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (N-outcalcab-(N-man-1));
+                        ff3[man:0] <= outab[man:0]<<(N-outcalcab-(N-man-1));
                     end
                     else
                     begin
-                        ff3[N-1] = ff22[N-1];
-                        ff3[N-2:man+1] = ff21[N-2:man+1] - outcalcba;
-                        ff3[man:0] = outba[man:0]<<outcalcba;
+                        ff3[N-1] <= ff22[N-1];
+                        ff3[N-2:man+1] <= ff22[N-2:man+1] - (N-outcalcba-(N-man-1));
+                        ff3[man:0] <= outba[man:0]<<(N-outcalcba-(N-man-1));
                     end
                 else
                     if (flag)
                     begin
-                        ff3[N-1] = ff21[N-1];
-                        ff3[N-2:man+1] = ff21[N-2:man+1]-outab[man+1];
-                        ff3[man:0] = outab[man:0];
+                        ff3[N-1] <= ff21[N-1];
+                        ff3[N-2:man+1] <= ff21[N-2:man+1] - (N-outcalcab-(N-man-1));
+                        ff3[man:0] <= outab[man:0]<<(N-outcalcab-(N-man-1));
                     end
                     else
                     begin
-                        ff3[N-1] = ff22[N-1];
-                        ff3[N-2:man+1] = ff21[N-2:man+1]-outba[man+1];
-                        ff3[man:0] = outba[man:0];
+                        ff3[N-1] <= ff22[N-1];
+                        ff3[N-2:man+1] <= ff22[N-2:man+1] - (N-outcalcba-(N-man-1));
+                        ff3[man:0] <= outba[man:0]<<(N-outcalcba-(N-man-1));
                     end
             end
         end
