@@ -40,8 +40,25 @@ enc_n #(enc_len+1) u4(exp_enc, temp, man_mul);
 always_comb
 begin
     out[N-1] = a[N-1] ^ b[N-1];
-    out[man:0] = man_mul[exp_enc-1-:23];
-    out[exp:man+1] = exp_calc1;// - ((man+2)*2 - exp_enc);
+    if (a[exp:man+1] == '1 | b[exp:man+1] == '1)
+        if (a[man:0] > 0 | b[man:0] > 0)
+            out[exp:0] = '1;
+        else
+            out[exp:0] = {{exp{1'b1}},{man{1'b0}}};
+    else if (a[exp:0] == 0| b[exp:0] == 0)
+        out[exp:0] = (a[exp:0] == 0) ? b[exp:0] : a[exp:0];
+    else if ($signed(a[exp:man+1] + b[exp:man+1] - 2*(2**(exp_len-1)-1)) > 127)
+    begin
+        out[exp:man+1] = '1;
+        out[man:0] = 0;
+    end
+    else if ($signed(a[exp:man+1] + b[exp:man+1] - 2*(2**(exp_len-1)-1)) < -126)
+        out[exp:0] = 0;
+    else
+    begin
+        out[man:0] = man_mul[exp_enc-1-:23];
+        out[exp:man+1] = exp_calc1 - ((man+2)*2-exp_enc-2);
+    end
 end
 
 endmodule
