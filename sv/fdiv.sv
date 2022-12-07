@@ -43,7 +43,21 @@ enc_n #(5) u4(shft,temp,temp_man);
 always_comb
 begin
     out[N-1] = a[N-1] ^ b[N-1];
-    if( {man_mul[(man+2)*2-1],man_mul[(man+2)*2-2]} < 2'b10 )
+    if (a[exp:man+1] == '1 | b[exp:man+1] == '1)
+        if (a[man:0] > 0 | b[man:0] > 0)
+            out[exp:0] = '1;
+        else
+            out[exp:0] = {{exp{1'b1}},{man{1'b0}}};
+    else if (a[exp:0] == 0| b[exp:0] == 0)
+        out[exp:0] = (a[exp:0] == 0) ? b[exp:0] : a[exp:0];
+    else if ($signed($signed(a[exp:man+1]-(2**(exp_len-1)-1)) - $signed(b[exp:man+1]-(2**(exp_len-1)-1))) > 127)
+    begin
+        out[exp:man+1] = '1;
+        out[man:0] = 0;
+    end
+    else if ($signed($signed(a[exp:man+1]-(2**(exp_len-1)-1)) - $signed(b[exp:man+1]-(2**(exp_len-1)-1))) < -126)
+        out[exp:0] = 0;
+    else if( {man_mul[(man+2)*2-1],man_mul[(man+2)*2-2]} < 2'b10 )
     begin
         temp_man[man:0] = man_mul[man+1:1];
         out[man:0] = temp_man[man:0]<<(2**enc_len-shft-9);
