@@ -29,7 +29,7 @@ module fdiv #(parameter N = 32)
 
 logic [N-1:0] exp_calc;
 logic [N-1:0] exp_calc1;
-logic [man+1:0] man_mul;
+logic [2*(man+1)+1:0] man_mul;
 logic flag;
 logic temp;
 logic [man:0] temp_man;
@@ -37,11 +37,13 @@ logic [enc_len:0] shft;
 
 cseladd #(exp_len) u1(a[exp:man+1], (2**(exp_len-1)-1), 0, exp_calc);
 cseladd #(exp_len) u2(exp_calc, ~b[exp:man+1], 1, exp_calc1);
-n_divider #(man/2+1) u3({1,a[man:man/2+1]},{1,b[man:man/2+1]},man_mul);
+n_divider #(man/2+1) u3({1'b1,a[man:man/2+1]},{1'b1,b[man:man/2+1]},man_mul);
 enc_n #(5) u4(shft,temp,temp_man);
 
 always_comb
 begin
+    temp_man = 0;
+	 out = 0;
     out[N-1] = a[N-1] ^ b[N-1];
     if (a[exp:man+1] == '1 | b[exp:man+1] == '1)
         if (a[man:0] > 0 | b[man:0] > 0)
