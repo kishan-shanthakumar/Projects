@@ -6,6 +6,7 @@ module enc_n #(parameter N = 5)
 always_comb
 begin
 	valid = 0;
+	out = 0;
 	for (int i = 2**N-1; i >= 0; i--)
 		if (inp[i] == 1)
 		begin
