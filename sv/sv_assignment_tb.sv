@@ -12,6 +12,7 @@ logic ready;
 logic [15:0] a, b;
 logic clock, nreset;
 shortreal reala, realb;
+logic result;
 real realsum;
 real sum1;
 logic [31:0] ra, rb, sum0;
@@ -30,6 +31,7 @@ end
 initial
 begin
     packet pkt1;
+    result = 0;
     $display("start");
     for(int i = 0; i < 2048; i += 1)
     begin
@@ -38,8 +40,10 @@ begin
         sum0 = $shortrealtobits((reala+realb));
         sum0 = {sum0[31:16],16'b0};
         sum1 =$bitstoshortreal(sum0);
+        result = 0;
         if ((((realsum-sum1)/sum1)*100) <-1.0 | (((realsum-sum1)/sum1)*100)>1.0)
         begin
+            result = 1;
             $display("a is %f", reala);
             $display("%h", a);
             $display("b is %f", realb);
