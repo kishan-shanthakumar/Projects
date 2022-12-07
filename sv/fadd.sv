@@ -54,11 +54,13 @@ logic temp;
 
 cseladd #(exp_len) u1(a[exp:man+1],~b[exp:man+1],1,shft_amtab);
 cseladd #(exp_len) u2(b[exp:man+1],~a[exp:man+1],1,shft_amtba);
-cseladd #(man+2) u4({1,ff21[man:0]},{~flag1,~ff22[man:0]},1,outab);
-cseladd #(man+2) u5({1,ff22[man:0]},{~flag1,~ff21[man:0]},1,outba);
+cseladd #(man+2) u4({1'b1,ff21[man:0]},{~flag1,~ff22[man:0]},1,outab);
+cseladd #(man+2) u5({1'b1,ff22[man:0]},{~flag1,~ff21[man:0]},1,outba);
 enc_n #(enc_len) u6(outcalcab,temp,outab[man+1:0]);
 enc_n #(enc_len) u7(outcalcba,temp,outba[man+1:0]);
 cseladd #(man+1) u3(ff21[man:0],ff22[man:0],0,wi);
+
+assign out = ff3;
 
 always_comb
 begin
@@ -87,7 +89,6 @@ end
 
 always_comb
 begin
-    out = ff3;
     ff11[N-1:man+1] = {a[N-1], b[exp:man+1]};
     ff11[man:0] = {1'b1,a[man:0]}>>shft_amtba;
     ff12[N-1:man+1] = {b[N-1], a[exp:man+1]};
