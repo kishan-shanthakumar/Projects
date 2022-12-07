@@ -34,7 +34,7 @@ logic [enc_len:0] exp_enc;
 logic temp;
 cseladd #(exp_len) u1(a[exp:man+1], ~(2**(exp_len-1)-1), 1, exp_calc);
 cseladd #(exp_len) u2(exp_calc, b[exp:man+1], 0, exp_calc1);
-nmul #(man+2) u3({1,a[man:0]},{1,b[man:0]},man_mul);
+nmul #(man+2) u3({1'b1,a[man:0]},{1'b1,b[man:0]},man_mul);
 enc_n #(enc_len+1) u4(exp_enc, temp, man_mul);
 
 always_comb
