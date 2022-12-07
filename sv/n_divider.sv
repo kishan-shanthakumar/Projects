@@ -1,17 +1,46 @@
 module n_divider #(parameter N = 32)
             (input logic [N-1:0] a,b,
-            output logic [N*2-1:0] div);
+            output logic [N-1:0] quo,rem);
 
-logic [N*2-1:0] x;
+logic [N-1:0] Q;
+logic [N-1:0] A;
+int n;
+logic [N-1:0] M;
 
 always_comb
 begin
-    x = 1;
-    for(int i = 0; i < 10; i++)
+    M = b;
+    n = N;
+    A = 0;
+    Q = a;
+    while (n > 0)
     begin
-        x = x*(2-b*x);
+        if (A[N-1] == 0)
+        begin
+            {A,Q} = {A,Q}<<1;
+            A = A - M;
+        end
+        else
+        begin
+            {A,Q} = {A,Q}<<1;
+            A = A + M;
+        end
+        if (A[N-1] == 0)
+        begin
+            Q[0] = 1;
+        end
+        else
+        begin
+            Q[0] = 0;
+        end
+        n = n - 1;
     end
-    div = (x * a)>>1;
+    if (A[N-1] == 1)
+    begin
+        A = A + M;
+    end
+    quo = Q;
+    rem = A;
 end
 
 endmodule
