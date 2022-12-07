@@ -27,36 +27,21 @@ module fmul #(parameter N = 32)
     parameter enc_len = 5;
 `endif
 
-logic [N-1:0] exp_calc;
-logic [N-1:0] exp_calc1;
+logic [exp_len-1:0] exp_calc;
+logic [exp_len-1:0] exp_calc1;
 logic [(man+2)*2-1:0] man_mul;
-logic flag;
+logic [enc_len:0] exp_enc;
+logic temp;
 cseladd #(exp_len) u1(a[exp:man+1], ~(2**(exp_len-1)-1), 1, exp_calc);
-cseladd #(exp_len) u2(exp_calc, b[exp:man+1], flag, exp_calc1);
+cseladd #(exp_len) u2(exp_calc, b[exp:man+1], 0, exp_calc1);
 nmul #(man+2) u3({1,a[man:0]},{1,b[man:0]},man_mul);
+enc_n #(enc_len+1) u4(exp_enc, temp, man_mul);
 
 always_comb
 begin
     out[N-1] = a[N-1] ^ b[N-1];
-    if( {man_mul[(man+2)*2-1],man_mul[(man+2)*2-2]} >= 2'b10 )
-    begin
-        flag = 1;
-        out[man:1] = man_mul[((man+2)*2-2)-:22];
-        out[0] = {man_mul[(man+2)*2-24], man_mul[(man+2)*2-25], man_mul[(man+2)*2-26]} >= 2'b011 ? 1 : 0;
-        out[exp:man+1] = exp_calc1;
-    end
-    else
-    begin
-        flag = 0;
-        out[man:1] = man_mul[((man+2)*2-3)-:22];
-        out[0] = {man_mul[(man+2)*2-25], man_mul[(man+2)*2-26], man_mul[(man+2)*2-27]} >= 2'b011 ? 1 : 0;
-        if( a[exp:man+1]-(2**(exp_len-1)-1) == b[exp:man+1]-(2**(exp_len-1)-1) & a[exp:man+1]-(2**(exp_len-1)-1) == 0)
-            out[exp:man+1] = 2**(exp_len-1) - 1;
-        else if( a[exp:man+1]-(2**(exp_len-1)-1) == 0 | b[exp:man+1]-(2**(exp_len-1)-1) == 0 )
-            out[exp:man+1] = |(a[exp:man+1]-(2**(exp_len-1)-1)) ? a[exp:man+1] : b[exp:man+1];
-        else
-            out[exp:man+1] = exp_calc1;
-    end
+    out[man:0] = man_mul[exp_enc-1-:23];
+    out[exp:man+1] = exp_calc1;// - ((man+2)*2 - exp_enc);
 end
 
 endmodule
