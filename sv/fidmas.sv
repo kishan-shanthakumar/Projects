@@ -1,4 +1,4 @@
-module bidmas #(parameter N = 32)
+module fidmas #(parameter N = 32)
                 (input logic [N-1:0] a,b,
                 input logic [1:0] s,
                 input logic float,
