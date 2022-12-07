@@ -43,6 +43,7 @@ fadd #(32) a1 (.*);
 initial
 begin
     packet pkt1;
+    $display("Start");
     result = 0;
     for(int i = 0; i < 256; i += 1)
     begin
@@ -78,5 +79,6 @@ begin
         
         #5;
     end
+    $display("End");
 end
 endmodule
