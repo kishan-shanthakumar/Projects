@@ -29,53 +29,18 @@ module fdiv #(parameter N = 32)
 
 logic [N-1:0] exp_calc;
 logic [N-1:0] exp_calc1;
-logic [man:0] man_mul;
-logic [man:0] rem;
-logic flag;
+logic [man+1:0] div;
 logic temp;
-logic [man:0] temp_man;
+logic [man+1:0] temp_man;
 logic [enc_len:0] shft;
 
 cseladd #(exp_len) u1(a[exp:man+1], (2**(exp_len-1)-1), 0, exp_calc);
 cseladd #(exp_len) u2(exp_calc, ~b[exp:man+1], 1, exp_calc1);
-n_divider #(man+1) u3({1,a[man:0]},{1,b[man:0]},man_mul,rem);
-enc_n #(enc_len) u4(shft,temp,rem);
+n_divider #((man+2)*2) u3({1,a[man:0],{(man+2){1'b0}}},{1,b[man:0]},div,temp_man);
+enc_n #(enc_len) u4(shft,temp,div);
 
-always_comb
-begin
-    temp_man = 0;
-	 out = 0;
-    out[N-1] = a[N-1] ^ b[N-1];
-    if (a[exp:man+1] == '1 | b[exp:man+1] == '1)
-        if (a[man:0] > 0 | b[man:0] > 0)
-            out[exp:0] = '1;
-        else
-            out[exp:0] = {{exp{1'b1}},{man{1'b0}}};
-    else if (a[exp:0] == 0| b[exp:0] == 0)
-        out[exp:0] = (a[exp:0] == 0) ? b[exp:0] : a[exp:0];
-    else if ($signed($signed(a[exp:man+1]-(2**(exp_len-1)-1)) - $signed(b[exp:man+1]-(2**(exp_len-1)-1))) > 127)
-    begin
-        out[exp:man+1] = '1;
-        out[man:0] = 0;
-    end
-    else if ($signed($signed(a[exp:man+1]-(2**(exp_len-1)-1)) - $signed(b[exp:man+1]-(2**(exp_len-1)-1))) < -126)
-        out[exp:0] = 0;
-    else
-    begin
-        if (man_mul == 1)
-        begin
-            out[man:0] = rem;
-            out[exp:man+1] = exp_calc1;
-        end
-        else if (man_mul == 0)
-        begin
-            out[man:0] = rem<<(man-shft+1);
-            out[exp:man+1] = exp_calc1-(man-shft+1);
-        end
-        else
-            out[man:0] = rem>>(man_mul-1);
-            out[exp:man+1] = exp_calc1+(man_mul-1);
-    end
-end
+assign out[N-1] = a[N-1] ^ b[N-1];
+assign out [exp:man+1] = exp_calc1 - (man + 2 - shft);
+assign out [man:0] = div[man:0];
 
 endmodule
