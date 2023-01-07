@@ -47,12 +47,12 @@ begin
             out[exp:0] = {{exp{1'b1}},{man{1'b0}}};
     else if (a[exp:0] == 0| b[exp:0] == 0)
         out[exp:0] = (a[exp:0] == 0) ? b[exp:0] : a[exp:0];
-    else if ($signed(a[exp:man+1] + b[exp:man+1] - 2*(2**(exp_len-1)-1)) > 127)
+    else if ($signed(a[exp:man+1]+b[exp:man+1]-2*(2**(exp_len-1)-1)) > $signed((2**(exp_len-1)-1)))
     begin
         out[exp:man+1] = '1;
         out[man:0] = 0;
     end
-    else if ($signed(a[exp:man+1] + b[exp:man+1] - 2*(2**(exp_len-1)-1)) < -126)
+    else if ($signed(a[exp:man+1]+b[exp:man+1]-2*(2**(exp_len-1)-1)) < $signed(-(2**(exp_len-1)-2)))
         out[exp:0] = 0;
     else
     begin
