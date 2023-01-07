@@ -10,11 +10,13 @@ input clk;
 input rst;
 output reg trap;
 
-reg [6:0] opcode;
+wire [6:0] opcode;
 reg [31:0] r[0:31];
 reg [31:0] temp;
 reg [20:0] adcalc;
 reg [13:0] badcalc;
+
+assign opcode = din[6:0];
 
 always @(posedge clk, negedge rst )
 begin
@@ -37,7 +39,6 @@ begin
     trap <=0;
     rw <= 0;
     en <= 0;
-    opcode <= din[6:0];
     if (opcode == 7'b0010011) begin
         addr <= addr + 1'b1;
         case (din[14:12])
