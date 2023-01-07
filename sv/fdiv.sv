@@ -56,10 +56,15 @@ begin
     end
     else if ($signed(a[exp:man+1]-b[exp:man+1]) < $signed(-(2**(exp_len-1)-2)))
         out[exp:0] = 0;
+    else if (a[man:0] == b[man:0])
+    begin
+        out [exp:man+1] = exp_calc1 - (man + 2 - shft);
+        out [man:0] = 0;
+    end
     else
     begin
         out [exp:man+1] = exp_calc1 - (man + 2 - shft);
-        out [man:0] = div[man:0] << (man + 2 - shft);;
+        out [man:0] = div[man:0] << (man + 2 - shft);
     end
 end
 
