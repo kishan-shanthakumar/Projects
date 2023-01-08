@@ -19,7 +19,7 @@ integer j = 0;
 reg [18:0] addr = 0;
 reg lock_state;
 
-mem_hard_long	mem_hard_long_inst (
+mem_hard	mem_hard_inst (
 	.address ( addr ),
 	.clock ( clk ),
 	.data ( 23'b0 ),
