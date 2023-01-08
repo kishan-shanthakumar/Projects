@@ -19,7 +19,7 @@ end
 
 //ram_1port ram(addr,clk,odata,wren,idata);
 
-always @(posedge clk)
+always @(posedge clk, negedge rst)
 begin
 	if(!reset)
 	begin
