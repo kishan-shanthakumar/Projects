@@ -39,29 +39,29 @@ begin
         i <= i + 1 ;
         if( i < inp )
         begin
-            flag = 1;
+            flag <= 1;
         end
         else
-            flag = 0;
+            flag <= 0;
 	 end
 	 if ( inp % i == 0 )
     begin
-        flag_local = 1;
+        flag_local <= 1;
     end
     if (flag_local)
     begin
-        j = inp / i;
-        k = i;
-        z = 1;
+        j <= inp / i;
+        k <= i;
+        z <= 1;
     end
 	 if (flag_local)
     begin
         if( (z*z - z*(k-z) + (k-z)*(k-z) ) == j)
         begin
-            fin = 1;
-            flag = 0;
+            fin <= 1;
+            flag <= 0;
         end
-        z = z + 1 ;
+        z <= z + 1 ;
     end
 end
 endmodule
@@ -108,50 +108,51 @@ reg [9:0] [63:0]Q;
 wire [9:0] flag,fin;
 wire [9:0] [63:0]wires;
 
-initial begin
-    for( i = 0 ; i < 10 ; i = i + 1 )
-    begin
-        Q[i] = i;
-    end
-end
-
 sumcube s[9:0](clk,inp,Q,wires,flag,fin);
 
-always @ ( posedge clk )
+always @ ( posedge clk, negedge reset )
 begin
-    for( i = 0 ; i < 10 ; i = i + 1 )
+    if (!reset)
+        for( i = 0 ; i < 10 ; i <= i + 1 )
+        begin
+            Q[i] <= i;
+        end
+    else
+    begin
+    for( i = 0 ; i < 10 ; i <= i + 1 )
     begin
         if(fin[i])
         begin
-            out = wires[i];
+            out <= wires[i];
         end
     end
     if (!reset)
     begin
-        for( i = 0 ; i < 10 ; i = i + 1 )
+        for( i = 0 ; i < 10 ; i <= i + 1 )
         begin
-            Q[i] = 0;
+            Q[i] <= 0;
         end
     end
     else
     begin
         if(|flag)
         begin
-            for( i = 0 ; i < 10 ; i = i + 1 )
+            for( i = 0 ; i < 10 ; i <= i + 1 )
             begin
-                Q[i] = 0;
+                Q[i] <= 0;
             end
         end
         else
         begin
-            for( i = 0 ; i < 10 ; i = i + 1 )
+            for( i = 0 ; i < 10 ; i <= i + 1 )
             begin
-                Q[i] = Q[i] + 10;
+                Q[i] <= Q[i] + 10;
             end
         end
     end
+    end
 end
 
-assign fino = |fin;
+assign fino <= |fin;
 
 endmodule

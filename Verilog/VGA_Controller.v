@@ -1,42 +1,73 @@
-module VGA_Controller(clk,inp_addr,inp,outp,hsync,vsync);
-input clk;
-input [11:0] inp;
-output reg [18:0] inp_addr;
-output reg [11:0] outp;
+module VGA_Controller(clk,outp,hsync,vsync,blank,sync,out_clk,lock,rw,);
+input clk,lock;
+output reg [23:0] outp;
 output reg hsync = 1;
 output reg vsync = 1;
+output blank, sync;
+output out_clk;
+output reg rw;
+
+reg clk1;
+wire [23:0] dat;
+
+assign blank = 1;
+assign sync = 1;
+assign out_clk = clk1;
 
 integer i = 0;
 integer j = 0;
+reg [18:0] addr = 0;
+reg lock_state;
 
-always @ (posedge clk)
+mem_hard	mem_hard_inst (
+	.address ( addr ),
+	.clock ( clk ),
+	.data ( 23'b0 ),
+	.wren ( rw ),
+	.q ( dat )
+	);
+
+always @(posedge lock)
+	lock_state <= ~lock_state;
+
+always @(posedge clk)
+	clk1 = ~clk1;
+	
+always @ (posedge clk1)
 begin
-	if((i < 640) & (j < 480))
+	addr <= j*640 + i;
+	if((i < 639) & (j < 479))
 	begin
-		inp_addr = inp_addr + 1'b1;
-		outp = inp;
+		if (lock_state == 0)
+		begin
+			outp <= dat;
+		end
+		else
+		begin
+			outp <= 24'h0;
+		end
 	end
 	else
 	begin
-		outp = 0;
-		if(i>=656 & i<752)
-			hsync = 0;
-		if(j>=490 & j<492)
-			vsync = 0;
-		if(i>=752)
-			hsync = 1;
-		if(j>=492)
-			vsync = 1;
+		outp <= 0;
+		if(i>656 & i<=752)
+			hsync <= 0;
+		if(j>490 & j<=492)
+			vsync <= 0;
+		if(i>752)
+			hsync <= 1;
+		if(j>492)
+			vsync <= 1;
 	end
-	if(i==800)
+	if(i==799)
 	begin
-		i = 0;
-		j = j + 1;
+		i <= 0;
+		j <= j + 1;
 	end
 	else
-		i = i + 1;
-	if(j==525)
-		j = 0;
+		i <= i + 1;
+	if(j==524)
+		j <= 0;
 end
 
 endmodule
