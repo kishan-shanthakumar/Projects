@@ -8,6 +8,8 @@ logic [63:0] temp [0:63];
 logic [63:0] addr, addr_s, noe;
 integer i;
 
+// Yet to add riscv core
+
 always_ff @(posedge clk, negedge nreset)
 begin
     if (!nreset)
