@@ -15,6 +15,7 @@ reg [31:0] r[0:31];
 reg [31:0] temp;
 reg [20:0] adcalc;
 reg [13:0] badcalc;
+reg [1:0] wait1;
 
 assign opcode = din[6:0];
 
@@ -22,7 +23,7 @@ always @(posedge clk, negedge rst )
 begin
     if(!rst)
     begin
-        addr <= 32'h80000000;
+        addr <= 32'h1f;
         mem_addr <= 32'b0;
         ddatout <= 32'b0;
         rw <= 0;
@@ -33,7 +34,10 @@ begin
         r[15] <= 32'b0;r[14] <= 32'b0;r[13] <= 32'b0;r[12] <= 32'b0;r[11] <= 32'b0;r[10] <= 32'b0;r[9] <= 32'b0;r[8] <= 32'b0;
         r[7] <= 32'b0;r[6] <= 32'b0;r[5] <= 32'b0;r[4] <= 32'b0;r[3] <= 32'b0;r[2] <= 32'b0;r[1] <= 32'b0;r[0] <= 32'b0;
         temp <= 32'b0;
+        wait1 <= 0;
     end
+    else if (wait1 > 0)
+        wait1 <= wait1 - 1;
     else
     begin
     trap <=0;
@@ -116,6 +120,7 @@ begin
         endcase
     end
     else if (opcode == 7'b0000011) begin
+        wait1 <= 2;
         addr <= addr + 1;
         case (din[14:12])
             3'b000: begin
@@ -170,6 +175,7 @@ begin
         endcase
     end
     else if (opcode == 7'b0100011) begin
+        wait1 <= 1;
         case (din[14:12])
             3'b000: begin
                     mem_addr <= r[din[19:15]] + {20'b0, din[31:25], din[11:7]};
@@ -213,6 +219,7 @@ begin
         addr <= addr + 1;
     end
     else if (opcode == 7'b1100011) begin
+        wait1 <= 1;
         badcalc =  {din[31], din[7], din[30:25], din[11:8], 1'b0};
         if (din[31]) begin
             badcalc =  badcalc - 1;
@@ -272,6 +279,7 @@ begin
         endcase
     end
     else if (opcode == 7'b1101111) begin
+        wait1 <= 1;
         r[din[11:7]] <= addr + 1;
         adcalc =  {din[31], din[19:12], din[20], din[30:21], 1'b0};
         case (din[31])
@@ -284,14 +292,15 @@ begin
         endcase
     end
     else if (opcode == 7'b1100111) begin
+        wait1 <= 1;
         r[din[11:7]] <= addr + 1;
         adcalc =  {din[31], din[19:12], din[20], din[30:21], 1'b0};
         case (din[31])
-        1'b0: addr <= r[din[19:15]] + adcalc/4;
+        1'b0: addr <= r[din[19:15]]>>2 + adcalc>>2;
         1'b1: begin
               adcalc =  adcalc - 1;
               adcalc =  ~adcalc;
-              addr <= r[din[19:15]] - adcalc/4;
+              addr <= r[din[19:15]]>>2 - adcalc>>2;
               end
         endcase
     end
