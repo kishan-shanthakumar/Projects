@@ -26,6 +26,7 @@ VK_TAB  = 0x09
 VK_MENU = 0x12
 VK_CONTROL = 0x11
 VK_RETURN = 0x0D
+VK_LSHIFT = 0x10
 
 # C struct definitions
 
@@ -115,6 +116,79 @@ def text_lookup(inp):
     inp = inp.upper()
     if len(inp)==0:
         return
+    elif inp == '\n':
+        time.sleep(0.05)
+        PressKey(VK_RETURN)
+        time.sleep(0.05)
+        ReleaseKey(VK_RETURN)
+    elif inp == ' ':
+        PressKey(0x20)
+        time.sleep(0.05)
+        ReleaseKey(0x20)
+    elif inp == '(':
+        PressKey(VK_LSHIFT)
+        time.sleep(0.05)
+        PressKey(0x39)
+        time.sleep(0.05)
+        ReleaseKey(0x39)
+        time.sleep(0.05)
+        ReleaseKey(VK_LSHIFT)
+    elif inp == ')':
+        PressKey(VK_LSHIFT)
+        time.sleep(0.05)
+        PressKey(0x30)
+        time.sleep(0.05)
+        ReleaseKey(0x30)
+        time.sleep(0.05)
+        ReleaseKey(VK_LSHIFT)
+    elif inp == '#':
+        PressKey(VK_LSHIFT)
+        time.sleep(0.05)
+        PressKey(0x33)
+        time.sleep(0.05)
+        ReleaseKey(0x33)
+        time.sleep(0.05)
+        ReleaseKey(VK_LSHIFT)
+    elif inp == '+':
+        PressKey(VK_LSHIFT)
+        time.sleep(0.05)
+        PressKey(int(lookup['='],0))
+        time.sleep(0.05)
+        ReleaseKey(int(lookup['='],0))
+        time.sleep(0.05)
+        ReleaseKey(VK_LSHIFT)
+    elif inp == ':':
+        PressKey(VK_LSHIFT)
+        time.sleep(0.05)
+        PressKey(int(lookup[';'],0))
+        time.sleep(0.05)
+        ReleaseKey(int(lookup[';'],0))
+        time.sleep(0.05)
+        ReleaseKey(VK_LSHIFT)
+    elif inp == '_':
+        PressKey(VK_LSHIFT)
+        time.sleep(0.05)
+        PressKey(int(lookup['-'],0))
+        time.sleep(0.05)
+        ReleaseKey(int(lookup['-'],0))
+        time.sleep(0.05)
+        ReleaseKey(VK_LSHIFT)
+    elif inp == '<':
+        PressKey(VK_LSHIFT)
+        time.sleep(0.05)
+        PressKey(int(lookup[','],0))
+        time.sleep(0.05)
+        ReleaseKey(int(lookup[','],0))
+        time.sleep(0.05)
+        ReleaseKey(VK_LSHIFT)
+    elif inp == '>':
+        PressKey(VK_LSHIFT)
+        time.sleep(0.05)
+        PressKey(int(lookup['.'],0))
+        time.sleep(0.05)
+        ReleaseKey(int(lookup['.'],0))
+        time.sleep(0.05)
+        ReleaseKey(VK_LSHIFT)
     else:
         for i in inp:
             PressKey(int(lookup[i],0))
