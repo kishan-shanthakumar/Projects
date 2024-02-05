@@ -1,0 +1,26 @@
+Watch
+  - Hardware
+    - esp32-s3-mini
+    - heartbeat sensor
+    - lipo battery
+    - small display
+    - 5v lipo charger board
+  - Software
+    - Continously monitor heartbeat
+    - HTTP Server for the heartbeat data
+
+Computer
+  - Hardware
+    - RPi Zero 2W // done
+    - Altitude meter // DPS310 // done
+    - GPS Module // PA1616D
+    - Temperature Sensor // MCP9808
+    - Accel, Gyro // MPU6050 // done
+    - Big display
+    - lipo battery
+    - 5v lipo charger board(battery percentage monitoring) // mcp3002
+  - Software
+    - Monitor all sensors
+    - Post processing (including calories)
+    - Django server
+    - PCB
