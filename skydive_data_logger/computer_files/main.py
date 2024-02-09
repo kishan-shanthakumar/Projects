@@ -68,5 +68,7 @@ while True:
         extern_temp = mcp.mcp_func()
         print(extern_temp)
 
+    sleep(0.1)
+
 gps_val = gps.gps_run()
 print(gps_val)
