@@ -52,14 +52,18 @@ _thread.start_new_thread(gps.gps_data ,(1, ))
 # Value reading
 if mpu_flag == 1:
     mpu_val = mpu.mpu_read()
+    print(mpu_val)
 
 if dps_flag == 1:
     scaled_p = dps310.calcScaledPressure()
     scaled_t = dps310.calcScaledTemperature()
     p = dps310.calcCompPressure(scaled_p, scaled_t)
     t = dps310.calcCompTemperature(scaled_t)
+    print(p, t)
 
 if mcp_flag == 1:
     extern_temp = mcp.mcp_func()
+    print(extern_temp)
 
 gps_val = gps.gps_run()
+print(gps_val)
