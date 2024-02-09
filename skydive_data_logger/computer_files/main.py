@@ -61,8 +61,8 @@ while True:
         scaled_t = dps310.calcScaledTemperature()
         p = dps310.calcCompPressure(scaled_p, scaled_t)
         t = dps310.calcCompTemperature(scaled_t)
-        print((10**(log(p/101325)/5.2558797)-1/(-6.8755856*10**-6) ) + ' ft')
-        print(t+' C')
+        print((10**(log(p/101325)/5.2558797)-1/(-6.8755856*10**-6) ) , 'ft')
+        print(t,'C')
 
     if mcp_flag == 1:
         extern_temp = mcp.mcp_func()
