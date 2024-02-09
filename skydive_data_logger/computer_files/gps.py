@@ -13,9 +13,10 @@ class GPS:
 
     def gps_run(self):
         data = self.received_data.split()
-        di = {}
-        di['time'] = data[1] + data[8]
-        di['lat'] = data[3] + data[4]
-        di['lon'] = data[5] + data[6]
-        di['speed'] = data[7]
-        return(di)
+        if len(data) > 2:
+            di = {}
+            di['time'] = data[1] + data[8]
+            di['lat'] = data[3] + data[4]
+            di['lon'] = data[5] + data[6]
+            di['speed'] = data[7]
+            return(di)
