@@ -12,13 +12,13 @@ Watch
 Computer
   - Hardware
     - RPi Zero 2W // done
-    - Altitude meter // DPS310 // done
-    - GPS Module // PA1616D
-    - Temperature Sensor // MCP9808
-    - Accel, Gyro // MPU6050 // done
+    - Altitude meter // DPS310 // I2C // done
+    - GPS Module // PA1616D // UART
+    - Temperature Sensor // MCP9808 // I2C
+    - Accel, Gyro // MPU6050 // I2C // done
     - Big display
     - lipo battery
-    - 5v lipo charger board(battery percentage monitoring) // mcp3002
+    - 5v lipo charger board(battery percentage monitoring) // mcp3002 // SPI
   - Software
     - Monitor all sensors
     - Post processing (including calories)

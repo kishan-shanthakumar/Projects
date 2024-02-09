@@ -31,7 +31,7 @@ except OSError:
 # DPS310 initialisation
 dps_flag = 1
 try:
-    dps310 = DPS.DPS(DPS_addr, bus)
+    dps310 = DPS(DPS_addr, bus)
 except OSError:
     print('DPS310 not found, skipping DPS310 operations')
     dps_flag = 0
