@@ -21,7 +21,7 @@ MPU_addr = 0x68   # MPU6050 device address
 DPS_addr = 0x77   # DPS310  device address
 MCP_addr = 0x18
 ser = serial.Serial ("/dev/ttyS0", 9600)    # Open port for GPS
-os.mkdir('/home/kishan/logs',exist_ok=True)
+os.makedirs('/home/kishan/logs',exist_ok=True)
 
 # MPU6050 initialisation
 mpu_flag = 1
