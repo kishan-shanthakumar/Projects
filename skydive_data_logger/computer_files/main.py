@@ -2,8 +2,10 @@
 import smbus
 import _thread
 import serial
-from time import sleep
+import time
 from math import log
+import matplotlib.pyplot as plt
+import numpy as np
 import requests
 
 # Local package import
@@ -50,25 +52,47 @@ except OSError:
 gps = GPS(ser)
 _thread.start_new_thread(gps.gps_data ,(1, ))
 
+ti = time.time()
+li = []
+
 # Value reading
-while True:
-    if mpu_flag == 1:
-        mpu_val = mpu.mpu_read()
-        print(mpu_val)
+try:
+    while True:
+        ts = time.time() - ti
+        li.append([])
+        li[-1].append(ts)
 
-    if dps_flag == 1:
-        scaled_p = dps310.calcScaledPressure()
-        scaled_t = dps310.calcScaledTemperature()
-        p = dps310.calcCompPressure(scaled_p, scaled_t)
-        t = dps310.calcCompTemperature(scaled_t)
-        print((10**((log(p/101325)/log(2.718))/5.2558797)-1/(-6.8755856*10**-6) ) , 'ft')
-        print(t,'C')
+        if mpu_flag == 1:
+            mpu_val = mpu.mpu_read()
+            li[-1].append(mpu_val[0])
+            li[-1].append(mpu_val[1])
+            li[-1].append(mpu_val[2])
+            li[-1].append(mpu_val[3])
+            li[-1].append(mpu_val[4])
+            li[-1].append(mpu_val[5])
+            print(mpu_val)
 
-    if mcp_flag == 1:
-        extern_temp = mcp.mcp_func()
-        print(extern_temp)
+        if dps_flag == 1:
+            scaled_p = dps310.calcScaledPressure()
+            scaled_t = dps310.calcScaledTemperature()
+            p = dps310.calcCompPressure(scaled_p, scaled_t)
+            t = dps310.calcCompTemperature(scaled_t)
+            print((10**((log(p/101325)/log(2.718))/5.2558797)-1/(-6.8755856*10**-6) ) , 'ft')
+            print(t,'C')
+            li[-1].append(p)
+            li[-1].append(t)
 
-    sleep(0.1)
+        if mcp_flag == 1:
+            extern_temp = mcp.mcp_func()
+            print(extern_temp)
+            li[-1].append(extern_temp)
+        
+        time.sleep(0.1)
 
-gps_val = gps.gps_run()
-print(gps_val)
+    # gps_val = gps.gps_run()
+    # print(gps_val)
+except KeyboardInterrupt:
+    a = list(np.array(li[:-1]).transpose())
+    for i in range(len(a)-1):
+        plt.plot(a[0],a[i+1])
+    plt.show()
