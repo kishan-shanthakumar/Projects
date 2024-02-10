@@ -54,6 +54,7 @@ gps = GPS(ser)
 _thread.start_new_thread(gps.gps_data ,(1, ))
 
 ti = time.time()
+ts1 = time.time()
 di = {}
 di['time'] = []
 
@@ -118,7 +119,8 @@ try:
         
         time.sleep(0.1)
 
-        if ((time.time() - ti) > 900):
+        if ((time.time() - ts1) > 900):
+            ts1 = time.time()
             if (len(di['gps']['time']) == 0):
                 del di['gps']
             if mcp_flag == 0:
