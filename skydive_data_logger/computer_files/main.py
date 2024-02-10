@@ -53,23 +53,32 @@ gps = GPS(ser)
 _thread.start_new_thread(gps.gps_data ,(1, ))
 
 ti = time.time()
-li = []
+di = {}
+di['time'] = []
+di['ax'] = []
+di['ay'] = []
+di['az'] = []
+di['gx'] = []
+di['gy'] = []
+di['gz'] = []
+di['pr'] = []
+di['te'] = []
+di['et'] = []
 
 # Value reading
 try:
     while True:
         ts = time.time() - ti
-        li.append([])
-        li[-1].append(ts)
+        di['time'].append(ts)
 
         if mpu_flag == 1:
             mpu_val = mpu.mpu_read()
-            li[-1].append(mpu_val[0])
-            li[-1].append(mpu_val[1])
-            li[-1].append(mpu_val[2])
-            li[-1].append(mpu_val[3])
-            li[-1].append(mpu_val[4])
-            li[-1].append(mpu_val[5])
+            di['ax'].append(mpu_val[0])
+            di['ay'].append(mpu_val[1])
+            di['az'].append(mpu_val[2])
+            di['gx'].append(mpu_val[3])
+            di['gy'].append(mpu_val[4])
+            di['gz'].append(mpu_val[5])
             print(mpu_val)
 
         if dps_flag == 1:
@@ -79,20 +88,30 @@ try:
             t = dps310.calcCompTemperature(scaled_t)
             print((10**((log(p/101325)/log(2.718))/5.2558797)-1/(-6.8755856*10**-6) ) , 'ft')
             print(t,'C')
-            li[-1].append(p)
-            li[-1].append(t)
+            di['pr'].append(p)
+            di['te'].append(t)
 
         if mcp_flag == 1:
             extern_temp = mcp.mcp_func()
             print(extern_temp)
-            li[-1].append(extern_temp)
+            di['et'].append(extern_temp)
         
         time.sleep(0.1)
 
     # gps_val = gps.gps_run()
     # print(gps_val)
 except KeyboardInterrupt:
-    a = list(np.array(li[:-1]).transpose())
-    for i in range(len(a)-1):
-        plt.plot(a[0],a[i+1])
+    plt.subplot(2,2,1)
+    plt.plot(di['time'], di['ax'])
+    plt.plot(di['time'], di['ay'])
+    plt.plot(di['time'], di['az'])
+    plt.subplot(2,2,2)
+    plt.plot(di['time'], di['gx'])
+    plt.plot(di['time'], di['gy'])
+    plt.plot(di['time'], di['gz'])
+    plt.subplot(2,2,3)
+    plt.plot(di['time'], di['pr'])
+    plt.subplot(2,2,4)
+    plt.plot(di['time'], di['te'])
+    plt.plot(di['time'], di['et'])
     plt.show()
