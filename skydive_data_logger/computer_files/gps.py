@@ -20,3 +20,5 @@ class GPS:
             di['lon'] = data[5] + data[6]
             di['speed'] = data[7]
             return(di)
+        else:
+            return 0
