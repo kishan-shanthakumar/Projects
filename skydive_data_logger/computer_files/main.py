@@ -101,6 +101,7 @@ try:
     # gps_val = gps.gps_run()
     # # print(gps_val)
 except KeyboardInterrupt:
+    print(len(di['time']))
     plt.subplot(2,2,1)
     plt.plot(di['time'], di['ax'])
     plt.plot(di['time'], di['ay'])
