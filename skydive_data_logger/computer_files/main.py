@@ -127,7 +127,6 @@ try:
                 del di['mpu6050']
             if dps_flag == 0:
                 del di['dps']
-            ti = time.time()
             with open('/home/kishan/logs/'+str(time.time())+'.json', 'w') as fp:
                 json.dump(di, fp)
             di = {}
