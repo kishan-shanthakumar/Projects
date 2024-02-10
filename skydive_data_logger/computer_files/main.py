@@ -4,8 +4,7 @@ import _thread
 import serial
 import time
 from math import log
-import matplotlib.pyplot as plt
-import numpy as np
+import json
 import requests
 
 # Local package import
@@ -55,15 +54,26 @@ _thread.start_new_thread(gps.gps_data ,(1, ))
 ti = time.time()
 di = {}
 di['time'] = []
-di['ax'] = []
-di['ay'] = []
-di['az'] = []
-di['gx'] = []
-di['gy'] = []
-di['gz'] = []
-di['pr'] = []
-di['te'] = []
+
+di['mpu6050'] = {}
+di['mpu6050']['ax'] = []
+di['mpu6050']['ay'] = []
+di['mpu6050']['az'] = []
+di['mpu6050']['gx'] = []
+di['mpu6050']['gy'] = []
+di['mpu6050']['gz'] = []
+
+di['dps'] = {}
+di['dps']['pr'] = []
+di['dps']['te'] = []
+
 di['et'] = []
+
+di['gps'] = {}
+di['gps']['time'] = []
+di['gps']['lat'] = []
+di['gps']['lon'] = []
+di['gps']['speed'] = []
 
 # Value reading
 try:
@@ -73,12 +83,12 @@ try:
 
         if mpu_flag == 1:
             mpu_val = mpu.mpu_read()
-            di['ax'].append(mpu_val[0])
-            di['ay'].append(mpu_val[1])
-            di['az'].append(mpu_val[2])
-            di['gx'].append(mpu_val[3])
-            di['gy'].append(mpu_val[4])
-            di['gz'].append(mpu_val[5])
+            di['mpu6050']['ax'].append(mpu_val[0])
+            di['mpu6050']['ay'].append(mpu_val[1])
+            di['mpu6050']['az'].append(mpu_val[2])
+            di['mpu6050']['gx'].append(mpu_val[3])
+            di['mpu6050']['gy'].append(mpu_val[4])
+            di['mpu6050']['gz'].append(mpu_val[5])
             # print(mpu_val)
 
         if dps_flag == 1:
@@ -88,30 +98,58 @@ try:
             t = dps310.calcCompTemperature(scaled_t)
             # print((10**((log(p/101325)/log(2.718))/5.2558797)-1/(-6.8755856*10**-6) ) , 'ft')
             # print(t,'C')
-            di['pr'].append(p)
-            di['te'].append(t)
+            di['dps']['pr'].append(p)
+            di['dps']['te'].append(t)
 
         if mcp_flag == 1:
             extern_temp = mcp.mcp_func()
             # print(extern_temp)
             di['et'].append(extern_temp)
         
+        gps_val = gps.gps_run()
+        if not gps_val == 0:
+            # print(gps_val)
+            di['gp']['time'].append(gps_val['time'])
+            di['gp']['lat'].append(gps_val['lat'])
+            di['gp']['lon'].append(gps_val['lon'])
+            di['gp']['speed'].append(gps_val['speed'])
+        
         time.sleep(0.1)
 
-    # gps_val = gps.gps_run()
-    # # print(gps_val)
+        if ((time.time() - ti) > 900):
+            if (len(di['gp']['time']) == 0):
+                del di['gp']
+            if mcp_flag == 0:
+                del di['et']
+            if mpu_flag == 0:
+                del di['mpu6050']
+            if dps_flag == 0:
+                del di['dps']
+            ti = time.time()
+            with open(str(time.time())+'.json', 'w') as fp:
+                json.dump(di, fp)
+            di = {}
+            di['time'] = []
+
+            di['mpu6050'] = {}
+            di['mpu6050']['ax'] = []
+            di['mpu6050']['ay'] = []
+            di['mpu6050']['az'] = []
+            di['mpu6050']['gx'] = []
+            di['mpu6050']['gy'] = []
+            di['mpu6050']['gz'] = []
+
+            di['dps'] = {}
+            di['dps']['pr'] = []
+            di['dps']['te'] = []
+
+            di['et'] = []
+
+            di['gps'] = {}
+            di['gps']['time'] = []
+            di['gps']['lat'] = []
+            di['gps']['lon'] = []
+            di['gps']['speed'] = []
+
 except KeyboardInterrupt:
-    print('\n',len(di['time']))
-    plt.subplot(2,2,1)
-    plt.plot(di['time'], di['ax'])
-    plt.plot(di['time'], di['ay'])
-    plt.plot(di['time'], di['az'])
-    plt.subplot(2,2,2)
-    plt.plot(di['time'], di['gx'])
-    plt.plot(di['time'], di['gy'])
-    plt.plot(di['time'], di['gz'])
-    plt.subplot(2,2,3)
-    plt.plot(di['time'], di['pr'])
-    plt.subplot(2,2,4)
-    plt.plot(di['time'], di['te'])
-    plt.show()
+    pass
