@@ -113,5 +113,4 @@ except KeyboardInterrupt:
     plt.plot(di['time'], di['pr'])
     plt.subplot(2,2,4)
     plt.plot(di['time'], di['te'])
-    plt.plot(di['time'], di['et'])
     plt.show()
