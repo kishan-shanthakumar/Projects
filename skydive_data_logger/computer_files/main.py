@@ -5,6 +5,7 @@ import serial
 import time
 from math import log
 import json
+import os
 import requests
 
 # Local package import
@@ -20,6 +21,7 @@ MPU_addr = 0x68   # MPU6050 device address
 DPS_addr = 0x77   # DPS310  device address
 MCP_addr = 0x18
 ser = serial.Serial ("/dev/ttyS0", 9600)    # Open port for GPS
+os.mkdir('/home/kishan/logs',exist_ok=True)
 
 # MPU6050 initialisation
 mpu_flag = 1
@@ -126,7 +128,7 @@ try:
             if dps_flag == 0:
                 del di['dps']
             ti = time.time()
-            with open(str(time.time())+'.json', 'w') as fp:
+            with open('/home/kishan/logs/'+str(time.time())+'.json', 'w') as fp:
                 json.dump(di, fp)
             di = {}
             di['time'] = []
