@@ -109,16 +109,16 @@ try:
         gps_val = gps.gps_run()
         if not gps_val == 0:
             # print(gps_val)
-            di['gp']['time'].append(gps_val['time'])
-            di['gp']['lat'].append(gps_val['lat'])
-            di['gp']['lon'].append(gps_val['lon'])
-            di['gp']['speed'].append(gps_val['speed'])
+            di['gps']['time'].append(gps_val['time'])
+            di['gps']['lat'].append(gps_val['lat'])
+            di['gps']['lon'].append(gps_val['lon'])
+            di['gps']['speed'].append(gps_val['speed'])
         
         time.sleep(0.1)
 
         if ((time.time() - ti) > 900):
-            if (len(di['gp']['time']) == 0):
-                del di['gp']
+            if (len(di['gps']['time']) == 0):
+                del di['gps']
             if mcp_flag == 0:
                 del di['et']
             if mpu_flag == 0:
