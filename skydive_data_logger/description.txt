@@ -14,11 +14,15 @@ Computer
     - RPi Zero 2W // done
     - Altitude meter // DPS310 // I2C // done
     - GPS Module // PA1616D // UART
-    - Temperature Sensor // MCP9808 // I2C
+      PA1616D Ultimate GPS module
+      28db UFL antenna
+    - Temperature Sensor // MCP9808 // I2C // done
     - Accel, Gyro // MPU6050 // I2C // done
-    - Big display
+    - SIM7600x with USB
+    - Big touchscreen display // SPI // done
     - lipo battery
-    - 5v lipo charger board(battery percentage monitoring) // mcp3002 // SPI
+    - 5v lipo charger board(battery percentage monitoring) // lc709203f with bms // I2C
+      10k thermistor
   - Software
     - Monitor all sensors
     - Post processing (including calories)
