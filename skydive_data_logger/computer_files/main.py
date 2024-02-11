@@ -6,6 +6,9 @@ import time
 from math import log
 import json
 import os
+import sys
+import tkinter as tk
+from tkinter import ttk
 import requests
 
 # Local package import
@@ -56,29 +59,56 @@ _thread.start_new_thread(gps.gps_data ,(1, ))
 ti = time.time()
 ts1 = time.time()
 di = {}
-di['time'] = []
 
 di['mpu6050'] = {}
-di['mpu6050']['ax'] = []
-di['mpu6050']['ay'] = []
-di['mpu6050']['az'] = []
-di['mpu6050']['gx'] = []
-di['mpu6050']['gy'] = []
-di['mpu6050']['gz'] = []
 
 di['dps'] = {}
-di['dps']['pr'] = []
-di['dps']['te'] = []
-
-di['et'] = []
 
 di['gps'] = {}
-di['gps']['time'] = []
-di['gps']['lat'] = []
-di['gps']['lon'] = []
-di['gps']['speed'] = []
 
-# Value reading
+def val_cap(unused):
+    while True:
+        if mpu_flag == 1:
+            mpu_val = mpu.mpu_read()
+            di['mpu6050']['ax'] = (mpu_val[0])
+            di['mpu6050']['ay'] = (mpu_val[1])
+            di['mpu6050']['az'] = (mpu_val[2])
+            di['mpu6050']['gx'] = (mpu_val[3])
+            di['mpu6050']['gy'] = (mpu_val[4])
+            di['mpu6050']['gz'] = (mpu_val[5])
+            # print(mpu_val)
+
+        if dps_flag == 1:
+            scaled_p = dps310.calcScaledPressure()
+            scaled_t = dps310.calcScaledTemperature()
+            p = dps310.calcCompPressure(scaled_p, scaled_t)
+            t = dps310.calcCompTemperature(scaled_t)
+            # print((10**((log(p/101325)/log(2.718))/5.2558797)-1/(-6.8755856*10**-6) ) , 'ft')
+            # print(t,'C')
+            di['dps']['pr'] = (p)
+            di['dps']['te'] = (t)
+
+        if mcp_flag == 1:
+            extern_temp = mcp.mcp_func()
+            # print(extern_temp)
+            di['et'] = (extern_temp)
+        
+        gps_val = gps.gps_run()
+        if not gps_val == 0:
+            # print(gps_val)
+            di['gps']['time'] = (gps_val['time'])
+            di['gps']['lat'] = (gps_val['lat'])
+            di['gps']['lon'] = (gps_val['lon'])
+            di['gps']['speed'] = (gps_val['speed'])
+        
+        time.sleep(0.1)
+
+_thread.start_new_thread(val_cap ,(1, ))
+
+sys.path.insert(1, './gui/')
+import start_interface
+
+'''# Value reading
 try:
     while True:
         ts = time.time() - ti
@@ -155,4 +185,4 @@ try:
             di['gps']['speed'] = []
 
 except KeyboardInterrupt:
-    pass
+    pass'''
