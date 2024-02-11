@@ -187,7 +187,7 @@ pres_text = ttk.Label(
     font = 'Arial 12')
 
 pres = tk.StringVar()
-pres.set(str(di['dps']['pr']))
+pres.set('97850 Pa')
 
 pres_label = ttk.Label(
     master = pres_frame,
