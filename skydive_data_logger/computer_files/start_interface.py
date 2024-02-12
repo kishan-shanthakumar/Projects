@@ -6,17 +6,17 @@ from sensor_read import sensor_read
 def update_window():
     # Update label values with new data
     di = sensor_read()
-    lat_lon.config(text='Not found')
-    alt.config(text='Not found')
-    acc_x.config(text=di['mpu6050']['ax'])
-    acc_y.config(text=di['mpu6050']['ay'])
-    acc_z.config(text=di['mpu6050']['az'])
-    gy_x.config(text=di['mpu6050']['gx'])
-    gy_y.config(text=di['mpu6050']['gy'])
-    gy_z.config(text=di['mpu6050']['gz'])
-    pres.config(text=di['dps']['pr'])
-    temp.config(text=di['dps']['te'])
-    e_temp.config(text='Not found')
+    lat_lon_label.config(text='Not found')
+    alt_label.config(text='Not found')
+    acc_x_label.config(text=di['mpu6050']['ax'])
+    acc_y_label.config(text=di['mpu6050']['ay'])
+    acc_z_label.config(text=di['mpu6050']['az'])
+    gy_x_label.config(text=di['mpu6050']['gx'])
+    gy_y_label.config(text=di['mpu6050']['gy'])
+    gy_z_label.config(text=di['mpu6050']['gz'])
+    pres_label.config(text=di['dps']['pr'])
+    temp_label.config(text=di['dps']['te'])
+    e_temp_label.config(text='Not found')
 
     # Schedule the next update using `after` method
     window.after(100, update_window) 
@@ -44,12 +44,6 @@ gps_title = ttk.Label(
     text = 'GPS Data', 
     font = 'Arial 16')
 
-lat_lon = tk.StringVar()
-lat_lon.set('52.12.4 N\t  0.9.44 E')
-
-alt = tk.StringVar()
-alt.set('55 m')
-
 lat_lon_text = ttk.Label(
     master = lat_lon_frame, 
     text = 'Co-ordinates\t', 
@@ -58,8 +52,7 @@ lat_lon_text = ttk.Label(
 lat_lon_label = ttk.Label(
     master = lat_lon_frame, 
     text = 'Output', 
-    font = 'Arial 12', 
-    textvariable = lat_lon)
+    font = 'Arial 12')
 
 alt_text = ttk.Label(
     master = alt_frame, 
@@ -69,8 +62,7 @@ alt_text = ttk.Label(
 alt_label = ttk.Label(
     master = alt_frame, 
     text = 'Output', 
-    font = 'Arial 12', 
-    textvariable = alt)
+    font = 'Arial 12')
 
 gps_title.pack()
 lat_lon_text.pack(side = 'left')
@@ -122,55 +114,35 @@ gy_z_text = ttk.Label(
     text = '\t\tGy Z\t',
     font = 'Arial 12')
 
-acc_x = tk.StringVar()
-acc_x.set('0 g')
-acc_y = tk.StringVar()
-acc_y.set('0 g')
-acc_z = tk.StringVar()
-acc_z.set('1 g')
-
-gy_x = tk.StringVar()
-gy_x.set('0 /s')
-gy_y = tk.StringVar()
-gy_y.set('0 /s')
-gy_z = tk.StringVar()
-gy_z.set('0 /s')
-
 acc_x_label = ttk.Label(
     master = x_frame, 
     text = 'Output', 
-    font = 'Arial 12',
-    textvariable = acc_x)
+    font = 'Arial 12')
 
 acc_y_label = ttk.Label(
     master = y_frame, 
     text = 'Output', 
-    font = 'Arial 12',
-    textvariable = acc_y)
+    font = 'Arial 12')
 
 acc_z_label = ttk.Label(
     master = z_frame, 
     text = 'Output', 
-    font = 'Arial 12',
-    textvariable = acc_z)
+    font = 'Arial 12')
 
 gy_x_label = ttk.Label(
     master = x_frame, 
     text = 'Output', 
-    font = 'Arial 12',
-    textvariable = gy_x)
+    font = 'Arial 12')
 
 gy_y_label = ttk.Label(
     master = y_frame, 
     text = 'Output', 
-    font = 'Arial 12',
-    textvariable = gy_y)
+    font = 'Arial 12')
 
 gy_z_label = ttk.Label(
     master = z_frame, 
     text = 'Output', 
-    font = 'Arial 12',
-    textvariable = gy_z)
+    font = 'Arial 12')
 
 mpu_title.pack()
 acc_x_text.pack(side='left')
@@ -205,28 +177,20 @@ pres_text = ttk.Label(
     text = 'Pressure\t\t', 
     font = 'Arial 12')
 
-pres = tk.StringVar()
-pres.set('97850 Pa')
-
 pres_label = ttk.Label(
     master = pres_frame,
     text = 'Output',
-    font = 'Arial 12',
-    textvariable = pres)
+    font = 'Arial 12')
 
 temp_text = ttk.Label(
     master = temp_frame, 
     text = 'Temperature\t', 
     font = 'Arial 12')
 
-temp = tk.StringVar()
-temp.set('25.8 C')
-
 temp_label = ttk.Label(
     master = temp_frame,
     text = 'Output',
-    font = 'Arial 12',
-    textvariable = temp)
+    font = 'Arial 12')
 
 dps_title.pack()
 pres_text.pack(side = 'left')
@@ -251,14 +215,10 @@ e_temp_text = ttk.Label(
     text = 'Temperature\t', 
     font = 'Arial 12')
 
-e_temp = tk.StringVar()
-e_temp.set('25.8 C')
-
 e_temp_label = ttk.Label(
     master = e_temp_frame,
     text = 'Output',
-    font = 'Arial 12',
-    textvariable = e_temp)
+    font = 'Arial 12')
 
 mcp_title.pack()
 e_temp_text.pack(side = 'left')
