@@ -18,9 +18,8 @@ class MPU6050:
     def MPU_Init(self):
         self.bus.write_byte_data(self.MPU_addr, self.SMPLRT_DIV, 7)
         self.bus.write_byte_data(self.MPU_addr, self.PWR_MGMT_1, 1)
-        self.bus.write_byte_data(self.MPU_addr, self.CONFIG, 3)
-        self.bus.write_byte_data(self.MPU_addr, self.GYRO_CONFIG, 3)
-        self.bus.write_byte_data(self.MPU_addr, self.ACCEL_CONFIG, 3)
+        self.bus.write_byte_data(self.MPU_addr, self.CONFIG, 0)
+        self.bus.write_byte_data(self.MPU_addr, self.GYRO_CONFIG, 24)
         self.bus.write_byte_data(self.MPU_addr, self.INT_ENABLE, 1)
 
     def read_raw_data(self, addr):
@@ -48,9 +47,9 @@ class MPU6050:
         gyro_z = self.read_raw_data(self.GYRO_ZOUT_H)
         
         #Full scale range +/- 250 degree/C as per sensitivity scale factor
-        Ax = acc_x/16384.0 * 9.8
-        Ay = acc_y/16384.0 * 9.8
-        Az = acc_z/16384.0 * 9.8
+        Ax = acc_x/16384.0
+        Ay = acc_y/16384.0
+        Az = acc_z/16384.0
         
         Gx = gyro_x/131.0
         Gy = gyro_y/131.0
