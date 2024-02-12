@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import ttk # all the widgets
-from sensor_read import sensor_read
+import sensor_read
 # import ttkbootstrap as ttk
 
 def update_window():
     # Update label values with new data
-    di = sensor_read()
+    di = sensor_read.sensor_read()
     lat_lon_label.config(text='Not found')
     alt_label.config(text='Not found')
     acc_x_label.config(text=di['mpu6050']['ax'])
