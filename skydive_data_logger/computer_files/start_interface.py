@@ -16,7 +16,7 @@ def update_window():
     gy_z.config(text=di['mpu6050']['gz'])
     pres.config(text=di['dps']['pr'])
     temp.config(text=di['dps']['te'])
-    e_temp.config(text=di['et'])
+    e_temp.config(text='Not found')
 
     # Schedule the next update using `after` method
     window.after(100, update_window) 
