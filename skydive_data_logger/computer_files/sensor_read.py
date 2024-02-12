@@ -72,15 +72,15 @@ def sensor_read():
         di['mpu6050']['gx'] = (mpu_val[3])
         di['mpu6050']['gy'] = (mpu_val[4])
         di['mpu6050']['gz'] = (mpu_val[5])
-        # print(mpu_val)
+        print(mpu_val)
 
     if dps_flag == 1:
         scaled_p = dps310.calcScaledPressure()
         scaled_t = dps310.calcScaledTemperature()
         p = dps310.calcCompPressure(scaled_p, scaled_t)
         t = dps310.calcCompTemperature(scaled_t)
-        # print((10**((log(p/101325)/log(2.718))/5.2558797)-1/(-6.8755856*10**-6) ) , 'ft')
-        # print(t,'C')
+        print(p, 'Pa')
+        print(t,'C')
         di['dps']['pr'] = (p)
         di['dps']['te'] = (t)
 

@@ -6,6 +6,7 @@ import sensor_read
 def update_window():
     # Update label values with new data
     di = sensor_read.sensor_read()
+    print(di)
     lat_lon_label.config(text='Not found')
     alt_label.config(text='Not found')
     acc_x_label.config(text=di['mpu6050']['ax'])
