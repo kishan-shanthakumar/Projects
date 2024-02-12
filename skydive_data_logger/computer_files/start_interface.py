@@ -1,6 +1,25 @@
 import tkinter as tk
 from tkinter import ttk # all the widgets
+from sensor_read import sensor_read
 # import ttkbootstrap as ttk
+
+def update_window():
+    # Update label values with new data
+    di = sensor_read()
+    lat_lon.config(text='Not found')
+    alt.config(text='Not found')
+    acc_x.config(text=di['mpu6050']['ax'])
+    acc_y.config(text=di['mpu6050']['ay'])
+    acc_z.config(text=di['mpu6050']['az'])
+    gy_x.config(text=di['mpu6050']['gx'])
+    gy_y.config(text=di['mpu6050']['gy'])
+    gy_z.config(text=di['mpu6050']['gz'])
+    pres.config(text=di['dps']['pr'])
+    temp.config(text=di['dps']['te'])
+    e_temp.config(text=di['et'])
+
+    # Schedule the next update using `after` method
+    window.after(100, update_window) 
 
 # Create a window
 window = tk.Tk()
@@ -26,7 +45,7 @@ gps_title = ttk.Label(
     font = 'Arial 16')
 
 lat_lon = tk.StringVar()
-lat_lon.set('52.12.4 N\t0.9.44 E')
+lat_lon.set('52.12.4 N\t  0.9.44 E')
 
 alt = tk.StringVar()
 alt.set('55 m')
@@ -248,4 +267,5 @@ e_temp_frame.pack()
 mcp_frame.pack(pady = 20)
 
 # Run
+update_window()
 window.mainloop()
