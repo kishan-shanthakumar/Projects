@@ -8,18 +8,18 @@ def update_window():
     di = sensor_read.sensor_read()
     lat_lon_label.config(text='Not found')
     alt_label.config(text='Not found')
-    acc_x_label.config(text=di['mpu6050']['ax'])
-    acc_y_label.config(text=di['mpu6050']['ay'])
-    acc_z_label.config(text=di['mpu6050']['az'])
-    gy_x_label.config(text=di['mpu6050']['gx'])
-    gy_y_label.config(text=di['mpu6050']['gy'])
-    gy_z_label.config(text=di['mpu6050']['gz'])
-    pres_label.config(text=di['dps']['pr'])
-    temp_label.config(text=di['dps']['te'])
+    acc_x_label.config(text=str(di['mpu6050']['ax'])+' m s/sp-2/ep')
+    acc_y_label.config(text=str(di['mpu6050']['ay'])+' m s/sp-2/ep')
+    acc_z_label.config(text=str(di['mpu6050']['az'])+' m s/sp-2/ep')
+    gy_x_label.config(text=str(di['mpu6050']['gx'])+' deg /s')
+    gy_y_label.config(text=str(di['mpu6050']['gy'])+' deg /s')
+    gy_z_label.config(text=str(di['mpu6050']['gz'])+' deg /s')
+    pres_label.config(text=str(di['dps']['pr'])+' Pa')
+    temp_label.config(text=str(di['dps']['te'])+' C')
     e_temp_label.config(text='Not found')
 
     # Schedule the next update using `after` method
-    window.after(100, update_window) 
+    window.after(1000, update_window) 
 
 # Create a window
 window = tk.Tk()
