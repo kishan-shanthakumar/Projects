@@ -226,6 +226,15 @@ e_temp_label.pack(side = 'left')
 e_temp_frame.pack()
 mcp_frame.pack(pady = 20)
 
+# Create scrollbars
+yscrollbar = tk.Scrollbar(window, orient=VERTICAL, command=tk.canvas.yview)
+yscrollbar.pack(side=RIGHT, fill=Y)
+
+xscrollbar = tk.Scrollbar(window, orient=HORIZONTAL, command=tk.canvas.xview)
+xscrollbar.pack(side=BOTTOM, fill=X)
+
+# Link canvas and scrollbars
+tk.canvas.config(xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
 # Run
 update_window()
 window.mainloop()
