@@ -41,6 +41,8 @@ canvas.bind(
     '<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
 )
 
+second_frame = ttk.Frame(canvas, width = 750, height = 800)
+
 # title
 title_label = ttk.Label(
     master = canvas, 
@@ -50,7 +52,7 @@ title_label.pack()
 
 # output
 # GPS Data Frame
-gps_frame = ttk.Frame(master = canvas)
+gps_frame = ttk.Frame(master = second_frame)
 lat_lon_frame = ttk.Frame(master = gps_frame)
 alt_frame = ttk.Frame(master = gps_frame)
 
@@ -89,7 +91,7 @@ alt_frame.pack()
 gps_frame.pack(pady = 20)
 
 # MPU Data Frame
-mpu_frame = ttk.Frame(master = canvas)
+mpu_frame = ttk.Frame(master = second_frame)
 x_frame = ttk.Frame(master = mpu_frame)
 y_frame = ttk.Frame(master = mpu_frame)
 z_frame = ttk.Frame(master = mpu_frame)
@@ -178,7 +180,7 @@ z_frame.pack()
 mpu_frame.pack(pady = 20)
 
 # DPS Frame
-dps_frame = ttk.Frame(master = canvas)
+dps_frame = ttk.Frame(master = second_frame)
 pres_frame = ttk.Frame(master = dps_frame)
 temp_frame = ttk.Frame(master = dps_frame)
 
@@ -217,7 +219,7 @@ temp_frame.pack()
 dps_frame.pack(pady = 20)
 
 # MCP Frame
-mcp_frame = ttk.Frame(master = canvas)
+mcp_frame = ttk.Frame(master = second_frame)
 e_temp_frame = ttk.Frame(master = mcp_frame)
 
 mcp_title = ttk.Label(
@@ -240,6 +242,8 @@ e_temp_text.pack(side = 'left')
 e_temp_label.pack(side = 'left')
 e_temp_frame.pack()
 mcp_frame.pack(pady = 20)
+
+canvas.create_window((0, 0), window=second_frame, anchor="nw")
 
 # Run
 update_window()
