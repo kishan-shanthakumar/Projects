@@ -31,14 +31,14 @@ canvas.pack()
 
 # title
 title_label = ttk.Label(
-    master = window, 
+    master = canvas, 
     text = 'Live Sensor Data', 
     font = 'Arial 18 bold')
 title_label.pack()
 
 # output
 # GPS Data Frame
-gps_frame = ttk.Frame(master = window)
+gps_frame = ttk.Frame(master = canvas)
 lat_lon_frame = ttk.Frame(master = gps_frame)
 alt_frame = ttk.Frame(master = gps_frame)
 
@@ -77,7 +77,7 @@ alt_frame.pack()
 gps_frame.pack(pady = 20)
 
 # MPU Data Frame
-mpu_frame = ttk.Frame(master = window)
+mpu_frame = ttk.Frame(master = canvas)
 x_frame = ttk.Frame(master = mpu_frame)
 y_frame = ttk.Frame(master = mpu_frame)
 z_frame = ttk.Frame(master = mpu_frame)
@@ -166,7 +166,7 @@ z_frame.pack()
 mpu_frame.pack(pady = 20)
 
 # DPS Frame
-dps_frame = ttk.Frame(master = window)
+dps_frame = ttk.Frame(master = canvas)
 pres_frame = ttk.Frame(master = dps_frame)
 temp_frame = ttk.Frame(master = dps_frame)
 
@@ -205,7 +205,7 @@ temp_frame.pack()
 dps_frame.pack(pady = 20)
 
 # MCP Frame
-mcp_frame = ttk.Frame(master = window)
+mcp_frame = ttk.Frame(master = canvas)
 e_temp_frame = ttk.Frame(master = mcp_frame)
 
 mcp_title = ttk.Label(
