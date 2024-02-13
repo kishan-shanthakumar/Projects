@@ -255,6 +255,7 @@ e_temp_frame.pack()
 mcp_frame.pack(pady = 20)
 
 canvas.create_window((0, 0), window=second_frame, anchor="nw")
+tabControl.pack(expand=1, fill='both')
 
 # Run
 update_window()
