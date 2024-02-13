@@ -26,6 +26,9 @@ window = tk.Tk()
 window.title('Sensor Data Logger') # title of the window
 window.geometry('800x480') # size of the window
 
+canvas = tk.Canvas(window, width=800, height=480)
+canvas.pack()
+
 # title
 title_label = ttk.Label(
     master = window, 
@@ -227,14 +230,14 @@ e_temp_frame.pack()
 mcp_frame.pack(pady = 20)
 
 # Create scrollbars
-yscrollbar = tk.Scrollbar(window, orient=VERTICAL, command=tk.canvas.yview)
-yscrollbar.pack(side=RIGHT, fill=Y)
+yscrollbar = tk.Scrollbar(window, orient="vertical", command=canvas.yview)
+yscrollbar.pack(side="right", fill=Y)
 
-xscrollbar = tk.Scrollbar(window, orient=HORIZONTAL, command=tk.canvas.xview)
-xscrollbar.pack(side=BOTTOM, fill=X)
+xscrollbar = tk.Scrollbar(window, orient="horizontal", command=canvas.xview)
+xscrollbar.pack(side="bottom", fill=X)
 
 # Link canvas and scrollbars
-tk.canvas.config(xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
+canvas.config(xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
 # Run
 update_window()
 window.mainloop()
