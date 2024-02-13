@@ -1,22 +1,38 @@
 import tkinter as tk
 from tkinter import ttk # all the widgets
-import sensor_read
+try:
+    import sensor_read
+except:
+    pass
 # import ttkbootstrap as ttk
 
 def update_window():
     # Update label values with new data
-    di = sensor_read.sensor_read()
-    lat_lon_label.config(text='Not found')
-    alt_label.config(text='Not found')
-    acc_x_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ax']))
-    acc_y_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ay']))
-    acc_z_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['az']))
-    gy_x_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gx']))
-    gy_y_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gy']))
-    gy_z_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gz']))
-    pres_label.config(text='{:.2f} Pa'.format(di['dps']['pr']))
-    temp_label.config(text='{:.2f} C'.format(di['dps']['te']))
-    e_temp_label.config(text='Not found')
+    try:
+        di = sensor_read.sensor_read()
+        lat_lon_label.config(text='Not found')
+        alt_label.config(text='Not found')
+        acc_x_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ax']))
+        acc_y_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ay']))
+        acc_z_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['az']))
+        gy_x_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gx']))
+        gy_y_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gy']))
+        gy_z_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gz']))
+        pres_label.config(text='{:.2f} Pa'.format(di['dps']['pr']))
+        temp_label.config(text='{:.2f} C'.format(di['dps']['te']))
+        e_temp_label.config(text='Not found')
+    except:
+        lat_lon_label.config(text='Not found')
+        alt_label.config(text='Not found')
+        acc_x_label.config(text='Not found')
+        acc_y_label.config(text='Not found')
+        acc_z_label.config(text='Not found')
+        gy_x_label.config(text='Not found')
+        gy_y_label.config(text='Not found')
+        gy_z_label.config(text='Not found')
+        pres_label.config(text='Not found')
+        temp_label.config(text='Not found')
+        e_temp_label.config(text='Not found')
 
     # Schedule the next update using `after` method
     window.after(1000, update_window) 
@@ -32,8 +48,8 @@ main_frame = ttk.Frame(tabControl)
 
 tabControl.add(main_frame, text ='Live Sensor Data') 
 
-canvas = tk.Canvas(main_frame)
-canvas.pack(side="left", fill="both", expand=1)
+canvas = tk.Canvas(main_frame, width = 500, height = 800)
+canvas.pack()
 
 my_scrollbar = tk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
 my_scrollbar.pack(side="right", fill="y")
