@@ -30,7 +30,7 @@ tabControl = ttk.Notebook(window)
 
 main_frame = ttk.Frame(tabControl)
 
-tabControl.add(main_frame, text ='Tab 1') 
+tabControl.add(main_frame, text ='Live Sensor Data') 
 
 canvas = tk.Canvas(main_frame)
 canvas.pack(side="left", fill="both", expand=1)
