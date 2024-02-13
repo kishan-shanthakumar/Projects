@@ -41,11 +41,11 @@ canvas.bind(
     '<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
 )
 
-second_frame = ttk.Frame(canvas, width = 750, height = 800)
+second_frame = ttk.Frame(canvas, width = 800, height = 800)
 
 # title
 title_label = ttk.Label(
-    master = canvas, 
+    master = second_frame, 
     text = 'Live Sensor Data', 
     font = 'Arial 18 bold')
 title_label.pack()
