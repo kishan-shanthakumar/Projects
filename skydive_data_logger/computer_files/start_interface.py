@@ -35,8 +35,8 @@ canvas.pack(side="left", fill="both", expand=1)
 my_scrollbar = tk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
 my_scrollbar.pack(side="right", fill="y")
 
-# mx_scrollbar = tk.Scrollbar(main_frame, orient="horizontal", command=canvas.xview)
-# mx_scrollbar.pack(side="bottom", fill="x")
+mx_scrollbar = tk.Scrollbar(main_frame, orient="horizontal", command=canvas.xview)
+mx_scrollbar.pack(side="bottom", fill="x")
 
 # configure the canvas
 canvas.configure(yscrollcommand=my_scrollbar.set)
@@ -44,12 +44,12 @@ canvas.bind(
     '<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
 )
 
-# canvas.configure(xscrollcommand=mx_scrollbar.set)
-# canvas.bind(
-#     '<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-# )
+canvas.configure(xscrollcommand=mx_scrollbar.set)
+canvas.bind(
+    '<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+)
 
-second_frame = ttk.Frame(canvas, width = 1000, height = 800)
+second_frame = ttk.Frame(canvas, height = 800)
 
 # title
 title_label = ttk.Label(
