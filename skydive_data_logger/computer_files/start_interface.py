@@ -48,22 +48,14 @@ main_frame = ttk.Frame(tabControl)
 
 tabControl.add(main_frame, text ='Live Sensor Data') 
 
-canvas = tk.Canvas(main_frame, width = 500, height = 800)
-canvas.pack()
+canvas = tk.Canvas(main_frame, height=400)
+canvas.pack(side="left", expand=1)
 
 my_scrollbar = tk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
 my_scrollbar.pack(side="right", fill="y")
 
-mx_scrollbar = tk.Scrollbar(main_frame, orient="horizontal", command=canvas.xview)
-mx_scrollbar.pack(side="bottom", fill="x")
-
 # configure the canvas
 canvas.configure(yscrollcommand=my_scrollbar.set)
-canvas.bind(
-    '<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-)
-
-canvas.configure(xscrollcommand=mx_scrollbar.set)
 canvas.bind(
     '<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
 )
