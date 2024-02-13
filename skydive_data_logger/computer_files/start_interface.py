@@ -26,7 +26,7 @@ window = tk.Tk()
 window.title('Sensor Data Logger') # title of the window
 window.geometry('800x480') # size of the window
 
-main_frame = ttk.Frame(window)
+main_frame = ttk.Notebook(window)
 main_frame.pack(fill="both", expand=1)
 
 canvas = tk.Canvas(main_frame)
