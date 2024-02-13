@@ -231,10 +231,10 @@ mcp_frame.pack(pady = 20)
 
 # Create scrollbars
 yscrollbar = tk.Scrollbar(window, orient="vertical", command=canvas.yview)
-yscrollbar.pack(side="right", fill=Y)
+yscrollbar.pack(side="right", fill="y")
 
 xscrollbar = tk.Scrollbar(window, orient="horizontal", command=canvas.xview)
-xscrollbar.pack(side="bottom", fill=X)
+xscrollbar.pack(side="bottom", fill="x")
 
 # Link canvas and scrollbars
 canvas.config(xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
