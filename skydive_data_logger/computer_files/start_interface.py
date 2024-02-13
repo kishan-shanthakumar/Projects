@@ -29,7 +29,7 @@ window.geometry('800x480') # size of the window
 main_frame = ttk.Frame(window)
 main_frame.pack(fill="both", expand=1)
 
-canvas = tk.Canvas(main_frame, width = 786)
+canvas = tk.Canvas(main_frame)
 canvas.pack(side="left", fill="both", expand=1)
 
 my_scrollbar = tk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
@@ -49,7 +49,7 @@ canvas.bind(
 #     '<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
 # )
 
-second_frame = ttk.Frame(canvas, width = 786, height = 800)
+second_frame = ttk.Frame(canvas, width = 1000, height = 800)
 
 # title
 title_label = ttk.Label(
