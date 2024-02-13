@@ -29,7 +29,7 @@ window.geometry('800x480') # size of the window
 main_frame = ttk.Frame(window)
 main_frame.pack(fill="both", expand=1)
 
-canvas = tk.Canvas(main_frame)
+canvas = tk.Canvas(main_frame, width = 786)
 canvas.pack(side="left", fill="both", expand=1)
 
 my_scrollbar = tk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
