@@ -10,6 +10,7 @@ def update_window():
     # Update label values with new data
     try:
         di = sensor_read.sensor_read()
+        print(di)
         lat_lon_label.config(text='Not found')
         alt_label.config(text='Not found')
         acc_x_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ax']))
@@ -20,7 +21,7 @@ def update_window():
         gy_z_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gz']))
         pres_label.config(text='{:.2f} Pa'.format(di['dps']['pr']))
         temp_label.config(text='{:.2f} C'.format(di['dps']['te']))
-        e_temp_label.config(text='Not found')
+        e_temp_label.config(text='{:.2f} C'.format(di['et']))
     except:
         lat_lon_label.config(text='Not found')
         alt_label.config(text='Not found')
