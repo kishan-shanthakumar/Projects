@@ -95,3 +95,6 @@ class Sensors:
                 self.di['gps']['lat'] = (gps_val['lat'])
                 self.di['gps']['lon'] = (gps_val['lon'])
                 self.di['gps']['alt'] = (gps_val['alt'])
+    
+    def values(self):
+        return self.di
