@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk # all the widgets
 import _thread
+import time
 try:
     from sensor_read import Sensors
 except:
@@ -270,5 +271,6 @@ canvas.create_window((0, 0), window=second_frame, anchor="nw")
 tabControl.pack(expand=1, fill='both')
 
 # Run
+time.sleep(1)
 update_window()
 window.mainloop()
