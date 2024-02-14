@@ -12,8 +12,8 @@ _thread.start_new_thread(sensor.sensor_read ,(1, ))
 
 def update_window():
     # Update label values with new data
+    di = sensor.values()
     try:
-        di = sensor.values()
         lat_lon_label.config(text='Not found')
         alt_label.config(text='Not found')
         acc_x_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ax']))
