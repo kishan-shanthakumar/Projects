@@ -54,6 +54,9 @@ class Sensors:
         self.ti = time.time()
         self.di = {}
 
+        self.log = 0
+        self.log_li = []
+
     # Value reading
     def sensor_read(self, unused):
         while True:
@@ -97,6 +100,23 @@ class Sensors:
                 di_temp['gps']['lon'] = (gps_val['lon'])
                 di_temp['gps']['alt'] = (gps_val['alt'])
             self.di = di_temp
+            if self.log == 1:
+                li_gps = [str(k)+' '+str(v)+', ' for k,v in self.di['gps'].items()]
+                li_mpu = [str(k)+' '+str(v)+', ' for k,v in self.di['mpu6050'].items()]
+                li_dps = [str(k)+' '+str(v)+', ' for k,v in self.di['dps'].items()]
+                li_et = 'et'+' '+str(self.di['et'])+'\n'
+                self.log_li.append(''.join(li_gps)+''.join(li_mpu)+''.join(li_dps)+li_et)
     
     def values(self):
         return self.di
+    
+    def start_log(self):
+        self.log_li = []
+        self.log = 1
+        self.fp = open(self.filename)
+    
+    def stop_log(self):
+        self.log = 0
+        self.fp.write(''.join(self.log_li))
+        self.log_li = []
+        self.fp.close()
