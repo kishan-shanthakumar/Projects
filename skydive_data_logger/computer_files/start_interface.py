@@ -6,13 +6,13 @@ import time
 try:
     from sensor_read import Sensors
 except:
-    pass
+    print('import failed')
 
 try:
     sensor = Sensors()
     _thread.start_new_thread(sensor.sensor_read ,(1, ))
 except:
-    pass
+    print('Setup failed')
 
 def update_window():
     # Update label values with new data
@@ -30,6 +30,7 @@ def update_window():
         temp_label.config(text='{:.2f} C'.format(di['dps']['te']))
         e_temp_label.config(text='{:.2f} C'.format(di['et']))
     except:
+        print('Data extraction failed')
         lat_lon_label.config(text='Not found')
         alt_label.config(text='Not found')
         acc_x_label.config(text='Not found')
