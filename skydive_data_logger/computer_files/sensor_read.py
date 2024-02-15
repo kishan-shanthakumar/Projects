@@ -26,12 +26,12 @@ class Sensors:
             self.mpu = mpu6050(self.MPU_addr, bus)
             print('Calibrating MPU6050')
             mpu_cal = []
-            for i in range(10):
+            tis = time.time()
+            while time.time() - tis > 1
                 mpu_cal.append(self.mpu.get_all_data())
-                time.sleep(0.1)
             self.mpu_cal_ax = sum([x[0] for x in mpu_cal])/10
             self.mpu_cal_ay = sum([x[1] for x in mpu_cal])/10
-            self.mpu_cal_az = sum([x[2] for x in mpu_cal])/10
+            self.mpu_cal_az = sum([x[2] for x in mpu_cal])/10 + 9.801
             self.mpu_cal_gx = sum([x[3] for x in mpu_cal])/10
             self.mpu_cal_gy = sum([x[4] for x in mpu_cal])/10
             self.mpu_cal_gz = sum([x[5] for x in mpu_cal])/10
