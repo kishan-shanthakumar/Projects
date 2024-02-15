@@ -56,7 +56,7 @@ class Sensors:
         self.log = 0
         self.log_li = []
 
-        os.mkdir('../logs', exist_ok=True)
+        os.makedirs('../logs', exist_ok=True)
 
     # Value reading
     def sensor_read(self, unused):
