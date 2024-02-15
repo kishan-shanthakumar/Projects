@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk # all the widgets
-import ttkbootstrap as tb
 from ttkbootstrap.toast import ToastNotification
 import _thread
 import time
@@ -72,7 +71,7 @@ def stop_log():
         toast_error.show_toast()
 
 # Create a window
-window = tb.Window()
+window = tk.Tk()
 window.title('Sensor Data Logger') # title of the window
 window.geometry('800x480') # size of the window
 
