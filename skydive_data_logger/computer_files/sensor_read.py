@@ -79,7 +79,7 @@ class Sensors:
         ts = 0
         while True:
             cal_ax = 0
-            cal_ay = 0
+            cal_ay = 9.801
             cal_az = 0
 
             if self.mpu_flag == 1:
@@ -128,6 +128,7 @@ class Sensors:
             di_temp['mpu6050'] = {}
             di_temp['dps'] = {}
             di_temp['gps'] = {}
+            di_temp['calc'] = {}
             di_temp['time'] = (ts)
 
             self.di = di_temp
