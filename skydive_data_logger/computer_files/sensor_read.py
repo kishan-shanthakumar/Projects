@@ -74,7 +74,7 @@ class Sensors:
         di_temp['mpu6050'] = {}
         di_temp['dps'] = {}
         di_temp['gps'] = {}
-        di_temp['calc'] = {'ax': 0, 'ay': 0, 'az': 0, 'ox': 0, 'oy': 0, 'oz': 0}
+        di_temp['calc'] = {'vx': 0, 'vy': 0, 'vz': 0, 'ox': 0, 'oy': 0, 'oz': 0}
         ti = 0
         ts = 0
         while True:
