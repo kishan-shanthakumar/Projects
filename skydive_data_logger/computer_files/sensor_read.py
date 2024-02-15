@@ -123,3 +123,4 @@ class Sensors:
         self.fp.write(''.join(self.log_li))
         self.log_li = []
         self.fp.close()
+        return self.filename[3:]
