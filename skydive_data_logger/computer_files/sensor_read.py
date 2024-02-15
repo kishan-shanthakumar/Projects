@@ -7,7 +7,7 @@ from math import log
 import os
 
 # Local package import
-from mpu6050 import MPU6050
+from mpu6050 import mpu6050
 from dps310 import DPS
 from gps import GPS
 from mcp9808 import MCP
@@ -23,8 +23,7 @@ class Sensors:
         # MPU6050 initialisation
         self.mpu_flag = 1
         try:
-            self.mpu = MPU6050(self.MPU_addr, bus)
-            self.mpu.MPU_Init()
+            self.mpu = mpu6050(self.MPU_addr, bus)
         except OSError:
             # print('MPU6050 not found, skipping MPU6050 operations')
             self.mpu_flag = 0
@@ -69,7 +68,7 @@ class Sensors:
             di_temp['time'] = (ts)
 
             if self.mpu_flag == 1:
-                mpu_val = self.mpu.mpu_read()
+                mpu_val = self.mpu.get_all_data()
                 di_temp['mpu6050']['ax'] = (mpu_val[0])
                 di_temp['mpu6050']['ay'] = (mpu_val[1])
                 di_temp['mpu6050']['az'] = (mpu_val[2])
