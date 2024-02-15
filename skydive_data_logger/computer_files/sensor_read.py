@@ -27,7 +27,7 @@ class Sensors:
             print('Calibrating MPU6050')
             mpu_cal = []
             tis = time.time()
-            while time.time() - tis > 1
+            while time.time() - tis > 1:
                 mpu_cal.append(self.mpu.get_all_data())
             self.mpu_cal_ax = sum([x[0] for x in mpu_cal])/10
             self.mpu_cal_ay = sum([x[1] for x in mpu_cal])/10
