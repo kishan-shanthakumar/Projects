@@ -83,13 +83,16 @@ class Sensors:
             cal_az = 0
 
             if self.mpu_flag == 1:
-                mpu_val = self.mpu.get_all_data()
-                di_temp['mpu6050']['ax'] = (mpu_val[0]) - self.mpu_cal_ax
-                di_temp['mpu6050']['ay'] = (mpu_val[1]) - self.mpu_cal_ay
-                di_temp['mpu6050']['az'] = (mpu_val[2]) - self.mpu_cal_az
-                di_temp['mpu6050']['gx'] = (mpu_val[3]) - self.mpu_cal_gx
-                di_temp['mpu6050']['gy'] = (mpu_val[4]) - self.mpu_cal_gy
-                di_temp['mpu6050']['gz'] = (mpu_val[5]) - self.mpu_cal_gz
+                mpu_val = []
+                tise = time.time()
+                while time.time() - tise < 0.1:
+                    mpu_val.append(self.mpu.get_all_data())
+                di_temp['mpu6050']['ax'] = sum([x[0] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ax
+                di_temp['mpu6050']['ay'] = sum([x[1] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ay
+                di_temp['mpu6050']['az'] = sum([x[2] for x in mpu_val])/len(mpu_val) - self.mpu_cal_az
+                di_temp['mpu6050']['gx'] = sum([x[3] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gx
+                di_temp['mpu6050']['gy'] = sum([x[4] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gy
+                di_temp['mpu6050']['gz'] = sum([x[5] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gz
                 di_temp['calc']['vx'] = di_temp['calc']['vx'] + (mpu_val[0] - cal_ax) * (ts - ti)
                 di_temp['calc']['vy'] = di_temp['calc']['vy'] + (mpu_val[1] - cal_ay) * (ts - ti)
                 di_temp['calc']['vz'] = di_temp['calc']['vz'] + (mpu_val[2] - cal_az) * (ts - ti)
@@ -134,8 +137,6 @@ class Sensors:
                 li_dps = [str(k)+' '+str(v)+', ' for k,v in self.di['dps'].items()]
                 li_et = 'et'+' '+str(self.di['et'])+'\n'
                 self.log_li.append(li_time+','+''.join(li_gps)+''.join(li_mpu)+''.join(li_cal)+''.join(li_dps)+li_et)
-            
-            time.sleep(0.1)
     
     def values(self):
         return self.di
