@@ -29,12 +29,12 @@ class Sensors:
             tis = time.time()
             while time.time() - tis < 1:
                 mpu_cal.append(self.mpu.get_all_data())
-            self.mpu_cal_ax = sum([x[0] for x in mpu_cal])/10
-            self.mpu_cal_ay = sum([x[1] for x in mpu_cal])/10
-            self.mpu_cal_az = sum([x[2] for x in mpu_cal])/10 - 9.801
-            self.mpu_cal_gx = sum([x[3] for x in mpu_cal])/10
-            self.mpu_cal_gy = sum([x[4] for x in mpu_cal])/10
-            self.mpu_cal_gz = sum([x[5] for x in mpu_cal])/10
+            self.mpu_cal_ax = sum([x[0] for x in mpu_cal])/len(mpu_cal)
+            self.mpu_cal_ay = sum([x[1] for x in mpu_cal])/len(mpu_cal)
+            self.mpu_cal_az = sum([x[2] for x in mpu_cal])/len(mpu_cal) - 9.801
+            self.mpu_cal_gx = sum([x[3] for x in mpu_cal])/len(mpu_cal)
+            self.mpu_cal_gy = sum([x[4] for x in mpu_cal])/len(mpu_cal)
+            self.mpu_cal_gz = sum([x[5] for x in mpu_cal])/len(mpu_cal)
         except OSError:
             print('MPU6050 not found, skipping MPU6050 operations')
             self.mpu_flag = 0
