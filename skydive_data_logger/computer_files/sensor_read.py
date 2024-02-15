@@ -24,6 +24,17 @@ class Sensors:
         self.mpu_flag = 1
         try:
             self.mpu = mpu6050(self.MPU_addr, bus)
+            print('Calibrating MPU6050')
+            mpu_cal = []
+            for i in range(10):
+                mpu_cal.append(self.mpu.get_all_data())
+                time.sleep(0.1)
+            self.mpu_cal_ax = sum([x[0] for x in mpu_cal])/10
+            self.mpu_cal_ay = sum([x[1] for x in mpu_cal])/10
+            self.mpu_cal_az = sum([x[2] for x in mpu_cal])/10
+            self.mpu_cal_gx = sum([x[3] for x in mpu_cal])/10
+            self.mpu_cal_gy = sum([x[4] for x in mpu_cal])/10
+            self.mpu_cal_gz = sum([x[5] for x in mpu_cal])/10
         except OSError:
             print('MPU6050 not found, skipping MPU6050 operations')
             self.mpu_flag = 0
@@ -69,12 +80,12 @@ class Sensors:
 
             if self.mpu_flag == 1:
                 mpu_val = self.mpu.get_all_data()
-                di_temp['mpu6050']['ax'] = (mpu_val[0])
-                di_temp['mpu6050']['ay'] = (mpu_val[1])
-                di_temp['mpu6050']['az'] = (mpu_val[2])
-                di_temp['mpu6050']['gx'] = (mpu_val[3])
-                di_temp['mpu6050']['gy'] = (mpu_val[4])
-                di_temp['mpu6050']['gz'] = (mpu_val[5])
+                di_temp['mpu6050']['ax'] = (mpu_val[0]) - self.mpu_cal_ax
+                di_temp['mpu6050']['ay'] = (mpu_val[1]) - self.mpu_cal_ay
+                di_temp['mpu6050']['az'] = (mpu_val[2]) - self.mpu_cal_az
+                di_temp['mpu6050']['gx'] = (mpu_val[3]) - self.mpu_cal_gx
+                di_temp['mpu6050']['gy'] = (mpu_val[4]) - self.mpu_cal_gy
+                di_temp['mpu6050']['gz'] = (mpu_val[5]) - self.mpu_cal_gz
                 # print(mpu_val)
 
             if self.dps_flag == 1:
