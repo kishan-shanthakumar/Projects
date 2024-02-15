@@ -245,5 +245,5 @@ class mpu6050:
         temp = self.get_temp()
         accel = self.get_accel_data()
         gyro = self.get_gyro_data()
-
-        return list(accel.values())+ list(gyro.values())
+        print(list(accel.values()) + list(gyro.values()))
+        return list(accel.values()) + list(gyro.values())
