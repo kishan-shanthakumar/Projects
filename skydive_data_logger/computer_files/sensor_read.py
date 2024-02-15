@@ -123,12 +123,6 @@ class Sensors:
             
             ts = time.time() - self.ti
             ti = ts
-
-            di_temp = {}
-            di_temp['mpu6050'] = {}
-            di_temp['dps'] = {}
-            di_temp['gps'] = {}
-            di_temp['calc'] = {}
             di_temp['time'] = (ts)
 
             self.di = di_temp
