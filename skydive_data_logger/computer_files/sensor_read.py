@@ -61,7 +61,7 @@ class Sensors:
         _thread.start_new_thread(self.gps.gps_data ,(1, ))
 
         self.ti = time.time()
-        self.di = {}
+        self.di = dict()
 
         self.log = 0
         self.log_li = []
@@ -70,13 +70,23 @@ class Sensors:
 
     # Value reading
     def sensor_read(self, unused):
+        di_temp = {}
+        di_temp['mpu6050'] = {}
+        di_temp['dps'] = {}
+        di_temp['gps'] = {}
+        di_temp['calc'] = {'ax': 0, 'ay': 0, 'az': 0, 'ox': 0, 'oy': 0, 'oz': 0}
+        ti = 0
+        ts = 0
         while True:
-            ts = time.time() - self.ti
             di_temp = {}
             di_temp['mpu6050'] = {}
             di_temp['dps'] = {}
             di_temp['gps'] = {}
             di_temp['time'] = (ts)
+
+            cal_ax = 0
+            cal_ay = 0
+            cal_az = 0
 
             if self.mpu_flag == 1:
                 mpu_val = self.mpu.get_all_data()
@@ -86,6 +96,12 @@ class Sensors:
                 di_temp['mpu6050']['gx'] = (mpu_val[3]) - self.mpu_cal_gx
                 di_temp['mpu6050']['gy'] = (mpu_val[4]) - self.mpu_cal_gy
                 di_temp['mpu6050']['gz'] = (mpu_val[5]) - self.mpu_cal_gz
+                di_temp['calc']['vx'] = di_temp['calc']['vx'] + (mpu_val[0] - cal_ax) * (ts - ti)
+                di_temp['calc']['vy'] = di_temp['calc']['vy'] + (mpu_val[0] - cal_ax) * (ts - ti)
+                di_temp['calc']['vz'] = di_temp['calc']['vz'] + (mpu_val[0] - cal_ax) * (ts - ti)
+                di_temp['calc']['ox'] = di_temp['calc']['ox'] + (mpu_val[0] - cal_ax) * (ts - ti)
+                di_temp['calc']['oy'] = di_temp['calc']['oy'] + (mpu_val[0] - cal_ax) * (ts - ti)
+                di_temp['calc']['oz'] = di_temp['calc']['oz'] + (mpu_val[0] - cal_ax) * (ts - ti)
                 # print(mpu_val)
 
             if self.dps_flag == 1:
@@ -110,15 +126,18 @@ class Sensors:
                 di_temp['gps']['lat'] = (gps_val['lat'])
                 di_temp['gps']['lon'] = (gps_val['lon'])
                 di_temp['gps']['alt'] = (gps_val['alt'])
+            
+            ts = time.time() - self.ti
+            ti = ts
             self.di = di_temp
             if self.log == 1:
                 li_time = str(self.di['time'])
                 li_gps = [str(k)+' '+str(v)+', ' for k,v in self.di['gps'].items()]
                 li_mpu = [str(k)+' '+str(v)+', ' for k,v in self.di['mpu6050'].items()]
+                li_cal = [str(k)+' '+str(v)+', ' for k,v in self.di['calc'].items()]
                 li_dps = [str(k)+' '+str(v)+', ' for k,v in self.di['dps'].items()]
                 li_et = 'et'+' '+str(self.di['et'])+'\n'
-                self.log_li.append(li_time+','+''.join(li_gps)+''.join(li_mpu)+''.join(li_dps)+li_et)
-            time.sleep(0.1)
+                self.log_li.append(li_time+','+''.join(li_gps)+''.join(li_mpu)+''.join(li_cal)+''.join(li_dps)+li_et)
     
     def values(self):
         return self.di

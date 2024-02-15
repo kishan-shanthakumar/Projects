@@ -26,6 +26,12 @@ def update_window():
         gy_x_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gx']))
         gy_y_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gy']))
         gy_z_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gz']))
+        calc_acc_x_label.config(text='{:.2f} m /s'.format(di['calc']['vx']))
+        calc_acc_y_label.config(text='{:.2f} m /s'.format(di['calc']['vy']))
+        calc_acc_z_label.config(text='{:.2f} m /s'.format(di['calc']['vz']))
+        calc_gy_x_label.config(text='{:.2f} deg'.format(di['calc']['ox']))
+        calc_gy_y_label.config(text='{:.2f} deg'.format(di['calc']['oy']))
+        calc_gy_z_label.config(text='{:.2f} deg'.format(di['calc']['oz']))
         pres_label.config(text='{:.2f} Pa'.format(di['dps']['pr']))
         temp_label.config(text='{:.2f} C'.format(di['dps']['te']))
         e_temp_label.config(text='{:.2f} C'.format(di['et']))
@@ -39,6 +45,12 @@ def update_window():
         gy_x_label.config(text='Not found')
         gy_y_label.config(text='Not found')
         gy_z_label.config(text='Not found')
+        calc_acc_x_label.config(text='Not found')
+        calc_acc_y_label.config(text='Not found')
+        calc_acc_z_label.config(text='Not found')
+        calc_gy_x_label.config(text='Not found')
+        calc_gy_y_label.config(text='Not found')
+        calc_gy_z_label.config(text='Not found')
         pres_label.config(text='Not found')
         temp_label.config(text='Not found')
         e_temp_label.config(text='Not found')
@@ -231,6 +243,95 @@ x_frame.pack()
 y_frame.pack()
 z_frame.pack()
 mpu_frame.pack(pady = 20)
+
+# Calc Data Frame
+calc_frame = ttk.Frame(master = second_frame)
+calc_x_frame = ttk.Frame(master = calc_frame)
+calc_y_frame = ttk.Frame(master = calc_frame)
+calc_z_frame = ttk.Frame(master = calc_frame)
+
+calc_title = ttk.Label(
+    master = calc_frame, 
+    text = 'Velocity and Orientation', 
+    font = 'Arial 16')
+
+calc_acc_x_text = ttk.Label(
+    master = calc_x_frame, 
+    text = 'Vel X\t',
+    font = 'Arial 12')
+
+calc_acc_y_text = ttk.Label(
+    master = calc_y_frame, 
+    text = 'Vel Y\t',
+    font = 'Arial 12')
+
+calc_acc_z_text = ttk.Label(
+    master = calc_z_frame, 
+    text = 'Vel Z\t',
+    font = 'Arial 12')
+
+calc_gy_x_text = ttk.Label(
+    master = calc_x_frame, 
+    text = '\t\tOr X\t',
+    font = 'Arial 12')
+
+calc_gy_y_text = ttk.Label(
+    master = calc_y_frame, 
+    text = '\t\tOr Y\t',
+    font = 'Arial 12')
+
+calc_gy_z_text = ttk.Label(
+    master = calc_z_frame, 
+    text = '\t\tOr Z\t',
+    font = 'Arial 12')
+
+calc_acc_x_label = ttk.Label(
+    master = calc_x_frame, 
+    text = 'Output', 
+    font = 'Arial 12')
+
+calc_acc_y_label = ttk.Label(
+    master = calc_y_frame, 
+    text = 'Output', 
+    font = 'Arial 12')
+
+calc_acc_z_label = ttk.Label(
+    master = calc_z_frame, 
+    text = 'Output', 
+    font = 'Arial 12')
+
+calc_gy_x_label = ttk.Label(
+    master = calc_x_frame, 
+    text = 'Output', 
+    font = 'Arial 12')
+
+calc_gy_y_label = ttk.Label(
+    master = calc_y_frame, 
+    text = 'Output', 
+    font = 'Arial 12')
+
+calc_gy_z_label = ttk.Label(
+    master = calc_z_frame, 
+    text = 'Output', 
+    font = 'Arial 12')
+
+calc_title.pack()
+calc_acc_x_text.pack(side='left')
+calc_acc_y_text.pack(side='left')
+calc_acc_z_text.pack(side='left')
+calc_acc_x_label.pack(side='left')
+calc_acc_y_label.pack(side='left')
+calc_acc_z_label.pack(side='left')
+calc_gy_x_text.pack(side='left')
+calc_gy_y_text.pack(side='left')
+calc_gy_z_text.pack(side='left')
+calc_gy_x_label.pack(side='left')
+calc_gy_y_label.pack(side='left')
+calc_gy_z_label.pack(side='left')
+calc_x_frame.pack()
+calc_y_frame.pack()
+calc_z_frame.pack()
+calc_frame.pack(pady = 20)
 
 # DPS Frame
 dps_frame = ttk.Frame(master = second_frame)
