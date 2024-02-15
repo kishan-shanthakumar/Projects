@@ -25,7 +25,7 @@ class Sensors:
         try:
             self.mpu = mpu6050(self.MPU_addr, bus)
         except OSError:
-            # print('MPU6050 not found, skipping MPU6050 operations')
+            print('MPU6050 not found, skipping MPU6050 operations')
             self.mpu_flag = 0
 
         # DPS310 initialisation
@@ -33,7 +33,7 @@ class Sensors:
         try:
             self.dps310 = DPS(self.DPS_addr, bus)
         except OSError:
-            # print('DPS310 not found, skipping DPS310 operations')
+            print('DPS310 not found, skipping DPS310 operations')
             self.dps_flag = 0
 
         # MCP9808 initiaslisation
@@ -42,7 +42,7 @@ class Sensors:
             self.mcp = MCP(self.MCP_addr, bus)
             self.mcp.MCP_Init()
         except OSError:
-            # print('MCP9808 not found, skipping MCP9808 operations')
+            print('MCP9808 not found, skipping MCP9808 operations')
             self.mcp_flag = 0
 
         # GPS initialisation
