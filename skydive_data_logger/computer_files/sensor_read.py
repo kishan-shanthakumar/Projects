@@ -57,6 +57,8 @@ class Sensors:
         self.log = 0
         self.log_li = []
 
+        os.mkdir('../logs')
+
     # Value reading
     def sensor_read(self, unused):
         while True:
@@ -113,6 +115,7 @@ class Sensors:
     def start_log(self):
         self.log_li = []
         self.log = 1
+        self.filename = '../logs/'+str(time.time())+'.txt'
         self.fp = open(self.filename)
     
     def stop_log(self):
