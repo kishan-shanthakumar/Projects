@@ -87,12 +87,12 @@ class Sensors:
                 tise = time.time()
                 while time.time() - tise < 0.5:
                     mpu_val.append(self.mpu.get_all_data())
-                di_temp['mpu6050']['ax'] = sum([x[0] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ax
-                di_temp['mpu6050']['ay'] = sum([x[1] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ay
-                di_temp['mpu6050']['az'] = sum([x[2] for x in mpu_val])/len(mpu_val) - self.mpu_cal_az
-                di_temp['mpu6050']['gx'] = sum([x[3] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gx
-                di_temp['mpu6050']['gy'] = sum([x[4] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gy
-                di_temp['mpu6050']['gz'] = sum([x[5] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gz
+                di_temp['mpu6050']['ax'] = round(sum([x[0] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ax, 1)
+                di_temp['mpu6050']['ay'] = round(sum([x[1] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ay, 1)
+                di_temp['mpu6050']['az'] = round(sum([x[2] for x in mpu_val])/len(mpu_val) - self.mpu_cal_az, 1)
+                di_temp['mpu6050']['gx'] = round(sum([x[3] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gx, 1)
+                di_temp['mpu6050']['gy'] = round(sum([x[4] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gy, 1)
+                di_temp['mpu6050']['gz'] = round(sum([x[5] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gz, 1)
                 di_temp['calc']['vx'] = di_temp['calc']['vx'] + (sum([x[0] for x in mpu_val])/len(mpu_val) - cal_ax) * (ts - ti)
                 di_temp['calc']['vy'] = di_temp['calc']['vy'] + (sum([x[1] for x in mpu_val])/len(mpu_val) - cal_ay) * (ts - ti)
                 di_temp['calc']['vz'] = di_temp['calc']['vz'] + (sum([x[2] for x in mpu_val])/len(mpu_val) - cal_az) * (ts - ti)
