@@ -79,8 +79,8 @@ class Sensors:
         ts = 0
         while True:
             cal_ax = 0
-            cal_ay = 9.801
-            cal_az = 0
+            cal_ay = 0
+            cal_az = 9.801
 
             if self.mpu_flag == 1:
                 mpu_val = []
