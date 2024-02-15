@@ -48,15 +48,26 @@ def update_window():
 
 def start_log():
     try:
-        sensor.start_log()
-        toast_start.show_toast()
+        if sensor.log == 1:
+            toast_running.show_toast()
+        else:
+            sensor.start_log()
+            toast_start.show_toast()
     except NameError:
         toast_error.show_toast()
 
 def stop_log():
     try:
-        sensor.stop_log()
-        toast_stop.show_toast()
+        if sensor.log == 0:
+            toast_stopped.show_toast()
+        else:
+            fi = sensor.stop_log()
+            toast_stop = ToastNotification(title="Stopping",
+            message="Stopping Sensor Data Log and Saving file "+fi,
+            duration=3000,
+            alert=True,
+            )
+            toast_stop.show_toast()
     except NameError:
         toast_error.show_toast()
 
@@ -296,19 +307,25 @@ button_stop = ttk.Button(main_frame2, text='Stop Data Log', command=stop_log)
 button_start.pack(pady=20)
 button_stop.pack(pady=20)
 
-toast_start = ToastNotification(title="Start_log",
+toast_start = ToastNotification(title="Starting",
 	message="Starting Sensor Data Log",
 	duration=3000,
 	alert=True,
 	)
 
-toast_stop = ToastNotification(title="Stop_log",
-	message="Stopping Sensor Data Log and Saving file",
+toast_running = ToastNotification(title="Error",
+	message="A log is already running",
 	duration=3000,
 	alert=True,
 	)
 
-toast_error = ToastNotification(title="Error_toast",
+toast_stopped = ToastNotification(title="Error",
+	message="Starting Sensor Data Log",
+	duration=3000,
+	alert=True,
+	)
+
+toast_error = ToastNotification(title="Error",
 	message="Sensors not found",
 	duration=3000,
 	alert=True,
