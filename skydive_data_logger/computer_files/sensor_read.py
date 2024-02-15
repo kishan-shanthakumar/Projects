@@ -78,12 +78,6 @@ class Sensors:
         ti = 0
         ts = 0
         while True:
-            di_temp = {}
-            di_temp['mpu6050'] = {}
-            di_temp['dps'] = {}
-            di_temp['gps'] = {}
-            di_temp['time'] = (ts)
-
             cal_ax = 0
             cal_ay = 0
             cal_az = 0
@@ -97,11 +91,11 @@ class Sensors:
                 di_temp['mpu6050']['gy'] = (mpu_val[4]) - self.mpu_cal_gy
                 di_temp['mpu6050']['gz'] = (mpu_val[5]) - self.mpu_cal_gz
                 di_temp['calc']['vx'] = di_temp['calc']['vx'] + (mpu_val[0] - cal_ax) * (ts - ti)
-                di_temp['calc']['vy'] = di_temp['calc']['vy'] + (mpu_val[0] - cal_ax) * (ts - ti)
-                di_temp['calc']['vz'] = di_temp['calc']['vz'] + (mpu_val[0] - cal_ax) * (ts - ti)
-                di_temp['calc']['ox'] = di_temp['calc']['ox'] + (mpu_val[0] - cal_ax) * (ts - ti)
-                di_temp['calc']['oy'] = di_temp['calc']['oy'] + (mpu_val[0] - cal_ax) * (ts - ti)
-                di_temp['calc']['oz'] = di_temp['calc']['oz'] + (mpu_val[0] - cal_ax) * (ts - ti)
+                di_temp['calc']['vy'] = di_temp['calc']['vy'] + (mpu_val[1] - cal_ay) * (ts - ti)
+                di_temp['calc']['vz'] = di_temp['calc']['vz'] + (mpu_val[2] - cal_az) * (ts - ti)
+                di_temp['calc']['ox'] = di_temp['calc']['ox'] + (mpu_val[3]) * (ts - ti)
+                di_temp['calc']['oy'] = di_temp['calc']['oy'] + (mpu_val[4]) * (ts - ti)
+                di_temp['calc']['oz'] = di_temp['calc']['oz'] + (mpu_val[5]) * (ts - ti)
                 # print(mpu_val)
 
             if self.dps_flag == 1:
@@ -129,6 +123,13 @@ class Sensors:
             
             ts = time.time() - self.ti
             ti = ts
+
+            di_temp = {}
+            di_temp['mpu6050'] = {}
+            di_temp['dps'] = {}
+            di_temp['gps'] = {}
+            di_temp['time'] = (ts)
+
             self.di = di_temp
             if self.log == 1:
                 li_time = str(self.di['time'])
