@@ -1,20 +1,24 @@
 import tkinter as tk
 from tkinter import ttk # all the widgets
+import ttkbootstrap as tb
+from ttkbootstrap.toast import ToastNotification
 import _thread
 import time
 try:
     from sensor_read import Sensors
 except:
     pass
-# import ttkbootstrap as ttk
 
-sensor = Sensors()
-_thread.start_new_thread(sensor.sensor_read ,(1, ))
+try:
+    sensor = Sensors()
+    _thread.start_new_thread(sensor.sensor_read ,(1, ))
+except:
+    pass
 
 def update_window():
     # Update label values with new data
-    di = sensor.values()
     try:
+        di = sensor.values()
         lat_lon_label.config(text='Not found')
         alt_label.config(text='Not found')
         acc_x_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ax']))
@@ -42,8 +46,22 @@ def update_window():
     # Schedule the next update using `after` method
     window.after(1000, update_window) 
 
+def start_log():
+    try:
+        sensor.start_log()
+        toast_start.show_toast()
+    except NameError:
+        toast_error.show_toast()
+
+def stop_log():
+    try:
+        sensor.stop_log()
+        toast_stop.show_toast()
+    except NameError:
+        toast_error.show_toast()
+
 # Create a window
-window = tk.Tk()
+window = tb.Window()
 window.title('Sensor Data Logger') # title of the window
 window.geometry('800x480') # size of the window
 
@@ -268,6 +286,34 @@ e_temp_frame.pack()
 mcp_frame.pack(pady = 20)
 
 canvas.create_window((0, 0), window=second_frame, anchor="nw")
+
+main_frame2 = ttk.Frame(tabControl)
+tabControl.add(main_frame2, text ='Sensor Data Logger')
+
+button_start = ttk.Button(main_frame2, text='Start Data Log', command=start_log)
+button_stop = ttk.Button(main_frame2, text='Stop Data Log', command=stop_log)
+
+button_start.pack(pady=20)
+button_stop.pack(pady=20)
+
+toast_start = ToastNotification(title="Start_log",
+	message="Starting Sensor Data Log",
+	duration=3000,
+	alert=True,
+	)
+
+toast_stop = ToastNotification(title="Stop_log",
+	message="Stopping Sensor Data Log and Saving file",
+	duration=3000,
+	alert=True,
+	)
+
+toast_error = ToastNotification(title="Error_toast",
+	message="Sensors not found",
+	duration=3000,
+	alert=True,
+	)
+
 tabControl.pack(expand=1, fill='both')
 
 # Run
