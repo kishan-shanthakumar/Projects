@@ -102,11 +102,13 @@ class Sensors:
                 di_temp['gps']['alt'] = (gps_val['alt'])
             self.di = di_temp
             if self.log == 1:
+                li_time = str(self.di['time'])
                 li_gps = [str(k)+' '+str(v)+', ' for k,v in self.di['gps'].items()]
                 li_mpu = [str(k)+' '+str(v)+', ' for k,v in self.di['mpu6050'].items()]
                 li_dps = [str(k)+' '+str(v)+', ' for k,v in self.di['dps'].items()]
                 li_et = 'et'+' '+str(self.di['et'])+'\n'
-                self.log_li.append(''.join(li_gps)+''.join(li_mpu)+''.join(li_dps)+li_et)
+                self.log_li.append(li_time+''.join(li_gps)+''.join(li_mpu)+''.join(li_dps)+li_et)
+            time.sleep(0.1)
     
     def values(self):
         return self.di
