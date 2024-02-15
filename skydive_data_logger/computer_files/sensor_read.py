@@ -19,7 +19,6 @@ class Sensors:
         self.DPS_addr = 0x77   # DPS310  device address
         self.MCP_addr = 0x18
         self.ser = serial.Serial ("/dev/ttyS0", 9600)    # Open port for GPS
-        os.makedirs('/home/kishan/logs',exist_ok=True)
 
         # MPU6050 initialisation
         self.mpu_flag = 1
@@ -57,7 +56,7 @@ class Sensors:
         self.log = 0
         self.log_li = []
 
-        os.mkdir('../logs')
+        os.mkdir('../logs', exist_ok=True)
 
     # Value reading
     def sensor_read(self, unused):
