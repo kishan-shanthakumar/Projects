@@ -93,12 +93,12 @@ class Sensors:
                 di_temp['mpu6050']['gx'] = round(sum([x[3] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gx, 1)
                 di_temp['mpu6050']['gy'] = round(sum([x[4] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gy, 1)
                 di_temp['mpu6050']['gz'] = round(sum([x[5] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gz, 1)
-                di_temp['calc']['vx'] = di_temp['calc']['vx'] + (sum([x[0] for x in mpu_val])/len(mpu_val) - cal_ax) * (ts - ti)
-                di_temp['calc']['vy'] = di_temp['calc']['vy'] + (sum([x[1] for x in mpu_val])/len(mpu_val) - cal_ay) * (ts - ti)
-                di_temp['calc']['vz'] = di_temp['calc']['vz'] + (sum([x[2] for x in mpu_val])/len(mpu_val) - cal_az) * (ts - ti)
-                di_temp['calc']['ox'] = di_temp['calc']['ox'] + (sum([x[3] for x in mpu_val])/len(mpu_val)) * (ts - ti)
-                di_temp['calc']['oy'] = di_temp['calc']['oy'] + (sum([x[4] for x in mpu_val])/len(mpu_val)) * (ts - ti)
-                di_temp['calc']['oz'] = di_temp['calc']['oz'] + (sum([x[5] for x in mpu_val])/len(mpu_val)) * (ts - ti)
+                di_temp['calc']['vx'] = di_temp['calc']['vx'] + (di_temp['mpu6050']['ax'] - cal_ax) * (ts - ti)
+                di_temp['calc']['vy'] = di_temp['calc']['vy'] + (di_temp['mpu6050']['ay'] - cal_ay) * (ts - ti)
+                di_temp['calc']['vz'] = di_temp['calc']['vz'] + (di_temp['mpu6050']['az'] - cal_az) * (ts - ti)
+                di_temp['calc']['ox'] = di_temp['calc']['ox'] + (di_temp['mpu6050']['gx']) * (ts - ti)
+                di_temp['calc']['oy'] = di_temp['calc']['oy'] + (di_temp['mpu6050']['gy']) * (ts - ti)
+                di_temp['calc']['oz'] = di_temp['calc']['oz'] + (di_temp['mpu6050']['gz']) * (ts - ti)
                 # print(mpu_val)
 
             if self.dps_flag == 1:
