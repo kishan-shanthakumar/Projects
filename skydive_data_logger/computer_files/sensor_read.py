@@ -116,7 +116,7 @@ class Sensors:
         self.log_li = []
         self.log = 1
         self.filename = '../logs/'+str(time.time())+'.txt'
-        self.fp = open(self.filename)
+        self.fp = open(self.filename,'w')
     
     def stop_log(self):
         self.log = 0
