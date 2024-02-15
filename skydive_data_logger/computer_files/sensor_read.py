@@ -121,8 +121,8 @@ class Sensors:
                 di_temp['gps']['lon'] = (gps_val['lon'])
                 di_temp['gps']['alt'] = (gps_val['alt'])
             
-            ts = time.time() - self.ti
             ti = ts
+            ts = time.time() - self.ti
             di_temp['time'] = (ts)
 
             self.di = di_temp
