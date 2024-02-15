@@ -85,7 +85,7 @@ class Sensors:
             if self.mpu_flag == 1:
                 mpu_val = []
                 tise = time.time()
-                while time.time() - tise < 0.1:
+                while time.time() - tise < 0.5:
                     mpu_val.append(self.mpu.get_all_data())
                 di_temp['mpu6050']['ax'] = sum([x[0] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ax
                 di_temp['mpu6050']['ay'] = sum([x[1] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ay
