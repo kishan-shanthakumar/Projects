@@ -1,13 +1,9 @@
 Watch
   - Hardware
-    - esp32-s3-mini
     - heartbeat sensor
     - lipo battery
-    - small display
-    - 5v lipo charger board
-  - Software
-    - Continously monitor heartbeat
-    - HTTP Server for the heartbeat data
+    - rf transmitter
+    - battery level sense
 
 Computer
   - Hardware
