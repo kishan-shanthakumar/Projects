@@ -78,26 +78,27 @@ class Sensors:
         ti = 0
         ts = 0
         while True:
+            cal_ax = (9.801 / 1.414) * math.sqrt((math.sin(math.radians(di_temp['calc']['oy'])))**2 + (math.sin(math.radians(di_temp['calc']['oz'])))**2)
+            cal_ay = (9.801 / 1.414) * math.sqrt((math.sin(math.radians(di_temp['calc']['oz'])))**2 + (math.sin(math.radians(di_temp['calc']['ox'])))**2)
+            cal_az = (9.801 / 1.414) * math.sqrt((math.cos(math.radians(di_temp['calc']['ox'])))**2 + (math.cos(math.radians(di_temp['calc']['oy'])))**2)
+
             if self.mpu_flag == 1:
                 mpu_val = []
                 tise = time.time()
-                while time.time() - tise < 0.1:
+                while time.time() - tise < 0.5:
                     mpu_val.append(self.mpu.get_all_data())
-                cal_ax = 0 * math.sqrt((math.cos(math.radians(di_temp['calc']['oy'])))**2 + (math.sin(math.radians(di_temp['calc']['oz'])))**2)
-                cal_ay = 0 * math.sqrt((math.cos(math.radians(di_temp['calc']['oz'])))**2 + (math.sin(math.radians(di_temp['calc']['ox'])))**2)
-                cal_az = 9.801 * math.sqrt((math.cos(math.radians(di_temp['calc']['ox'])))**2 + (math.sin(math.radians(di_temp['calc']['oy'])))**2)
                 di_temp['mpu6050']['ax'] = round(sum([x[0] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ax, 1)
                 di_temp['mpu6050']['ay'] = round(sum([x[1] for x in mpu_val])/len(mpu_val) - self.mpu_cal_ay, 1)
                 di_temp['mpu6050']['az'] = round(sum([x[2] for x in mpu_val])/len(mpu_val) - self.mpu_cal_az, 1)
                 di_temp['mpu6050']['gx'] = round(sum([x[3] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gx)
                 di_temp['mpu6050']['gy'] = round(sum([x[4] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gy)
                 di_temp['mpu6050']['gz'] = round(sum([x[5] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gz)
-                di_temp['calc']['vx'] = di_temp['calc']['vx'] + (di_temp['mpu6050']['ax'] - cal_ax) * (ts - ti + 0.1)
-                di_temp['calc']['vy'] = di_temp['calc']['vy'] + (di_temp['mpu6050']['ay'] - cal_ay) * (ts - ti + 0.1)
-                di_temp['calc']['vz'] = di_temp['calc']['vz'] + (di_temp['mpu6050']['az'] - cal_az) * (ts - ti + 0.1)
-                di_temp['calc']['ox'] = di_temp['calc']['ox'] + (di_temp['mpu6050']['gx']) * (ts - ti + 0.1)
-                di_temp['calc']['oy'] = di_temp['calc']['oy'] + (di_temp['mpu6050']['gy']) * (ts - ti + 0.1)
-                di_temp['calc']['oz'] = di_temp['calc']['oz'] + (di_temp['mpu6050']['gz']) * (ts - ti + 0.1)
+                di_temp['calc']['vx'] = di_temp['calc']['vx'] + (di_temp['mpu6050']['ax'] - cal_ax) * (ts - ti)
+                di_temp['calc']['vy'] = di_temp['calc']['vy'] + (di_temp['mpu6050']['ay'] - cal_ay) * (ts - ti)
+                di_temp['calc']['vz'] = di_temp['calc']['vz'] + (di_temp['mpu6050']['az'] - cal_az) * (ts - ti)
+                di_temp['calc']['ox'] = di_temp['calc']['ox'] + (di_temp['mpu6050']['gx']) * (ts - ti)
+                di_temp['calc']['oy'] = di_temp['calc']['oy'] + (di_temp['mpu6050']['gy']) * (ts - ti)
+                di_temp['calc']['oz'] = di_temp['calc']['oz'] + (di_temp['mpu6050']['gz']) * (ts - ti)
                 # print(mpu_val)
 
             if self.dps_flag == 1:
