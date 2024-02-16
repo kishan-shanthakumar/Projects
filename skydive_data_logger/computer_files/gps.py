@@ -1,4 +1,4 @@
-import _thread
+import time
 
 class GPS:
     def __init__(self, ser):
@@ -8,8 +8,12 @@ class GPS:
     def gps_data(self, unused):
         while True:
             ser_data = str(self.ser.readline())[3:-1]
-            if ser_data.split(',')[0] == '$GNGGA' and int(ser_data.split(',')[6]) > 0:
-                self.received_data = ser_data
+            try:
+                if ser_data.split(',')[0] == '$GNGGA' and int(ser_data.split(',')[6]) > 0:
+                    self.received_data = ser_data
+            except:
+                pass
+            time.delay(15)
 
     def gps_run(self):
         data = self.received_data.split()
