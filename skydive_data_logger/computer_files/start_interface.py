@@ -16,10 +16,17 @@ except:
 
 def update_window():
     # Update label values with new data
+    di = sensor.values()
     try:
-        di = sensor.values()
         lat_lon_label.config(text=di['lat']+' '+di['lon'])
         alt_label.config(text=di['alt'])
+
+    except:
+        print('Data extraction failed')
+        lat_lon_label.config(text='Not found')
+        alt_label.config(text='Not found')
+
+    try:
         acc_x_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ax']))
         acc_y_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ay']))
         acc_z_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['az']))
@@ -32,13 +39,9 @@ def update_window():
         calc_gy_x_label.config(text='{:.2f} deg'.format(di['calc']['ox']))
         calc_gy_y_label.config(text='{:.2f} deg'.format(di['calc']['oy']))
         calc_gy_z_label.config(text='{:.2f} deg'.format(di['calc']['oz']))
-        pres_label.config(text='{:.2f} Pa'.format(di['dps']['pr']))
-        temp_label.config(text='{:.2f} C'.format(di['dps']['te']))
-        e_temp_label.config(text='{:.2f} C'.format(di['et']))
+        
     except:
         print('Data extraction failed')
-        lat_lon_label.config(text='Not found')
-        alt_label.config(text='Not found')
         acc_x_label.config(text='Not found')
         acc_y_label.config(text='Not found')
         acc_z_label.config(text='Not found')
@@ -51,9 +54,23 @@ def update_window():
         calc_gy_x_label.config(text='Not found')
         calc_gy_y_label.config(text='Not found')
         calc_gy_z_label.config(text='Not found')
+
+    try:
+        pres_label.config(text='{:.2f} Pa'.format(di['dps']['pr']))
+        temp_label.config(text='{:.2f} C'.format(di['dps']['te']))
+
+    except:
+        print('Data extraction failed')
         pres_label.config(text='Not found')
         temp_label.config(text='Not found')
+
+    try:
+        e_temp_label.config(text='{:.2f} C'.format(di['et']))
+
+    except:
+        print('Data extraction failed')
         e_temp_label.config(text='Not found')
+        
 
     # Schedule the next update using `after` method
     window.after(1000, update_window) 
