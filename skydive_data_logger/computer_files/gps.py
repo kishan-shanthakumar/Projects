@@ -8,7 +8,7 @@ class GPS:
     def gps_data(self, unused):
         while True:
             ser_data = self.ser.readline()
-            if ser_data.split(',')[0] == '$GPGGA' and int(ser_data.split(',')[6]) > 0:
+            if ser_data.split(',')[0] == '$GNGGA' and int(ser_data.split(',')[6]) > 0:
                 self.received_data = ser_data
 
     def gps_run(self):
