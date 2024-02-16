@@ -1,4 +1,5 @@
 import time
+import serial
 
 class GPS:
     def __init__(self, ser):
@@ -12,7 +13,7 @@ class GPS:
                 if ser_data.split(',')[0] == '$GNGGA' and int(ser_data.split(',')[6]) > 0:
                     self.received_data = ser_data
             except:
-                pass
+                self.ser = serial.Serial ("/dev/serial0", 9600)    # Open port for GPS
             time.sleep(15)
 
     def gps_run(self):
