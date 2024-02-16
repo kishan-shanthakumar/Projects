@@ -117,7 +117,7 @@ class Sensors:
             
             gps_val = self.gps.gps_run()
             if not gps_val == 0:
-                # print(gps_val)
+                print(gps_val)
                 di_temp['gps']['time'] = (gps_val['time'])
                 di_temp['gps']['lat'] = (gps_val['lat'])
                 di_temp['gps']['lon'] = (gps_val['lon'])
