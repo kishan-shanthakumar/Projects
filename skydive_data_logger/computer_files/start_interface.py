@@ -22,7 +22,7 @@ def update_window():
         alt_label.config(text=di['alt'])
 
     except:
-        print('Data extraction failed')
+        print('GPS Data extraction failed')
         lat_lon_label.config(text='Not found')
         alt_label.config(text='Not found')
 
@@ -41,7 +41,7 @@ def update_window():
         calc_gy_z_label.config(text='{:.2f} deg'.format(di['calc']['oz']))
         
     except:
-        print('Data extraction failed')
+        print('MPU Data extraction failed')
         acc_x_label.config(text='Not found')
         acc_y_label.config(text='Not found')
         acc_z_label.config(text='Not found')
@@ -60,7 +60,7 @@ def update_window():
         temp_label.config(text='{:.2f} C'.format(di['dps']['te']))
 
     except:
-        print('Data extraction failed')
+        print('DPS Data extraction failed')
         pres_label.config(text='Not found')
         temp_label.config(text='Not found')
 
@@ -68,7 +68,7 @@ def update_window():
         e_temp_label.config(text='{:.2f} C'.format(di['et']))
 
     except:
-        print('Data extraction failed')
+        print('MCP Data extraction failed')
         e_temp_label.config(text='Not found')
         
 
