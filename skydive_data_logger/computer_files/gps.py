@@ -17,6 +17,7 @@ class GPS:
     def gps_run(self):
         try:
             data = self.received_data.split()
+            print(data)
             if len(data) > 2:
                 di = {}
                 di['time'] = data[1]
