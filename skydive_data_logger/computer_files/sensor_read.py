@@ -18,7 +18,6 @@ class Sensors:
         self.MPU_addr = 0x68   # MPU6050 device address
         self.DPS_addr = 0x77   # DPS310  device address
         self.MCP_addr = 0x18
-        self.ser = serial.Serial ("/dev/serial0", 9600)    # Open port for GPS
 
         # MPU6050 initialisation
         self.mpu_flag = 1
@@ -57,7 +56,7 @@ class Sensors:
             self.mcp_flag = 0
 
         # GPS initialisation
-        self.gps = GPS(self.ser)
+        self.gps = GPS()
         _thread.start_new_thread(self.gps.gps_data ,(1, ))
 
         self.ti = time.time()

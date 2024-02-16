@@ -2,8 +2,8 @@ import time
 import serial
 
 class GPS:
-    def __init__(self, ser):
-        self.ser = ser
+    def __init__(self):
+        self.ser = serial.Serial ("/dev/serial0", 9600)    # Open port for GPS
         self.received_data = ''
 
     def gps_data(self, unused):
