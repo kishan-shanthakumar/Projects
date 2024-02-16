@@ -18,7 +18,7 @@ class Sensors:
         self.MPU_addr = 0x68   # MPU6050 device address
         self.DPS_addr = 0x77   # DPS310  device address
         self.MCP_addr = 0x18
-        self.ser = serial.Serial ("/dev/ttyS0", 9600)    # Open port for GPS
+        self.ser = serial.Serial ("/dev/serial0", 9600)    # Open port for GPS
 
         # MPU6050 initialisation
         self.mpu_flag = 1
