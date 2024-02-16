@@ -19,7 +19,7 @@ def update_window():
     di = sensor.values()
     try:
         lat_lon_label.config(text=di['gps']['lat']+' '+di['gps']['lon'])
-        alt_label.config(text=di['gps']['alt'])
+        alt_label.config(text=di['gps']['alt']+' '+'m')
 
     except:
         print('GPS Data extraction failed')
