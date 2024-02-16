@@ -4,6 +4,7 @@ import serial
 class GPS:
     def __init__(self):
         self.ser = serial.Serial ("/dev/serial0", 9600)    # Open port for GPS
+        self.received_data = ''
 
     def gps_data(self, unused):
         while True:
@@ -15,17 +16,13 @@ class GPS:
                 self.ser = serial.Serial ("/dev/serial0", 9600)    # Open port for GPS
 
     def gps_run(self):
-        try:
-            data = self.received_data.split()
-            print(data)
-            if len(data) > 2:
-                di = {}
-                di['time'] = data[1]
-                di['lat'] = data[2] + data[3]
-                di['lon'] = data[4] + data[5]
-                di['alt'] = data[9]
-                return(di)
-            else:
-                return 0
-        except:
+        data = self.received_data.split(',')
+        if len(data) > 2:
+            di = {}
+            di['time'] = data[1]
+            di['lat'] = data[2] + data[3]
+            di['lon'] = data[4] + data[5]
+            di['alt'] = data[9]
+            return(di)
+        else:
             return 0
