@@ -18,8 +18,8 @@ def update_window():
     # Update label values with new data
     try:
         di = sensor.values()
-        lat_lon_label.config(text='Not found')
-        alt_label.config(text='Not found')
+        lat_lon_label.config(text=di['lat']+' '+di['lon'])
+        alt_label.config(text=di['alt'])
         acc_x_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ax']))
         acc_y_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ay']))
         acc_z_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['az']))
