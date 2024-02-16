@@ -13,7 +13,7 @@ class GPS:
                     self.received_data = ser_data
             except:
                 pass
-            time.delay(15)
+            time.sleep(15)
 
     def gps_run(self):
         data = self.received_data.split()
