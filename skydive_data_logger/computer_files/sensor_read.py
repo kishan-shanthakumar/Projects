@@ -3,7 +3,7 @@ import smbus
 import _thread
 import serial
 import time
-from math import log
+import math
 import os
 
 # Local package import
@@ -78,9 +78,9 @@ class Sensors:
         ti = 0
         ts = 0
         while True:
-            cal_ax = 0
-            cal_ay = 0
-            cal_az = 9.801
+            cal_ax = 0 * math.sqrt((math.cos(math.radians(di_temp['calc']['oy'])))**2 + (math.sin(math.radians(di_temp['calc']['oz'])))**2)
+            cal_ay = 0 * math.sqrt((math.cos(math.radians(di_temp['calc']['oz'])))**2 + (math.sin(math.radians(di_temp['calc']['ox'])))**2)
+            cal_az = 9.801 * math.sqrt((math.cos(math.radians(di_temp['calc']['ox'])))**2 + (math.sin(math.radians(di_temp['calc']['oy'])))**2)
 
             if self.mpu_flag == 1:
                 mpu_val = []
