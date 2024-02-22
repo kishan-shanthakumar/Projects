@@ -16,7 +16,10 @@ except:
 
 def update_window():
     # Update label values with new data
-    di = sensor.values()
+    try:
+        di = sensor.values()
+    except:
+        pass
     try:
         lat_lon_label.config(text=di['gps']['lat']+' '+di['gps']['lon'])
         alt_label.config(text=di['gps']['alt']+' '+'m')
@@ -33,9 +36,6 @@ def update_window():
         gy_x_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gx']))
         gy_y_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gy']))
         gy_z_label.config(text='{:.2f} deg /s'.format(di['mpu6050']['gz']))
-        calc_acc_x_label.config(text='{:.2f} m /s'.format(di['calc']['vx']))
-        calc_acc_y_label.config(text='{:.2f} m /s'.format(di['calc']['vy']))
-        calc_acc_z_label.config(text='{:.2f} m /s'.format(di['calc']['vz']))
         calc_gy_x_label.config(text='{:.2f} deg'.format(di['calc']['ox']))
         calc_gy_y_label.config(text='{:.2f} deg'.format(di['calc']['oy']))
         calc_gy_z_label.config(text='{:.2f} deg'.format(di['calc']['oz']))
@@ -48,9 +48,6 @@ def update_window():
         gy_x_label.config(text='Not found')
         gy_y_label.config(text='Not found')
         gy_z_label.config(text='Not found')
-        calc_acc_x_label.config(text='Not found')
-        calc_acc_y_label.config(text='Not found')
-        calc_acc_z_label.config(text='Not found')
         calc_gy_x_label.config(text='Not found')
         calc_gy_y_label.config(text='Not found')
         calc_gy_z_label.config(text='Not found')
@@ -269,23 +266,8 @@ calc_z_frame = ttk.Frame(master = calc_frame)
 
 calc_title = ttk.Label(
     master = calc_frame, 
-    text = 'Velocity and Orientation', 
+    text = 'Orientation', 
     font = 'Arial 16')
-
-calc_acc_x_text = ttk.Label(
-    master = calc_x_frame, 
-    text = 'Vel X\t',
-    font = 'Arial 12')
-
-calc_acc_y_text = ttk.Label(
-    master = calc_y_frame, 
-    text = 'Vel Y\t',
-    font = 'Arial 12')
-
-calc_acc_z_text = ttk.Label(
-    master = calc_z_frame, 
-    text = 'Vel Z\t',
-    font = 'Arial 12')
 
 calc_gy_x_text = ttk.Label(
     master = calc_x_frame, 
@@ -300,21 +282,6 @@ calc_gy_y_text = ttk.Label(
 calc_gy_z_text = ttk.Label(
     master = calc_z_frame, 
     text = '\t\tOr Z\t',
-    font = 'Arial 12')
-
-calc_acc_x_label = ttk.Label(
-    master = calc_x_frame, 
-    text = 'Output', 
-    font = 'Arial 12')
-
-calc_acc_y_label = ttk.Label(
-    master = calc_y_frame, 
-    text = 'Output', 
-    font = 'Arial 12')
-
-calc_acc_z_label = ttk.Label(
-    master = calc_z_frame, 
-    text = 'Output', 
     font = 'Arial 12')
 
 calc_gy_x_label = ttk.Label(
@@ -333,20 +300,14 @@ calc_gy_z_label = ttk.Label(
     font = 'Arial 12')
 
 calc_title.pack()
-calc_acc_x_text.pack(side='left')
-calc_acc_y_text.pack(side='left')
-calc_acc_z_text.pack(side='left')
-calc_acc_x_label.pack(side='left')
-calc_acc_y_label.pack(side='left')
-calc_acc_z_label.pack(side='left')
 calc_gy_x_text.pack(side='left')
-calc_gy_y_text.pack(side='left')
-calc_gy_z_text.pack(side='left')
 calc_gy_x_label.pack(side='left')
-calc_gy_y_label.pack(side='left')
-calc_gy_z_label.pack(side='left')
 calc_x_frame.pack()
+calc_gy_y_text.pack(side='left')
+calc_gy_y_label.pack(side='left')
 calc_y_frame.pack()
+calc_gy_z_text.pack(side='left')
+calc_gy_z_label.pack(side='left')
 calc_z_frame.pack()
 calc_frame.pack(pady = 20)
 

@@ -73,14 +73,10 @@ class Sensors:
         di_temp['mpu6050'] = {}
         di_temp['dps'] = {}
         di_temp['gps'] = {}
-        di_temp['calc'] = {'vx': 0, 'vy': 0, 'vz': 0, 'ox': 0, 'oy': 0, 'oz': 0}
+        di_temp['calc'] = {'ox': 0, 'oy': 0, 'oz': 0}
         ti = 0
         ts = 0
         while True:
-            cal_ax = (9.801 / 1.414) * math.sqrt((math.sin(math.radians(di_temp['calc']['oy'])))**2 + (math.sin(math.radians(di_temp['calc']['oz'])))**2)
-            cal_ay = (9.801 / 1.414) * math.sqrt((math.sin(math.radians(di_temp['calc']['oz'])))**2 + (math.sin(math.radians(di_temp['calc']['ox'])))**2)
-            cal_az = (9.801 / 1.414) * math.sqrt((math.cos(math.radians(di_temp['calc']['ox'])))**2 + (math.cos(math.radians(di_temp['calc']['oy'])))**2)
-
             if self.mpu_flag == 1:
                 mpu_val = []
                 tise = time.time()
@@ -92,9 +88,6 @@ class Sensors:
                 di_temp['mpu6050']['gx'] = round(sum([x[3] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gx)
                 di_temp['mpu6050']['gy'] = round(sum([x[4] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gy)
                 di_temp['mpu6050']['gz'] = round(sum([x[5] for x in mpu_val])/len(mpu_val) - self.mpu_cal_gz)
-                di_temp['calc']['vx'] = di_temp['calc']['vx'] + (di_temp['mpu6050']['ax'] - cal_ax) * (ts - ti)
-                di_temp['calc']['vy'] = di_temp['calc']['vy'] + (di_temp['mpu6050']['ay'] - cal_ay) * (ts - ti)
-                di_temp['calc']['vz'] = di_temp['calc']['vz'] + (di_temp['mpu6050']['az'] - cal_az) * (ts - ti)
                 di_temp['calc']['ox'] = di_temp['calc']['ox'] + (di_temp['mpu6050']['gx']) * (ts - ti)
                 di_temp['calc']['oy'] = di_temp['calc']['oy'] + (di_temp['mpu6050']['gy']) * (ts - ti)
                 di_temp['calc']['oz'] = di_temp['calc']['oz'] + (di_temp['mpu6050']['gz']) * (ts - ti)
