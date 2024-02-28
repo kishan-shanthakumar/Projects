@@ -23,11 +23,13 @@ def update_window():
     try:
         lat_lon_label.config(text=di['gps']['lat']+' '+di['gps']['lon'])
         alt_label.config(text=di['gps']['alt']+' '+'m')
+        status_label.config(text=di['gps']['alt'])
 
     except:
         print('GPS Data extraction failed')
         lat_lon_label.config(text='Not found')
         alt_label.config(text='Not found')
+        status_label.config(text='Lost')
 
     try:
         acc_x_label.config(text='{:.2f} m /s\u00b2'.format(di['mpu6050']['ax']))
@@ -134,6 +136,7 @@ title_label.pack()
 gps_frame = ttk.Frame(master = second_frame)
 lat_lon_frame = ttk.Frame(master = gps_frame)
 alt_frame = ttk.Frame(master = gps_frame)
+status_frame = ttk.Frame(master = gps_frame)
 
 gps_title = ttk.Label(
     master = gps_frame, 
@@ -160,13 +163,26 @@ alt_label = ttk.Label(
     text = 'Output', 
     font = 'Arial 12')
 
+status_text = ttk.Label(
+    master = status_frame, 
+    text = 'Status\t\t', 
+    font = 'Arial 12')
+
+status_label = ttk.Label(
+    master = status_frame, 
+    text = 'Output', 
+    font = 'Arial 12')
+
 gps_title.pack()
 lat_lon_text.pack(side = 'left')
 lat_lon_label.pack(side = 'left')
 alt_text.pack(side = 'left')
 alt_label.pack(side = 'left')
+status_text.pack(side = 'left')
+status_label.pack(side = 'left')
 lat_lon_frame.pack()
 alt_frame.pack()
+status_frame.pack()
 gps_frame.pack(pady = 20)
 
 # MPU Data Frame

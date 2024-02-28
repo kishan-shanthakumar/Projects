@@ -72,6 +72,7 @@ class Sensors:
         di_temp = {}
         di_temp['mpu6050'] = {}
         di_temp['dps'] = {}
+        di_temp['dps']['status'] = 'Lost'
         di_temp['gps'] = {}
         di_temp['calc'] = {'ox': 0, 'oy': 0, 'oz': 0}
         ti = 0
@@ -115,6 +116,9 @@ class Sensors:
                 di_temp['gps']['lat'] = (gps_val['lat'])
                 di_temp['gps']['lon'] = (gps_val['lon'])
                 di_temp['gps']['alt'] = (gps_val['alt'])
+                di_temp['dps']['status'] = 'Valid'
+            else:
+                di_temp['dps']['status'] = 'Lost'
             
             ti = ts
             ts = time.time() - self.ti
