@@ -109,7 +109,7 @@ class Sensors:
                 # print(extern_temp)
                 di_temp['et'] = (extern_temp)
             
-            self.gps_verbose = self.gps.all_data
+            self.gps_verbose = self.gps.verb_data()
             gps_val = self.gps.gps_run()
             if not gps_val == 0:
                 # print(gps_val)

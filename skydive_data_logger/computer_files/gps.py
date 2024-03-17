@@ -23,6 +23,9 @@ class GPS:
             except:
                 self.ser = serial.Serial ("/dev/serial0", 9600)    # Open port for GPS
 
+    def verb_data(self):
+        return self.all_data
+
     def gps_run(self):
         data = self.received_data.split(',')
         if len(data) > 2:
