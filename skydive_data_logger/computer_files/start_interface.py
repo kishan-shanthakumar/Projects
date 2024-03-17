@@ -434,7 +434,7 @@ toast_error = ToastNotification(title="Error",
 main_frame3 = ttk.Frame(tabControl)
 tabControl.add(main_frame3, text ='GPS Data Verbose')
 
-canvas1 = tk.Canvas(main_frame3, width=500, height=400)
+canvas1 = tk.Canvas(main_frame3, width=600, height=400)
 canvas1.pack(side="left", expand=1)
 
 my_scrollbar1 = tk.Scrollbar(main_frame3, orient="vertical", command=canvas.yview)
