@@ -108,8 +108,7 @@ class Sensors:
                 extern_temp = self.mcp.mcp_func()
                 # print(extern_temp)
                 di_temp['et'] = (extern_temp)
-            
-            self.gps_verbose = self.gps.verb_data()
+
             gps_val = self.gps.gps_run()
             if not gps_val == 0:
                 # print(gps_val)
@@ -136,7 +135,7 @@ class Sensors:
                 self.log_li.append(li_time+','+''.join(li_gps)+''.join(li_mpu)+''.join(li_cal)+''.join(li_dps)+li_et)
     
     def values(self):
-        return self.di
+        return (self.di, self.gps.all_data)
     
     def start_log(self):
         self.log_li = []
