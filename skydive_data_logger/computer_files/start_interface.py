@@ -79,9 +79,8 @@ def update_window_10000():
     except:
         gps_verbose_label.config(text = 'Not Found')
         
-
     # Schedule the next update using `after` method
-    window.after(10000, update_window) 
+    window.after(10000, update_window_10000) 
 
 def start_log():
     try:
