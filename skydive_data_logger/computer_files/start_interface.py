@@ -457,6 +457,10 @@ gps_verbose_label = ttk.Label(
     text = 'Output', 
     font = 'Arial 12')
 
+gps_verbose_label.pack()
+
+canvas.create_window((0, 0), window=second_frame, anchor="nw")
+
 tabControl.pack(expand=1, fill='both')
 
 # Run
