@@ -70,7 +70,10 @@ def update_window():
         print('MCP Data extraction failed')
         e_temp_label.config(text='Not found')
 
-    gps_verbose_label.config(text = sensor.gps_verbose)
+    try:
+        gps_verbose_label.config(text = sensor.gps_verbose)
+    except:
+        gps_verbose_label.config(text = 'Not Found')
         
 
     # Schedule the next update using `after` method
