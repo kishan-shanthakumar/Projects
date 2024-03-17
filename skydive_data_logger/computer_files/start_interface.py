@@ -447,19 +447,19 @@ second_frame1 = ttk.Frame(canvas1, height = 800)
 
 # title
 title_label1 = ttk.Label(
-    master = second_frame, 
-    text = 'Live Sensor Data', 
+    master = second_frame1, 
+    text = 'GPS Verbose Data', 
     font = 'Arial 18 bold')
 title_label1.pack()
 
 gps_verbose_label = ttk.Label(
-    master = second_frame, 
+    master = second_frame1, 
     text = 'Output', 
     font = 'Arial 12')
 
 gps_verbose_label.pack()
 
-canvas.create_window((0, 0), window=second_frame, anchor="nw")
+canvas1.create_window((0, 0), window=second_frame1, anchor="nw")
 
 tabControl.pack(expand=1, fill='both')
 
