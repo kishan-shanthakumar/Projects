@@ -17,7 +17,7 @@ except:
 def update_window():
     # Update label values with new data
     try:
-        di, gps_verb = sensor.values()
+        di = sensor.values()
     except:
         pass
     try:
@@ -71,7 +71,7 @@ def update_window():
         e_temp_label.config(text='Not found')
 
     try:
-        gps_verbose_label.config(text = gps_verb)
+        gps_verbose_label.config(text = sensor.gps.all_data)
     except:
         gps_verbose_label.config(text = 'Not Found')
         

@@ -135,7 +135,7 @@ class Sensors:
                 self.log_li.append(li_time+','+''.join(li_gps)+''.join(li_mpu)+''.join(li_cal)+''.join(li_dps)+li_et)
     
     def values(self):
-        return (self.di, self.gps.all_data)
+        return self.di
     
     def start_log(self):
         self.log_li = []
