@@ -5,13 +5,19 @@ class GPS:
     def __init__(self):
         self.ser = serial.Serial ("/dev/serial0", 9600)    # Open port for GPS
         self.received_data = ''
+        self.all_data = ""
 
     def gps_data(self, unused):
+        temp_all_data = ""
         while True:
             try:
                 ser_data = str(self.ser.readline())[3:-1]
                 if ser_data.split(',')[0] == 'GNGGA' and int(ser_data.split(',')[6]) > 0:
                     self.received_data = ser_data
+                    self.all_data = temp_all_data
+                    temp_all_data = ser_data
+                else:
+                    temp_all_data += ser_data
             except:
                 self.ser = serial.Serial ("/dev/serial0", 9600)    # Open port for GPS
 

@@ -61,6 +61,7 @@ class Sensors:
 
         self.ti = time.time()
         self.di = dict()
+        self.gps_verbose = self.gps.all_data
 
         self.log = 0
         self.log_li = []

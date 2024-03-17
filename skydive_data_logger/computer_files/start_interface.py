@@ -69,6 +69,8 @@ def update_window():
     except:
         print('MCP Data extraction failed')
         e_temp_label.config(text='Not found')
+
+    gps_verbose_label.config(text = sensor.gps_verbose)
         
 
     # Schedule the next update using `after` method
@@ -425,6 +427,35 @@ toast_error = ToastNotification(title="Error",
 	duration=3000,
 	alert=True,
 	)
+
+main_frame3 = ttk.Frame(tabControl)
+tabControl.add(main_frame3, text ='GPS Data Verbose')
+
+canvas1 = tk.Canvas(main_frame3, width=500, height=400)
+canvas1.pack(side="left", expand=1)
+
+my_scrollbar1 = tk.Scrollbar(main_frame3, orient="vertical", command=canvas.yview)
+my_scrollbar1.pack(side="right", fill="y")
+
+# configure the canvas
+canvas1.configure(yscrollcommand=my_scrollbar.set)
+canvas1.bind(
+    '<Configure>', lambda e: canvas1.configure(scrollregion=canvas.bbox("all"))
+)
+
+second_frame1 = ttk.Frame(canvas1, height = 800)
+
+# title
+title_label1 = ttk.Label(
+    master = second_frame, 
+    text = 'Live Sensor Data', 
+    font = 'Arial 18 bold')
+title_label1.pack()
+
+gps_verbose_label = ttk.Label(
+    master = second_frame, 
+    text = 'Output', 
+    font = 'Arial 12')
 
 tabControl.pack(expand=1, fill='both')
 
