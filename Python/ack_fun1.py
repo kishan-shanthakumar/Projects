@@ -19,7 +19,8 @@ def ack(m,n):
 		if (m,n) in d:
 			return d[m,n]
 		else:
-			d[m,n-1] = ack(m,n-1)
+			if (m,n-1) not in d:
+				d[m,n-1] = ack(m,n-1)
 			d[m,n] = ack(m-1,d[m,n-1])
 			return d[m,n]
 		
