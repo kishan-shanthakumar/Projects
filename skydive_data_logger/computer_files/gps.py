@@ -13,7 +13,7 @@ class GPS:
             try:
                 ser_data = str(self.ser.readline())[3:-1]
                 if 'GNGGA' in ser_data:
-                    self.all_data = '\n\n'.join(temp_all_data)
+                    self.all_data = "\n\n".join(temp_all_data)
                     temp_all_data = []
                     temp_all_data.append(ser_data)
                 else:

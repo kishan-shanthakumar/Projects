@@ -68,8 +68,12 @@ def update_window():
 
     except:
         print('MCP Data extraction failed')
-        e_temp_label.config(text='Not found')
+        e_temp_label.config(text='Not found')        
 
+    # Schedule the next update using `after` method
+    window.after(1000, update_window) 
+
+def update_window_10000():
     try:
         gps_verbose_label.config(text = sensor.gps.all_data)
     except:
@@ -77,7 +81,7 @@ def update_window():
         
 
     # Schedule the next update using `after` method
-    window.after(1000, update_window) 
+    window.after(10000, update_window) 
 
 def start_log():
     try:
