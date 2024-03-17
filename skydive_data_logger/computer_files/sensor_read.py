@@ -61,7 +61,6 @@ class Sensors:
 
         self.ti = time.time()
         self.di = dict()
-        self.gps_verbose = self.gps.all_data
 
         self.log = 0
         self.log_li = []
@@ -110,6 +109,7 @@ class Sensors:
                 # print(extern_temp)
                 di_temp['et'] = (extern_temp)
             
+            self.gps_verbose = self.gps.all_data
             gps_val = self.gps.gps_run()
             if not gps_val == 0:
                 # print(gps_val)
