@@ -36,7 +36,7 @@ reg clk1;
 reg [9:0] counter;
 
 integer i;
-integer j <= 0;
+integer j;
 integer angle;
 
 always @ ( posedge clk )
