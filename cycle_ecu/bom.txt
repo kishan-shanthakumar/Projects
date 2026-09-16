@@ -1,0 +1,5 @@
+ecu: rpi zero 2w (processing power and wireless access)
+linear potentiometers (2): damper travel
+hall effect: rpm, speed
+mpu6050 (2): steering angle, inclination
+display: display speed, distance, suspension, gforce, steering angle

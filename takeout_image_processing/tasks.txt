@@ -1,0 +1,11 @@
+1. Remove all existing metadata
+2. Create image processing programs
+3. Store new metadata (is it required since DB already there)
+4. Create database on all info against images (database info details TBD)
+5. Run periodically (every week) for new changes (can be tracked with git?)
+
+Database details
+1. Name of the file
+2. People in it (list against key people)
+3. Location (Co-ordinates) (Name of place?)
+4. Date/Time/Week Number stamp
